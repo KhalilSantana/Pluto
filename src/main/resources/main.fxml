@@ -1,6 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml" >
+<AnchorPane xmlns:fx="http://javafx.com/fxml">
     <VBox style="-fx-padding: 0 0 0 10">
         <HBox>
             <MenuBar>
@@ -23,25 +26,81 @@
         </HBox>
         <HBox>
             <ToolBar>
-                <Button>Novo (icone)</Button>
-                <Button>Abrir (icone)</Button>
-                <Button>Salvar (icone)</Button>
+                <Button fx:id="newBtn">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/new-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="openBtn">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/open-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="saveBtn">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/diskette-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Separator/>
-                <Button>Recortar (icone)</Button>
-                <Button>Copiar (icone)</Button>
-                <Button>Colar (icone)</Button>
+                <Button fx:id="cutBtn">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/cut-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/copy-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/paste-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Separator/>
-                <Button>Compilar (icone)</Button>
-                <Button>Executar (icone)</Button>
+                <Button>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/toolbox-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/play-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Separator/>
+                <Button>
+                    <graphic>
+                        <ImageView>
+                            <Image url="@icons/help-48.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
             </ToolBar>
         </HBox>
         <Label>Programa</Label>
         <HBox>
-            <TextArea fx:id="inputTextArea"/>
+            <TextArea fx:id="inputTextArea" prefHeight="178.0" prefWidth="703.0"/>
         </HBox>
         <Label>Área de Mensagens</Label>
         <HBox>
-            <TextArea fx:id="messageTextArea"/>
+            <TextArea fx:id="messageTextArea" prefHeight="186.0" prefWidth="704.0"/>
         </HBox>
         <HBox>
             <Label fx:id="statusBar">Status ...</Label>
