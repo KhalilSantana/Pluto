@@ -16,7 +16,7 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
         root.getStylesheets().add("/main.css");
         primaryStage.setTitle("Pluto");
-        primaryStage.setScene(new Scene(root, 600, 500));
+        primaryStage.setScene(new Scene(root, 800, 700));
         primaryStage.show();
     }
 

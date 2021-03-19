@@ -1,4 +1,52 @@
-<?import javafx.scene.layout.GridPane?>
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" >
+    <VBox style="-fx-padding: 0 0 0 10">
+        <HBox>
+            <MenuBar>
+                <Menu text="Arquivo">
+                    <MenuItem text="Abrir"/>
+                    <MenuItem text="Novo"/>
+                    <MenuItem text="Salvar"/>
+                    <MenuItem text="Salvar como..."/>
+                </Menu>
+                <Menu text="Edição">
+                    <MenuItem text="Copiar"/>
+                    <MenuItem text="Colar"/>
+                    <MenuItem text="Recortar"/>
+                </Menu>
+                <Menu text="Compilar">
+                    <MenuItem text="Compilar"/>
+                    <MenuItem text="Executar"/>
+                </Menu>
+            </MenuBar>
+        </HBox>
+        <HBox>
+            <ToolBar>
+                <Button>Novo (icone)</Button>
+                <Button>Abrir (icone)</Button>
+                <Button>Salvar (icone)</Button>
+                <Separator/>
+                <Button>Recortar (icone)</Button>
+                <Button>Copiar (icone)</Button>
+                <Button>Colar (icone)</Button>
+                <Separator/>
+                <Button>Compilar (icone)</Button>
+                <Button>Executar (icone)</Button>
+            </ToolBar>
+        </HBox>
+        <Label>Programa</Label>
+        <HBox>
+            <TextArea fx:id="inputTextArea"/>
+        </HBox>
+        <Label>Área de Mensagens</Label>
+        <HBox>
+            <TextArea fx:id="messageTextArea"/>
+        </HBox>
+        <HBox>
+            <Label fx:id="statusBar">Status ...</Label>
+        </HBox>
+    </VBox>
 
-</GridPane>
+
+</AnchorPane>
