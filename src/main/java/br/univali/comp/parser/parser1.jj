@@ -1,0 +1,48 @@
+options {
+    STATIC = false;
+    UNICODE_INPUT = true;
+    LOOKAHEAD=2;
+}
+
+PARSER_BEGIN(CodeFilter)
+
+import java.io.StringReader;
+import java.util.ArrayList;
+
+public class CodeFilter {
+
+    public static void main(String args[]) throws
+    ParseException
+    {
+    CodeFilter parser = new CodeFilter(System.in);
+    while (true)
+    {
+    parser.parseOneLine();
+    }
+    }
+
+//    public CodeFilter(){
+//        this(new StringReader(""));
+//    }
+//
+//    public CodeFilter(String SelectorString){
+//        this(new StringReader(SelectorString));
+//    }
+//
+//    public BooleanExpression parse(){
+//        return parseSelector();
+//    }
+
+}
+PARSER_END(CodeFilter)
+
+TOKEN : {
+    <NUMERO_INTEIRO: ["1"-"9"] (["1"-"9"])*>
+}
+TOKEN: {
+    <ARITMETICO: ["+", "-", "*", "/", "%"] | "**" | "%%" >
+}
+TOKEN : {
+    <IDENTIFICADOR: ["a" - "z", "A" - "Z"] (["a" - "z", "A" - "Z", "0" - "9", "_", "$"]) *>
+}
+

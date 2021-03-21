@@ -1,0 +1,78 @@
+/- Sample file for the ImpCA language
+   D. Sinclair
+-/
+
+var x, y, z, q, r, n, f : integer;
+
+integer multiply ()
+   var arg_1, arg_2 : integer;
+
+   arg_1 := x;
+   arg_2 := y;
+   z := 0;
+   while arg_2 > 0 do
+   begin
+      if (z%2 != 0) then z := z + arg_1;
+      arg_1 := 2*arg_1;
+      arg_2 := arg_2/2;
+   end
+
+   return z;
+
+
+
+void divide ()
+   var w : integer;
+
+   r := x;
+   q := 0;
+   w := y;
+   while w <= r do w := 2*w;
+   while w > y do
+   begin
+      q := 2*q;
+      w := w/2;
+      if w <= r then
+      begin
+         r := r - w;
+         q := q + 1;
+      end
+   end
+
+   return;
+
+
+
+integer gcd()                /- greatest common devisor function -/
+   var f, g : integer;
+
+   f := x; g := y;
+   while f != g do
+   begin
+      if f < g then g := g - f;
+      if g < f then f := f - g;
+   end
+
+   return f;
+
+
+
+integer fact (a:integer)
+   var f:integer;
+
+   f := 1;
+   if a > 1 then
+   begin
+      f := a* fact (a-1);
+   end
+
+   return f;
+
+
+/- main -/
+
+main
+   ?x; ?y; multiply (); !z;
+   ?x; ?y; divide (); !q; !r;
+   ?x; ?y; z := gcd (); !z;
+   ?n; !fact (n);
