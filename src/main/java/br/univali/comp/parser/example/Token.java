@@ -1,4 +1,4 @@
-package br.univali.comp.parser;
+package br.univali.comp.parser.example;
 /* JavaCCOptions:TOKEN_EXTENDS=,KEEP_LINE_COLUMN=true,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 /**
  * Describes the input token stream.

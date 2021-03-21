@@ -1,4 +1,4 @@
-package br.univali.comp.parser;
+package br.univali.comp.parser.example;
 
 /**
  * Token literal values and constants.
