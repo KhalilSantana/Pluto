@@ -3,13 +3,14 @@ package br.univali.comp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Controller {
@@ -53,6 +54,36 @@ public class Controller {
         inputTextArea.setText(builder.toString());
         hasOpenFile = true;
         setStatusMsg(String.format("Successo ao ler arquivo %s", absoluteFilePath));
+    }
+
+    @FXML
+    public void saveFileDialog(ActionEvent actionEvent) {
+        actionEvent.consume();
+        File f = new File(absoluteFilePath);
+        if (f.exists()) {
+            System.err.println(String.format("File exists: %s", absoluteFilePath));
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
+            Optional<ButtonType> optional = alert.showAndWait();
+            if (optional.get().equals(ButtonType.OK)) {
+                try {
+                    saveFile(f);
+                    setStatusMsg("Arquivo salvo");
+                } catch (IOException e) {
+                    System.err.println("Failed to save file!");
+                    new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    public void saveFile(File f) throws IOException {
+        PrintWriter pw = new PrintWriter(f);
+        BufferedWriter bufferedWriter = new BufferedWriter(pw);
+        bufferedWriter.write(inputTextArea.getText());
+        bufferedWriter.flush();
     }
 
     public void setStatusMsg(String msg) {

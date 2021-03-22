@@ -42,7 +42,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="saveBtn">
+                <Button fx:id="saveBtn" onAction="#saveFileDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/diskette-48.png"/>
