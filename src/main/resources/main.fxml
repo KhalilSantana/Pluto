@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="br.univali.comp.Controller">
     <VBox>
         <HBox>
@@ -98,7 +99,11 @@
         <VBox>
             <Label>Programa</Label>
             <HBox>
-                <TextArea fx:id="inputTextArea" prefHeight="178.0" prefWidth="703.0"/>
+                <TextArea fx:id="inputTextArea" prefHeight="178.0" prefWidth="703.0">
+                    <font>
+                        <Font name="Monospaced Regular" size="13.0" />
+                    </font>
+                </TextArea>
             </HBox>
             <Label>Área de Mensagens</Label>
             <HBox>
