@@ -41,6 +41,10 @@ public class Controller {
         try (Scanner input = new Scanner(f)) {
             while (input.hasNextLine()) {
                 builder.append(input.nextLine());
+                /*  Manually add newlines again, trying to preserve formating
+                    TODO: find a class that preserves line-endings?
+                 */
+                builder.append('\n');
             }
         } catch (FileNotFoundException ex) {
             // Should never happen
