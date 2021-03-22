@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="br.univali.comp.Controller">
     <VBox>
         <HBox>
             <MenuBar>
@@ -34,7 +34,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="openBtn">
+                <Button fx:id="openBtn" onAction="#openFileDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/open-48.png"/>
