@@ -56,14 +56,14 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button>
+                <Button fx:id="copyBtn">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/copy-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button>
+                <Button fx:id="pasteBtn">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/paste-48.png"/>
@@ -71,14 +71,14 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button>
+                <Button fx:id="buildBtn">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/toolbox-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button>
+                <Button fx:id="runBtn">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
@@ -86,7 +86,7 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button>
+                <Button fx:id="helpBtn">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/help-48.png"/>
