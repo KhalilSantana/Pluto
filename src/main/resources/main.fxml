@@ -102,7 +102,9 @@
             </HBox>
             <Label>Área de Mensagens</Label>
             <HBox>
-                <TextArea fx:id="messageTextArea" prefHeight="186.0" prefWidth="704.0"/>
+                <TextArea fx:id="messageTextArea"
+                          editable="false"
+                          prefHeight="186.0" prefWidth="704.0"/>
             </HBox>
             <HBox>
                 <Label fx:id="statusBar">Status ...</Label>
