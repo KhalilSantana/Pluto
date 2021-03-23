@@ -14,19 +14,32 @@
                     <MenuItem text="Novo"/>
                     <MenuItem fx:id="saveMenuItem"
                               disable="true"
-                            text="Salvar" onAction="#saveFileDialog"/>
+                              text="Salvar" onAction="#saveFileDialog"/>
                     <MenuItem fx:id="saveAsMenuItem"
                               disable="true"
-                            text="Salvar como..."/>
+                              text="Salvar como..."/>
                 </Menu>
                 <Menu text="Edição">
-                    <MenuItem text="Copiar"/>
-                    <MenuItem text="Colar"/>
-                    <MenuItem text="Recortar"/>
+                    <MenuItem fx:id="cutMenuItem"
+                              text="Recortar"
+                              disable="true"
+                    />
+                    <MenuItem fx:id="copyMenuItem"
+                              text="Copiar"
+                              disable="true"
+                    />
+                    <MenuItem fx:id="pasteMenuItem"
+                              text="Colar"
+                              disable="true"
+                    />
                 </Menu>
                 <Menu text="Compilar">
-                    <MenuItem text="Compilar"/>
-                    <MenuItem text="Executar"/>
+                    <MenuItem text="Compilar"
+                              disable="true"
+                    />
+                    <MenuItem text="Executar"
+                              disable="true"
+                    />
                 </Menu>
             </MenuBar>
         </HBox>
@@ -57,21 +70,27 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="cutBtn">
+                <Button fx:id="cutBtn"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/cut-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="copyBtn">
+                <Button fx:id="copyBtn"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/copy-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="pasteBtn">
+                <Button fx:id="pasteBtn"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/paste-48.png"/>
@@ -79,14 +98,18 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="buildBtn">
+                <Button fx:id="buildBtn"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/toolbox-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn">
+                <Button fx:id="runBtn"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
@@ -106,9 +129,11 @@
         <VBox>
             <Label>Programa</Label>
             <HBox>
-                <TextArea fx:id="inputTextArea" prefHeight="178.0" prefWidth="703.0">
+                <TextArea fx:id="inputTextArea"
+                          disable="true"
+                          prefHeight="178.0" prefWidth="703.0">
                     <font>
-                        <Font name="Monospaced Regular" size="13.0" />
+                        <Font name="Monospaced Regular" size="13.0"/>
                     </font>
                 </TextArea>
             </HBox>
