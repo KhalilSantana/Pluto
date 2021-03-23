@@ -16,7 +16,7 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
         root.getStylesheets().add("/main.css");
         primaryStage.setTitle("Compilador");
-        primaryStage.setScene(new Scene(root, 800, 700));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

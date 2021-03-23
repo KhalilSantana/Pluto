@@ -5,41 +5,26 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="br.univali.comp.Controller">
-    <VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1"
+            fx:controller="br.univali.comp.Controller">
+    <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
         <HBox>
             <MenuBar>
                 <Menu text="Arquivo">
-                    <MenuItem text="Abrir" onAction="#openFileDialog"/>
+                    <MenuItem onAction="#openFileDialog" text="Abrir"/>
                     <MenuItem text="Novo"/>
-                    <MenuItem fx:id="saveMenuItem"
-                              disable="true"
-                              text="Salvar" onAction="#saveFileDialog"/>
-                    <MenuItem fx:id="saveAsMenuItem"
-                              disable="true"
-                              text="Salvar como..."/>
+                    <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Salvar"/>
+                    <MenuItem fx:id="saveAsMenuItem" disable="true" text="Salvar como..."/>
                 </Menu>
                 <Menu text="Edição">
-                    <MenuItem fx:id="cutMenuItem"
-                              text="Recortar"
-                              disable="true"
-                    />
-                    <MenuItem fx:id="copyMenuItem"
-                              text="Copiar"
-                              disable="true"
-                    />
-                    <MenuItem fx:id="pasteMenuItem"
-                              text="Colar"
-                              disable="true"
-                    />
+                    <MenuItem fx:id="cutMenuItem" disable="true" text="Recortar"/>
+                    <MenuItem fx:id="copyMenuItem" disable="true" text="Copiar"/>
+                    <MenuItem fx:id="pasteMenuItem" disable="true" text="Colar"/>
                 </Menu>
                 <Menu text="Compilar">
-                    <MenuItem text="Compilar"
-                              disable="true"
-                    />
-                    <MenuItem text="Executar"
-                              disable="true"
-                    />
+                    <MenuItem disable="true" text="Compilar"/>
+                    <MenuItem disable="true" text="Executar"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -59,10 +44,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="saveBtn"
-                        onAction="#saveFileDialog"
-                        disable="true"
-                >
+                <Button fx:id="saveBtn" disable="true" onAction="#saveFileDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/diskette-48.png"/>
@@ -70,27 +52,21 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="cutBtn"
-                        disable="true"
-                >
+                <Button fx:id="cutBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/cut-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="copyBtn"
-                        disable="true"
-                >
+                <Button fx:id="copyBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/copy-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="pasteBtn"
-                        disable="true"
-                >
+                <Button fx:id="pasteBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/paste-48.png"/>
@@ -98,18 +74,14 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="buildBtn"
-                        disable="true"
-                >
+                <Button fx:id="buildBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/toolbox-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn"
-                        disable="true"
-                >
+                <Button fx:id="runBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
@@ -126,12 +98,10 @@
                 </Button>
             </ToolBar>
         </HBox>
-        <VBox>
+        <VBox VBox.vgrow="ALWAYS">
             <Label>Programa</Label>
-            <HBox>
-                <TextArea fx:id="inputTextArea"
-                          disable="true"
-                          prefHeight="178.0" prefWidth="703.0">
+            <HBox VBox.vgrow="ALWAYS">
+                <TextArea fx:id="inputTextArea" disable="true" HBox.hgrow="ALWAYS">
                     <font>
                         <Font name="Monospaced Regular" size="13.0"/>
                     </font>
@@ -139,9 +109,7 @@
             </HBox>
             <Label>Área de Mensagens</Label>
             <HBox>
-                <TextArea fx:id="messageTextArea"
-                          editable="false"
-                          prefHeight="186.0" prefWidth="704.0"/>
+                <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox>
                 <Label fx:id="statusBar">Status ...</Label>
