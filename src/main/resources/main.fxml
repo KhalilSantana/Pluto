@@ -10,9 +10,9 @@
         <HBox>
             <MenuBar>
                 <Menu text="Arquivo">
-                    <MenuItem text="Abrir"/>
+                    <MenuItem text="Abrir" onAction="#openFileDialog"/>
                     <MenuItem text="Novo"/>
-                    <MenuItem text="Salvar"/>
+                    <MenuItem text="Salvar" onAction="#saveFileDialog"/>
                     <MenuItem text="Salvar como..."/>
                 </Menu>
                 <Menu text="Edição">
