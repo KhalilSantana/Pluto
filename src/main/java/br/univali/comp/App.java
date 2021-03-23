@@ -15,7 +15,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
         root.getStylesheets().add("/main.css");
-        primaryStage.setTitle("Pluto");
+        primaryStage.setTitle("Compilador");
         primaryStage.setScene(new Scene(root, 800, 700));
         primaryStage.show();
     }
