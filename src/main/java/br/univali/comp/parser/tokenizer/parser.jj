@@ -1,0 +1,116 @@
+options {
+    STATIC = true;
+    UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(Tokenizer)
+
+
+public class Tokenizer {
+
+    public static void main(String args[]) {
+    Tokenizer tokenizer;
+            if(args.length == 0){
+    			System.out.println("Reading from standard input!");
+    			tokenizer = new Tokenizer(System.in);
+    		}
+    		else if(args.length == 1){
+    			try{
+                    tokenizer = new Tokenizer(new java.io.FileInputStream(args[0]));
+    			}
+    			catch(java.io.FileNotFoundException e){
+    				System.err.println(args[0] + " was not found." );
+    				System.err.println(e);
+    				return;
+    			}
+    		}
+    		else{
+    			System.out.println("Use:\njava Tokenizer < inputFile");
+    			System.out.println("or java Tokenizer inputFile");
+    			return;
+    		}
+    		for(Token t = getNextToken(); t.kind != EOF; t = getNextToken()){
+    		    switch(t.kind){
+                        case NUMERO_INTEIRO:{
+                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_INTEIRO");
+                            break;
+                        }
+                        case NUMERO_REAL:{
+                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_REAL");
+                            break;
+                        }
+                        case ARITMETICO:{
+                            System.out.println("Token: '"+t.image+"' - Type: ARITMETICO");
+                            break;
+                        }
+                        case IDENTIFICADOR:{
+                            System.out.println("Token: '"+t.image+"' - Type: IDENTIFICADOR");
+                            break;
+                        }
+                        case LOGICO:{
+                            System.out.println("Token: '"+t.image+"' - Type: LOGICO");
+                            break;
+                        }
+                        case ESPECIAIS:{
+                            System.out.println("Token: '"+t.image+"' - Type: ESPECIAIS");
+                            break;
+                        }
+                        case PALAVRAS_RESERVADAS:{
+                            System.out.println("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS");
+                            break;
+                        }
+                        default:{
+                            System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">");
+                            break;
+                        }
+                    }
+    		}
+    		System.out.println("<EOF>");
+    }
+
+}
+PARSER_END(Tokenizer)
+
+TOKEN_MGR_DECLS :
+{
+	static int commentLevel = 0 ;
+}
+<COMMENT> SKIP :{
+	":-"	{	commentLevel++;		}
+|	"-:"	{	commentLevel--;
+			    if(commentLevel == 0){  SwitchTo(DEFAULT); }
+		    }
+| 	< ~[] >
+}
+
+//Skip the following elements
+SKIP : {
+    <SPACE : " ">
+|   "\t" | "\n" | "\r" | "\r\n"
+|	":-" { commentLevel++; } : COMMENT
+}
+
+TOKEN : {
+    <NUMERO_INTEIRO: ["0"-"9"] (["0"-"9"])? (["0"-"9"])? >
+}
+TOKEN : {
+    <NUMERO_REAL: ["0"-"9"] (["0"-"9"])? (["0"-"9"])? (["0"-"9"])? (["0"-"9"])? "." ["0"-"9"] (["0"-"9"])? >
+}
+TOKEN: {
+    <ARITMETICO: ["+", "-", "*", "/", "%"] | "**" | "%%" >
+}
+TOKEN : {
+    <PALAVRAS_RESERVADAS: "program" | "define" | "not" | "variable" | "is" |
+    "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
+    "false" | "do" | "natural" | "real" | "char" | "boolean">
+}
+//TODO - Ajustar identificador conforme questão b da 3 - para resolver.
+TOKEN : {
+    <IDENTIFICADOR: ["a" - "z", "A" - "Z", "_"] (["a" - "z", "A" - "Z", "0" - "9", "_"])*>
+}
+TOKEN : {
+    <LOGICO: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
+}
+TOKEN : {
+    <ESPECIAIS: [".", ",", "{", "}", "[", "]", "(", ")"] >
+}
