@@ -36,6 +36,26 @@ public class CodeFilter {
 }
 PARSER_END(CodeFilter)
 
+//Token Manager Declarations
+TOKEN_MGR_DECLS :
+{
+	static int commentLevel = 0 ;
+}
+<COMMENT> SKIP :{
+	"/*"	{	commentLevel++;		}
+|	"*/"	{	commentLevel--;
+			    if(commentLevel == 0){  SwitchTo(DEFAULT); }
+		    }
+| 	< ~[] >
+}
+
+//Skip the following elements
+SKIP : {
+    <SPACE : " ">
+|   "\t" | "\n" | "\r" | "\r\n"
+|	"/-" { commentLevel++; } : COMMENT
+}
+
 TOKEN : {
     <NUMERO_INTEIRO: ["1"-"9"] (["1"-"9"])*>
 }
@@ -44,5 +64,16 @@ TOKEN: {
 }
 TOKEN : {
     <IDENTIFICADOR: ["a" - "z", "A" - "Z"] (["a" - "z", "A" - "Z", "0" - "9", "_", "$"]) *>
+}
+TOKEN : {
+    <LOGICO: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
+}
+TOKEN : {
+    <ESPECIAIS: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-">
+}
+TOKEN : {
+    <PALAVRAS_RESERVADAS: "program" | "define" | "not" | "variable" | "is" |
+    "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
+    "false" | "do" | "natural" | "real" | "char" | "boolean">
 }
 
