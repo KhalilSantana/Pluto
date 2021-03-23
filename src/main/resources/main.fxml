@@ -12,8 +12,12 @@
                 <Menu text="Arquivo">
                     <MenuItem text="Abrir" onAction="#openFileDialog"/>
                     <MenuItem text="Novo"/>
-                    <MenuItem text="Salvar" onAction="#saveFileDialog"/>
-                    <MenuItem text="Salvar como..."/>
+                    <MenuItem fx:id="saveMenuItem"
+                              disable="true"
+                            text="Salvar" onAction="#saveFileDialog"/>
+                    <MenuItem fx:id="saveAsMenuItem"
+                              disable="true"
+                            text="Salvar como..."/>
                 </Menu>
                 <Menu text="Edição">
                     <MenuItem text="Copiar"/>
@@ -42,7 +46,10 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="saveBtn" onAction="#saveFileDialog">
+                <Button fx:id="saveBtn"
+                        onAction="#saveFileDialog"
+                        disable="true"
+                >
                     <graphic>
                         <ImageView>
                             <Image url="@icons/diskette-48.png"/>

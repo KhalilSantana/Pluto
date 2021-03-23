@@ -2,10 +2,7 @@ package br.univali.comp;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -21,6 +18,19 @@ public class Controller {
     public TextArea inputTextArea;
     public TextArea messageTextArea;
     public Label statusBar;
+    // Menu bar items
+    public MenuItem saveMenuItem;
+    public MenuItem saveAsMenuItem;
+    //  Menu toolbar buttons
+    public Button newBtn;
+    public Button openBtn;
+    public Button saveBtn;
+    public Button copyBtn;
+    public Button cutBtn;
+    public Button pasteBtn;
+    public Button buildBtn;
+    public Button runBtn;
+    public Button helpBtn;
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -54,6 +64,7 @@ public class Controller {
         inputTextArea.setText(builder.toString());
         hasOpenFile = true;
         setStatusMsg(String.format("Successo ao ler arquivo %s", absoluteFilePath));
+        disableSaving(false);
     }
 
     @FXML
@@ -78,6 +89,13 @@ public class Controller {
         }
 
     }
+
+    public void disableSaving(boolean b) {
+        saveBtn.setDisable(b);
+        saveMenuItem.setDisable(b);
+        saveAsMenuItem.setDisable(b);
+    }
+
 
     public void saveFile(File f) throws IOException {
         PrintWriter pw = new PrintWriter(f);
