@@ -21,6 +21,9 @@ public class Controller {
     // Menu bar items
     public MenuItem saveMenuItem;
     public MenuItem saveAsMenuItem;
+    public MenuItem cutMenuItem;
+    public MenuItem copyMenuItem;
+    public MenuItem pasteMenuItem;
     //  Menu toolbar buttons
     public Button newBtn;
     public Button openBtn;
@@ -65,6 +68,8 @@ public class Controller {
         hasOpenFile = true;
         setStatusMsg(String.format("Successo ao ler arquivo %s", absoluteFilePath));
         disableSaving(false);
+        disableEditOptions(false);
+        inputTextArea.setDisable(false);
     }
 
     @FXML
@@ -96,6 +101,14 @@ public class Controller {
         saveAsMenuItem.setDisable(b);
     }
 
+    public void disableEditOptions(boolean b) {
+        cutBtn.setDisable(b);
+        cutMenuItem.setDisable(b);
+        copyBtn.setDisable(b);
+        copyMenuItem.setDisable(b);
+        pasteBtn.setDisable(b);
+        pasteMenuItem.setDisable(b);
+    }
 
     public void saveFile(File f) throws IOException {
         PrintWriter pw = new PrintWriter(f);
