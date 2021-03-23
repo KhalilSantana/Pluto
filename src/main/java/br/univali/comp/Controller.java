@@ -61,11 +61,11 @@ public class Controller {
         actionEvent.consume();
         File f = new File(absoluteFilePath);
         if (f.exists()) {
-            System.err.println(String.format("File exists: %s", absoluteFilePath));
+            System.err.printf("File exists: %s%n", absoluteFilePath);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
             Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.get().equals(ButtonType.OK)) {
+            if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                 try {
                     saveFile(f);
                     setStatusMsg("Arquivo salvo");
