@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
+<?import org.fxmisc.richtext.CodeArea?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/14"
             fx:controller="br.univali.comp.Controller">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -101,11 +102,11 @@
         <VBox VBox.vgrow="ALWAYS">
             <Label>Programa</Label>
             <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
-                <TextArea fx:id="inputTextArea" disable="true" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font name="Monospaced Regular" size="13.0"/>
-                    </font>
-                </TextArea>
+                <VirtualizedScrollPane HBox.hgrow="ALWAYS">
+                    <content>
+                        <CodeArea fx:id="inputTextArea"/>
+                    </content>
+                </VirtualizedScrollPane>
             </HBox>
             <Label>Área de Mensagens</Label>
             <HBox>

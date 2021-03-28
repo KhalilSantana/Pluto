@@ -9,6 +9,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.*;
 import java.util.Optional;
@@ -19,7 +21,7 @@ public class Controller {
     private File currentlyOpenFile = null;
 
     @FXML
-    public TextArea inputTextArea;
+    public CodeArea inputTextArea;
     public TextArea messageTextArea;
     public Label statusBar;
     // Menu bar items
@@ -65,7 +67,9 @@ public class Controller {
             // Should never happen
             ex.printStackTrace();
         }
-        inputTextArea.setText(builder.toString());
+        inputTextArea.replaceText(builder.toString());
+        inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
+
         setStatusMsg(String.format("Successo ao ler arquivo %s", getCurrentOpenFilePath()));
         disableEditOptions(false);
         inputTextArea.setDisable(false);
