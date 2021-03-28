@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class Controller {
+    private Stage stage;
     private static boolean hasEditedFile = false;
     private File currentlyOpenFile = null;
 
@@ -127,19 +128,21 @@ public class Controller {
 
     public void fileContentChanged(KeyEvent keyEvent) {
         disableSaving(false);
-        registerWindowClose();
         hasEditedFile = true;
     }
 
     public void registerWindowClose() {
-        Stage stage = (Stage) inputTextArea.getScene().getWindow();
-        stage.setOnCloseRequest(new ExitButtonListener());
+        this.stage.setOnCloseRequest(new ExitButtonListener());
+    }
+
+    public void setStage(Stage primaryStage) {
+        this.stage = primaryStage;
+        registerWindowClose();
     }
 
     public class ExitButtonListener implements EventHandler<WindowEvent> {
         @Override
         public void handle(WindowEvent windowEvent) {
-            System.err.println("Clicked close button!");
             if (hasEditedFile) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                         "Você possui um arquivo editado aberto e não salvo, deseja salvar?");

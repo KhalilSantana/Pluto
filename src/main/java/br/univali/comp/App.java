@@ -13,10 +13,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/main.fxml"));
+        Parent root = fxmlLoader.load();
         root.getStylesheets().add("/main.css");
         primaryStage.setTitle("Compilador");
         primaryStage.setScene(new Scene(root));
+
+        Controller controller = fxmlLoader.getController();
+        controller.setStage(primaryStage);
+
         primaryStage.show();
     }
 
