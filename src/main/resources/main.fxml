@@ -100,7 +100,7 @@
         </HBox>
         <VBox VBox.vgrow="ALWAYS">
             <Label>Programa</Label>
-            <HBox VBox.vgrow="ALWAYS">
+            <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
                 <TextArea fx:id="inputTextArea" disable="true" HBox.hgrow="ALWAYS">
                     <font>
                         <Font name="Monospaced Regular" size="13.0"/>

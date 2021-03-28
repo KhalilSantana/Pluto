@@ -1,17 +1,21 @@
 package br.univali.comp;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.*;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class Controller {
-    private boolean hasOpenFile = false;
+    private static boolean hasEditedFile = false;
     private String absoluteFilePath;
 
     @FXML
@@ -65,9 +69,7 @@ public class Controller {
             ex.printStackTrace();
         }
         inputTextArea.setText(builder.toString());
-        hasOpenFile = true;
         setStatusMsg(String.format("Successo ao ler arquivo %s", absoluteFilePath));
-        disableSaving(false);
         disableEditOptions(false);
         inputTextArea.setDisable(false);
     }
@@ -120,4 +122,38 @@ public class Controller {
     public void setStatusMsg(String msg) {
         statusBar.setText(String.format("Status: %s", msg));
     }
+
+    public void fileContentChanged(KeyEvent keyEvent) {
+        disableSaving(false);
+        registerWindowClose();
+        hasEditedFile = true;
+    }
+
+    public void registerWindowClose() {
+        Stage stage = (Stage) inputTextArea.getScene().getWindow();
+        stage.setOnCloseRequest(new ExitButtonListener());
+    }
+
+    public class ExitButtonListener implements EventHandler<WindowEvent> {
+        @Override
+        public void handle(WindowEvent windowEvent) {
+            System.err.println("Clicked close button!");
+            if (hasEditedFile) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Você possui um arquivo editado aberto e não salvo, deseja salvar?");
+                Optional<ButtonType> optional = alert.showAndWait();
+                if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
+                    try {
+                        File f = new File(absoluteFilePath);
+                        saveFile(f);
+                        Platform.exit();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
+                    }
+                }
+            }
+        }
+    }
+
 }
