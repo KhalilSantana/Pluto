@@ -83,6 +83,7 @@ public class Controller {
                 try {
                     saveFile(currentlyOpenFile);
                     setStatusMsg("Arquivo salvo");
+                    disableSaving(true);
                 } catch (IOException e) {
                     System.err.println("Failed to save file!");
                     new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
@@ -109,6 +110,7 @@ public class Controller {
     }
 
     public void saveFile(File f) throws IOException {
+        hasEditedFile = false;
         PrintWriter pw = new PrintWriter(f);
         BufferedWriter bufferedWriter = new BufferedWriter(pw);
         bufferedWriter.write(inputTextArea.getText());
