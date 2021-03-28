@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 public class Controller {
     private static boolean hasEditedFile = false;
-    private String absoluteFilePath;
+    private File currentlyOpenFile = null;
 
     @FXML
     public TextArea inputTextArea;
@@ -43,20 +43,17 @@ public class Controller {
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
         FileChooser filepicker = new FileChooser();
-        File f = filepicker.showOpenDialog(new Stage());
+        currentlyOpenFile = filepicker.showOpenDialog(new Stage());
         // Error handling
-        if (f == null || !f.isFile()) {
+        if (currentlyOpenFile == null || !currentlyOpenFile.isFile()) {
             System.err.println("Failed to open file!");
             Alert alert = new Alert(Alert.AlertType.ERROR, "Falha ao abrir arquivo!");
             alert.showAndWait();
             return;
         }
-        // Get cannonical path / absolute path
-        f = f.getAbsoluteFile();
-        absoluteFilePath = f.getPath();
         inputTextArea.setWrapText(false);
         StringBuilder builder = new StringBuilder();
-        try (Scanner input = new Scanner(f)) {
+        try (Scanner input = new Scanner(currentlyOpenFile)) {
             while (input.hasNextLine()) {
                 builder.append(input.nextLine());
                 /*  Manually add newlines again, trying to preserve formating
@@ -69,7 +66,7 @@ public class Controller {
             ex.printStackTrace();
         }
         inputTextArea.setText(builder.toString());
-        setStatusMsg(String.format("Successo ao ler arquivo %s", absoluteFilePath));
+        setStatusMsg(String.format("Successo ao ler arquivo %s", getCurrentOpenFilePath()));
         disableEditOptions(false);
         inputTextArea.setDisable(false);
     }
@@ -77,15 +74,14 @@ public class Controller {
     @FXML
     public void saveFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        File f = new File(absoluteFilePath);
-        if (f.exists()) {
-            System.err.printf("File exists: %s%n", absoluteFilePath);
+        if (currentlyOpenFile.exists()) {
+            System.err.printf("File exists: %s%n", getCurrentOpenFilePath());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                 try {
-                    saveFile(f);
+                    saveFile(currentlyOpenFile);
                     setStatusMsg("Arquivo salvo");
                 } catch (IOException e) {
                     System.err.println("Failed to save file!");
@@ -144,8 +140,7 @@ public class Controller {
                 Optional<ButtonType> optional = alert.showAndWait();
                 if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                     try {
-                        File f = new File(absoluteFilePath);
-                        saveFile(f);
+                        saveFile(currentlyOpenFile);
                         Platform.exit();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -154,6 +149,14 @@ public class Controller {
                 }
             }
         }
+    }
+
+    // Get cannonical path / absolute path
+    private Optional<String> getCurrentOpenFilePath() {
+        if (currentlyOpenFile != null && currentlyOpenFile.isFile()) {
+            return Optional.of(currentlyOpenFile.getAbsolutePath());
+        }
+        return Optional.empty();
     }
 
 }
