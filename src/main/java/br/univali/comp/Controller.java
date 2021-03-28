@@ -70,7 +70,7 @@ public class Controller {
         inputTextArea.replaceText(builder.toString());
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
 
-        setStatusMsg(String.format("Successo ao ler arquivo %s", getCurrentOpenFilePath()));
+        setStatusMsg(String.format("Successo ao ler arquivo %s", getCurrentOpenFilePath().get()));
         disableEditOptions(false);
         inputTextArea.setDisable(false);
     }
@@ -79,7 +79,7 @@ public class Controller {
     public void saveFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
         if (currentlyOpenFile.exists()) {
-            System.err.printf("File exists: %s%n", getCurrentOpenFilePath());
+            System.err.printf("File exists: %s%n", getCurrentOpenFilePath().get());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
             Optional<ButtonType> optional = alert.showAndWait();
