@@ -71,14 +71,15 @@ public class Controller {
                     String.format("The file '%s' already exists, do you wish to overwrite it?", editorFile.getFilePath().get()));
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
-                try {
-                    saveFile();
+                EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
+                if (status == EditorFile.FileStatus.OK) {
                     setStatusMsg("File saved!");
-                } catch (IOException e) {
+                    disableSaving(true);
+                    hasEditedFile = false;
+                } else {
                     new Alert(Alert.AlertType.ERROR,
                             String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
-                    .show();
-                    e.printStackTrace();
+                            .show();
                 }
             }
         }
@@ -98,12 +99,6 @@ public class Controller {
         copyMenuItem.setDisable(b);
         pasteBtn.setDisable(b);
         pasteMenuItem.setDisable(b);
-    }
-
-    public void saveFile() throws IOException {
-        hasEditedFile = false;
-        editorFile.writeToFile(inputTextArea.getText());
-        disableSaving(true);
     }
 
     public void setStatusMsg(String msg) {
@@ -132,11 +127,10 @@ public class Controller {
                         "You have an edited file open and unsaved, do you want to save it?");
                 Optional<ButtonType> optional = alert.showAndWait();
                 if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
-                    try {
-                        editorFile.writeToFile(inputTextArea.getText());
+                    EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
+                    if (status == EditorFile.FileStatus.OK) {
                         Platform.exit();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } else {
                         new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
                     }
                 }

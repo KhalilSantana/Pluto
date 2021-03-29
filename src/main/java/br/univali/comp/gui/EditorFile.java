@@ -28,8 +28,19 @@ public class EditorFile {
         return Optional.empty();
     }
 
-    public void writeToFile(String contents) throws IOException {
-        FileUtils.write(file, contents, StandardCharsets.UTF_8);
+    public FileStatus save(String contents) {
+        return saveAs(contents, this.file);
+    }
+
+    public FileStatus saveAs(String contents, File target) {
+        try {
+            FileUtils.write(target, contents, StandardCharsets.UTF_8);
+            this.file = target;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return FileStatus.IO_ERROR;
+        }
+        return FileStatus.OK;
     }
 
     public boolean hasValidExtension() {
