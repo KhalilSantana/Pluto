@@ -12,20 +12,20 @@
           AnchorPane.topAnchor="0.0">
         <HBox>
             <MenuBar>
-                <Menu text="Arquivo">
-                    <MenuItem onAction="#openFileDialog" text="Abrir"/>
-                    <MenuItem text="Novo"/>
-                    <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Salvar"/>
-                    <MenuItem fx:id="saveAsMenuItem" disable="true" text="Salvar como..."/>
+                <Menu text="File">
+                    <MenuItem onAction="#openFileDialog" text="Open"/>
+                    <MenuItem text="New"/>
+                    <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Save"/>
+                    <MenuItem fx:id="saveAsMenuItem" disable="true" text="Save as..."/>
                 </Menu>
-                <Menu text="Edição">
-                    <MenuItem fx:id="cutMenuItem" disable="true" text="Recortar"/>
-                    <MenuItem fx:id="copyMenuItem" disable="true" text="Copiar"/>
-                    <MenuItem fx:id="pasteMenuItem" disable="true" text="Colar"/>
+                <Menu text="Edit">
+                    <MenuItem fx:id="cutMenuItem" disable="true" text="Cut"/>
+                    <MenuItem fx:id="copyMenuItem" disable="true" text="Copy"/>
+                    <MenuItem fx:id="pasteMenuItem" disable="true" text="Paste"/>
                 </Menu>
-                <Menu text="Compilar">
-                    <MenuItem disable="true" text="Compilar"/>
-                    <MenuItem disable="true" text="Executar"/>
+                <Menu text="Compile">
+                    <MenuItem disable="true" text="Compile"/>
+                    <MenuItem disable="true" text="Run"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -100,7 +100,7 @@
             </ToolBar>
         </HBox>
         <VBox VBox.vgrow="ALWAYS">
-            <Label>Programa</Label>
+            <Label>Program</Label>
             <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
                 <VirtualizedScrollPane HBox.hgrow="ALWAYS">
                     <content>
@@ -108,7 +108,7 @@
                     </content>
                 </VirtualizedScrollPane>
             </HBox>
-            <Label>Área de Mensagens</Label>
+            <Label>Message Area</Label>
             <HBox>
                 <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
             </HBox>

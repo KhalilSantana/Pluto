@@ -47,8 +47,7 @@ public class Controller {
         editorFile = new EditorFile(filepicker.showOpenDialog(new Stage()));
         // Error handling
         if (!editorFile.isFileStatusOK()) {
-            System.err.println("Failed to open file!");
-            Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Falha ao abrir arquivo: %s", editorFile.getFileStatus()));
+            Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Failed opening file: %s", editorFile.getFileStatus()));
             alert.showAndWait();
             return;
         }
@@ -60,7 +59,7 @@ public class Controller {
         }
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
 
-        setStatusMsg(String.format("Successo ao ler arquivo %s", editorFile.getFilePath().get()));
+        setStatusMsg(String.format("Success reading file %s", editorFile.getFilePath().get()));
         disableEditOptions(false);
         inputTextArea.setDisable(false);
     }
@@ -69,17 +68,16 @@ public class Controller {
     public void saveFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
         if (editorFile.isFileStatusOK()) {
-            System.err.printf("File exists: %s%n", editorFile.getFilePath().get());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
+                    String.format("The file '%s' already exists, do you wish to overwrite it?", editorFile.getFilePath().get()));
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                 try {
                     saveFile();
-                    setStatusMsg("Arquivo salvo");
+                    setStatusMsg("File saved!");
                 } catch (IOException e) {
-                    System.err.println("Failed to save file!");
-                    new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
+                    new Alert(Alert.AlertType.ERROR,
+                            String.format("Failed saving file to '%s'", editorFile.getFilePath().get()));
                     e.printStackTrace();
                 }
             }
@@ -131,7 +129,7 @@ public class Controller {
         public void handle(WindowEvent windowEvent) {
             if (hasEditedFile) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Você possui um arquivo editado aberto e não salvo, deseja salvar?");
+                        "You have an edited file open and unsaved, do you want to save it?");
                 Optional<ButtonType> optional = alert.showAndWait();
                 if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                     try {
@@ -139,7 +137,7 @@ public class Controller {
                         Platform.exit();
                     } catch (IOException e) {
                         e.printStackTrace();
-                        new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
+                        new Alert(Alert.AlertType.ERROR, "Failed saving file!");
                     }
                 }
             }
