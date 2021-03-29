@@ -11,6 +11,7 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -42,6 +43,7 @@ public class Controller {
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
+        handleOpenUnsavedFile();
         FileChooser filePicker = new FileChooser();
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()));
         // Error handling
@@ -50,6 +52,7 @@ public class Controller {
             alert.showAndWait();
             return;
         }
+        hasEditedFile = false;
         inputTextArea.setWrapText(false);
         try {
             inputTextArea.replaceText(editorFile.getFileContents());
@@ -59,8 +62,13 @@ public class Controller {
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
 
         setStatusMsg(String.format("Success reading file %s", editorFile.getFilePath().get()));
+        updateStageTitle();
         disableEditOptions(false);
         inputTextArea.setDisable(false);
+    }
+
+    private void updateStageTitle() {
+        this.stage.setTitle(String.format("Compilador - [%s]", editorFile.getFilePath().get()));
     }
 
     @FXML
@@ -74,14 +82,15 @@ public class Controller {
                 EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
                 if (status == EditorFile.FileStatus.OK) {
                     setStatusMsg("File saved!");
+                    updateStageTitle();
                     disableSaving(true);
-                    hasEditedFile = false;
                 } else {
                     new Alert(Alert.AlertType.ERROR,
                             String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
                             .show();
                 }
             }
+            hasEditedFile = false;
         }
 
     }
@@ -119,21 +128,30 @@ public class Controller {
         registerWindowClose();
     }
 
+    private EditorFile.FileStatus handleOpenUnsavedFile() {
+        EditorFile.FileStatus status = EditorFile.FileStatus.OK;
+        if (hasEditedFile) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "You have an edited file open and unsaved, do you want to save it?");
+            Optional<ButtonType> optional = alert.showAndWait();
+            if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
+                status = editorFile.save(inputTextArea.getText());
+                if (status != EditorFile.FileStatus.OK) {
+                    new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
+                }
+            }
+            hasEditedFile = false;
+            disableSaving(true);
+        }
+        return status;
+    }
+
+
     public class ExitButtonListener implements EventHandler<WindowEvent> {
         @Override
         public void handle(WindowEvent windowEvent) {
-            if (hasEditedFile) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                        "You have an edited file open and unsaved, do you want to save it?");
-                Optional<ButtonType> optional = alert.showAndWait();
-                if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
-                    EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
-                    if (status == EditorFile.FileStatus.OK) {
-                        Platform.exit();
-                    } else {
-                        new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
-                    }
-                }
+            if (handleOpenUnsavedFile() == EditorFile.FileStatus.OK) {
+                Platform.exit();
             }
         }
     }
