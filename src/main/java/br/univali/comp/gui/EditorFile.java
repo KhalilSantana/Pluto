@@ -20,7 +20,7 @@ public class EditorFile {
         return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
     }
 
-    // Get cannonical path / absolute path
+    // Get canonical path / absolute path
     public Optional<String> getFilePath() {
         if (getFileStatus() == FileStatus.OK) {
             return Optional.of(file.getAbsolutePath());
@@ -37,7 +37,7 @@ public class EditorFile {
         if (hasValidExt) {
             return true;
         }
-        System.err.printf("File doesn't have a vaild extension, want %s, have %s\n", FILE_EXT, FilenameUtils.isExtension(file.getName(), "txt"));
+        System.err.printf("File doesn't have a valid extension, want %s, have %s\n", FILE_EXT, FilenameUtils.isExtension(file.getName(), "txt"));
         return false;
     }
 

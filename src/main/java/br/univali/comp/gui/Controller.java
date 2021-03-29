@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -43,8 +42,8 @@ public class Controller {
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        FileChooser filepicker = new FileChooser();
-        editorFile = new EditorFile(filepicker.showOpenDialog(new Stage()));
+        FileChooser filePicker = new FileChooser();
+        editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()));
         // Error handling
         if (!editorFile.isFileStatusOK()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Failed opening file: %s", editorFile.getFileStatus()));
@@ -111,7 +110,7 @@ public class Controller {
         statusBar.setText(String.format("Status: %s", msg));
     }
 
-    public void fileContentChanged(KeyEvent keyEvent) {
+    public void fileContentChanged() {
         disableSaving(false);
         hasEditedFile = true;
     }
