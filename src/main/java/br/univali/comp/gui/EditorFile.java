@@ -53,6 +53,9 @@ public class EditorFile {
     }
 
     public FileStatus getFileStatus() {
+        if (file == null) {
+            return FileStatus.NO_OPEN_FILE;
+        }
         if (!hasValidExtension()) {
             return FileStatus.INVALID_EXTENSION;
         }
@@ -67,5 +70,6 @@ public class EditorFile {
         OK,
         IO_ERROR,
         INVALID_EXTENSION,
+        NO_OPEN_FILE,
     }
 }
