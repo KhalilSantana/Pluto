@@ -1,4 +1,4 @@
-package br.univali.comp;
+package br.univali.comp.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +10,10 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,9 +27,5 @@ public class App extends Application {
         controller.setStage(primaryStage);
 
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

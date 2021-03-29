@@ -1,4 +1,4 @@
-package br.univali.comp;
+package br.univali.comp.gui;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,15 +12,11 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Optional;
-import java.util.Scanner;
 
 public class Controller {
-    private Stage stage;
     private static boolean hasEditedFile = false;
-    private File currentlyOpenFile = null;
-
     @FXML
     public CodeArea inputTextArea;
     public TextArea messageTextArea;
@@ -41,37 +37,30 @@ public class Controller {
     public Button buildBtn;
     public Button runBtn;
     public Button helpBtn;
+    private Stage stage;
+    private EditorFile editorFile = null;
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
         FileChooser filepicker = new FileChooser();
-        currentlyOpenFile = filepicker.showOpenDialog(new Stage());
+        editorFile = new EditorFile(filepicker.showOpenDialog(new Stage()));
         // Error handling
-        if (currentlyOpenFile == null || !currentlyOpenFile.isFile()) {
+        if (!editorFile.isFileStatusOK()) {
             System.err.println("Failed to open file!");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Falha ao abrir arquivo!");
+            Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Falha ao abrir arquivo: %s", editorFile.getFileStatus()));
             alert.showAndWait();
             return;
         }
         inputTextArea.setWrapText(false);
-        StringBuilder builder = new StringBuilder();
-        try (Scanner input = new Scanner(currentlyOpenFile)) {
-            while (input.hasNextLine()) {
-                builder.append(input.nextLine());
-                /*  Manually add newlines again, trying to preserve formating
-                    TODO: find a class that preserves line-endings?
-                 */
-                builder.append('\n');
-            }
-        } catch (FileNotFoundException ex) {
-            // Should never happen
-            ex.printStackTrace();
+        try {
+            inputTextArea.replaceText(editorFile.getFileContents());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        inputTextArea.replaceText(builder.toString());
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
 
-        setStatusMsg(String.format("Successo ao ler arquivo %s", getCurrentOpenFilePath().get()));
+        setStatusMsg(String.format("Successo ao ler arquivo %s", editorFile.getFilePath().get()));
         disableEditOptions(false);
         inputTextArea.setDisable(false);
     }
@@ -79,16 +68,15 @@ public class Controller {
     @FXML
     public void saveFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        if (currentlyOpenFile.exists()) {
-            System.err.printf("File exists: %s%n", getCurrentOpenFilePath().get());
+        if (editorFile.isFileStatusOK()) {
+            System.err.printf("File exists: %s%n", editorFile.getFilePath().get());
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                     "Já existe um arquivo neste lugar, deseja sobrescrevê-lo?");
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                 try {
-                    saveFile(currentlyOpenFile);
+                    saveFile();
                     setStatusMsg("Arquivo salvo");
-                    disableSaving(true);
                 } catch (IOException e) {
                     System.err.println("Failed to save file!");
                     new Alert(Alert.AlertType.ERROR, "Falha em salvar o arquivo!");
@@ -114,12 +102,10 @@ public class Controller {
         pasteMenuItem.setDisable(b);
     }
 
-    public void saveFile(File f) throws IOException {
+    public void saveFile() throws IOException {
         hasEditedFile = false;
-        PrintWriter pw = new PrintWriter(f);
-        BufferedWriter bufferedWriter = new BufferedWriter(pw);
-        bufferedWriter.write(inputTextArea.getText());
-        bufferedWriter.flush();
+        editorFile.writeToFile(inputTextArea.getText());
+        disableSaving(true);
     }
 
     public void setStatusMsg(String msg) {
@@ -149,7 +135,7 @@ public class Controller {
                 Optional<ButtonType> optional = alert.showAndWait();
                 if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
                     try {
-                        saveFile(currentlyOpenFile);
+                        editorFile.writeToFile(inputTextArea.getText());
                         Platform.exit();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -159,13 +145,4 @@ public class Controller {
             }
         }
     }
-
-    // Get cannonical path / absolute path
-    private Optional<String> getCurrentOpenFilePath() {
-        if (currentlyOpenFile != null && currentlyOpenFile.isFile()) {
-            return Optional.of(currentlyOpenFile.getAbsolutePath());
-        }
-        return Optional.empty();
-    }
-
 }
