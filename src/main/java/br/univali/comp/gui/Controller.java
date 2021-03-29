@@ -77,7 +77,8 @@ public class Controller {
                     setStatusMsg("File saved!");
                 } catch (IOException e) {
                     new Alert(Alert.AlertType.ERROR,
-                            String.format("Failed saving file to '%s'", editorFile.getFilePath().get()));
+                            String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
+                    .show();
                     e.printStackTrace();
                 }
             }
@@ -137,7 +138,7 @@ public class Controller {
                         Platform.exit();
                     } catch (IOException e) {
                         e.printStackTrace();
-                        new Alert(Alert.AlertType.ERROR, "Failed saving file!");
+                        new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
                     }
                 }
             }
