@@ -8,6 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.release>14</maven.compiler.release>
         <javafx.version>14</javafx.version>
     </properties>
     <dependencies>
@@ -51,12 +52,6 @@
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
             <classifier>mac</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <!--  End of ugly hack, but it works!  -->
     </dependencies>

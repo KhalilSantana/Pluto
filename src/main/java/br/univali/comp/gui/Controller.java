@@ -11,7 +11,6 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -45,6 +44,7 @@ public class Controller {
         actionEvent.consume();
         handleOpenUnsavedFile();
         FileChooser filePicker = new FileChooser();
+        filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()));
         // Error handling
         if (!editorFile.isFileStatusOK()) {
@@ -52,6 +52,32 @@ public class Controller {
             alert.showAndWait();
             return;
         }
+        fileContentsToCodeArea();
+    }
+
+    public void newFileDialog(ActionEvent event) {
+        event.consume();
+        handleOpenUnsavedFile();
+        FileChooser filePicker = new FileChooser();
+        filePicker.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()));
+        switch (editorFile.getFileStatus()) {
+            case OK:
+                fileContentsToCodeArea();
+            case INVALID_EXTENSION:
+                new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
+                break;
+            case IO_ERROR:
+                new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
+                break;
+            case NO_OPEN_FILE:
+                new Alert(Alert.AlertType.INFORMATION, "You've canceled creating a new file").show();
+                break;
+        }
+    }
+
+    private void fileContentsToCodeArea() {
         hasEditedFile = false;
         inputTextArea.setWrapText(false);
         try {

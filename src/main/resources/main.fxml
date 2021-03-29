@@ -14,7 +14,7 @@
             <MenuBar>
                 <Menu text="File">
                     <MenuItem onAction="#openFileDialog" text="Open"/>
-                    <MenuItem text="New"/>
+                    <MenuItem onAction="#newFileDialog" text="New"/>
                     <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Save"/>
                     <MenuItem fx:id="saveAsMenuItem" disable="true" text="Save as..."/>
                 </Menu>
@@ -31,7 +31,7 @@
         </HBox>
         <HBox>
             <ToolBar>
-                <Button fx:id="newBtn">
+                <Button fx:id="newBtn" onAction="#newFileDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/new-48.png"/>

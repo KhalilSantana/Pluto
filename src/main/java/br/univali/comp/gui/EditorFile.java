@@ -44,6 +44,9 @@ public class EditorFile {
     }
 
     public boolean hasValidExtension() {
+        if (this.file == null) {
+            return false;
+        }
         boolean hasValidExt = FilenameUtils.isExtension(file.getName(), "txt");
         if (hasValidExt) {
             return true;
