@@ -1,6 +1,7 @@
 package br.univali.comp;
 
 import br.univali.comp.parser.tokenizer.Tokenizer;
+import br.univali.comp.parser.tokenizer.TokenizerTokenManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -94,7 +95,8 @@ public class Controller {
 
     public void RunProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
         String args[] = new String[0];
-        Tokenizer tokenizer = null;
+        java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
+        Tokenizer tokenizer = new Tokenizer(targetStream);
         String result = tokenizer.getTokens(args, inputTextArea.getText());
         messageTextArea.setText(result);
         System.out.println(result);

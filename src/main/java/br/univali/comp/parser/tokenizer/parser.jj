@@ -1,5 +1,5 @@
 options {
-    STATIC = true;
+    STATIC = false;
     UNICODE_INPUT = true;
 }
 
@@ -8,9 +8,9 @@ package br.univali.comp.parser.tokenizer;
 
 
 public class Tokenizer {
-    private static StringBuilder results = new StringBuilder();
+    private StringBuilder results = new StringBuilder();
 
-    public static String getTokens(String args[], String textToAnalyze){
+    public String getTokens(String args[], String textToAnalyze){
         Tokenizer tokenizer;
                     if(args.length == 0 && textToAnalyze.equals("")){
             			System.out.println("Reading from standard input!");
@@ -87,8 +87,13 @@ public class Tokenizer {
 
 
     public static void main(String args[]) {
-        getTokens(args, "");
-        System.out.println(results);
+        Tokenizer parser = new Tokenizer( System.in ) ;
+        parser.getTokens(args, "");
+        System.out.println(parser.results);
+    }
+
+    public String getResults(){
+            return results.toString();
     }
 
 }
