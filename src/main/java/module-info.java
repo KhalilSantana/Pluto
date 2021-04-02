@@ -1,7 +1,9 @@
-module br.univali.comp {
+module br.univali.comp.gui {
+    requires org.apache.commons.io;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.base;
     requires javafx.graphics;
-    exports br.univali.comp;
+    requires org.fxmisc.richtext;
+    exports br.univali.comp.gui;
 }
