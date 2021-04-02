@@ -1,5 +1,6 @@
 package br.univali.comp;
 
+import br.univali.comp.parser.tokenizer.Tokenizer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,6 +22,7 @@ public class Controller {
     public TextArea inputTextArea;
     public TextArea messageTextArea;
     public Label statusBar;
+    
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -88,5 +90,13 @@ public class Controller {
 
     public void setStatusMsg(String msg) {
         statusBar.setText(String.format("Status: %s", msg));
+    }
+
+    public void RunProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
+        String args[] = new String[0];
+        Tokenizer tokenizer = null;
+        String result = tokenizer.getTokens(args, inputTextArea.getText());
+        messageTextArea.setText(result);
+        System.out.println(result);
     }
 }
