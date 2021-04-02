@@ -45,7 +45,7 @@ public class Controller {
         handleOpenUnsavedFile();
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
-        editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()));
+        editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
         // Error handling
         if (!editorFile.isFileStatusOK()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Failed opening file: %s", editorFile.getFileStatus()));
@@ -61,10 +61,11 @@ public class Controller {
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
-        editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()));
+        editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()), true);
         switch (editorFile.getFileStatus()) {
             case OK:
                 fileContentsToCodeArea();
+                break;
             case INVALID_EXTENSION:
                 new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
                 break;

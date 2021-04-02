@@ -12,7 +12,14 @@ public class EditorFile {
     private final String FILE_EXT = ".txt";
     private File file = null;
 
-    public EditorFile(File file) {
+    public EditorFile(File file, boolean isNewFile) {
+        if (isNewFile) {
+            try {
+                FileUtils.touch(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.file = file;
     }
 
