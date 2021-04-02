@@ -11,39 +11,43 @@ public interface TokenizerConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int SPACE = 4;
+  int SPACE = 1;
   /** RegularExpression Id. */
-  int NUMERO_INTEIRO = 10;
+  int EOL = 2;
   /** RegularExpression Id. */
-  int NUMERO_REAL = 11;
+  int SKIP_MARKERS = 3;
   /** RegularExpression Id. */
-  int ARITMETICO = 12;
+  int COMMENT_LINE = 4;
   /** RegularExpression Id. */
-  int PALAVRAS_RESERVADAS = 13;
+  int COMMENT_BLOCK = 5;
   /** RegularExpression Id. */
-  int IDENTIFICADOR = 14;
+  int NUMERO_INTEIRO = 6;
   /** RegularExpression Id. */
-  int LOGICO = 15;
+  int NUMERO_REAL = 7;
   /** RegularExpression Id. */
-  int ESPECIAIS = 16;
+  int ARITMETICO = 8;
+  /** RegularExpression Id. */
+  int PALAVRAS_RESERVADAS = 9;
+  /** RegularExpression Id. */
+  int IDENTIFICADOR = 10;
+  /** RegularExpression Id. */
+  int LOGICO = 11;
+  /** RegularExpression Id. */
+  int ESPECIAIS = 12;
+  /** RegularExpression Id. */
+  int ERRORS = 13;
 
   /** Lexical state. */
-  int COMMENT = 0;
-  /** Lexical state. */
-  int DEFAULT = 1;
+  int DEFAULT = 0;
 
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
-    "\":-\"",
-    "\"-:\"",
-    "<token of kind 3>",
     "\" \"",
-    "\"\\t\"",
     "\"\\n\"",
-    "\"\\r\"",
-    "\"\\r\\n\"",
-    "\":-\"",
+    "<SKIP_MARKERS>",
+    "<COMMENT_LINE>",
+    "<COMMENT_BLOCK>",
     "<NUMERO_INTEIRO>",
     "<NUMERO_REAL>",
     "<ARITMETICO>",
@@ -51,6 +55,7 @@ public interface TokenizerConstants {
     "<IDENTIFICADOR>",
     "<LOGICO>",
     "<ESPECIAIS>",
+    "<ERRORS>",
   };
 
 }

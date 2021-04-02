@@ -1,5 +1,6 @@
 package br.univali.comp;
 
+import br.univali.comp.parser.tokenizer.ParseException;
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -92,7 +93,7 @@ public class Controller {
         statusBar.setText(String.format("Status: %s", msg));
     }
 
-    public void RunProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
+    public void RunProgramDialog(ActionEvent actionEvent) throws ParseException {
         String args[] = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
         Tokenizer tokenizer = new Tokenizer(targetStream);

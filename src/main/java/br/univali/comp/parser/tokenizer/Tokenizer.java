@@ -6,83 +6,100 @@ package br.univali.comp.parser.tokenizer;
 public class Tokenizer implements TokenizerConstants {
     private StringBuilder results = new StringBuilder();
 
-    public String getTokens(String args[], String textToAnalyze){
-        Tokenizer tokenizer;
-                    if(args.length == 0 && textToAnalyze.equals("")){
-                                System.out.println("Reading from standard input!");
-                                tokenizer = new Tokenizer(System.in);
-                        }
-                    else if(args.length == 0 && textToAnalyze.length() > 0){
-                        System.out.println("Reading from received text!");
-                        java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-                        tokenizer = new Tokenizer(targetStream);
+    public void handleToken()  {
+            try {
+                Token t = null;
+                do {
+                    t = getNextToken();
+                } while (t.kind != NUMERO_INTEIRO && t.kind !=NUMERO_REAL && t.kind !=ARITMETICO && t.kind !=PALAVRAS_RESERVADAS && t.kind !=IDENTIFICADOR && t.kind !=LOGICO && t.kind !=ESPECIAIS && t.kind != EOF && t.kind != ERRORS);
+                if(t.kind == EOF) return;
+                switch(t.kind){
+                    case NUMERO_INTEIRO:{
+                        System.out.println("Token: '"+t.image+"' - Type: NUMERO_INTEIRO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: NUMERO_INTEIRO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
                     }
-                        else if(args.length == 1){
-                                try{
-                            tokenizer = new Tokenizer(new java.io.FileInputStream(args[0]));
-                                }
-                                catch(java.io.FileNotFoundException e){
-                                        System.err.println(args[0] + " was not found." );
-                                        System.err.println(e);
-                                        return args[0] + " was not found.";
-                                }
+                    case NUMERO_REAL:{
+                        System.out.println("Token: '"+t.image+"' - Type: NUMERO_REAL-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: NUMERO_REAL-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ARITMETICO:{
+                        System.out.println("Token: '"+t.image+"' - Type: ARITMETICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: ARITMETICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case IDENTIFICADOR:{
+                        System.out.println("Token: '"+t.image+"' - Type: IDENTIFICADOR-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: IDENTIFICADOR-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case LOGICO:{
+                        System.out.println("Token: '"+t.image+"' - Type: LOGICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: LOGICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ESPECIAIS:{
+                        System.out.println("Token: '"+t.image+"' - Type: ESPECIAIS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: ESPECIAIS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case PALAVRAS_RESERVADAS:{
+                        System.out.println("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ERRORS:{
+                        System.out.println("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    default:{
+                        System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                }
+                handleToken();
+            }catch(Error error){
+                results.append("Error - " + error.getMessage() + "\n");
+                System.out.println(error.toString());
+                handleToken();
+            }
+        }
+
+    public String getTokens(String args[], String textToAnalyze) {
+            Tokenizer tokenizer;
+            if(args.length == 0){
+                System.out.println("Reading from received text!");
+                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+                tokenizer = new Tokenizer(targetStream);
+            }
+                else if(args.length == 1){
+                        try{
+                    tokenizer = new Tokenizer(new java.io.FileInputStream(args[0]));
                         }
-                        else{
-                                System.out.println("Use:\njava Tokenizer < inputFile");
-                                System.out.println("or java Tokenizer inputFile");
-                                return "Use:java Tokenizer < inputFile";
+                        catch(java.io.FileNotFoundException e){
+                                System.err.println(args[0] + " was not found." );
+                                System.err.println(e);
+                                return args[0] + " was not found.";
                         }
-                        for(Token t = getNextToken(); t.kind != EOF; t = getNextToken()){
-                            switch(t.kind){
-                                case NUMERO_INTEIRO:{
-                                    System.out.println("Token: '"+t.image+"' - Type: NUMERO_INTEIRO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: NUMERO_INTEIRO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case NUMERO_REAL:{
-                                    System.out.println("Token: '"+t.image+"' - Type: NUMERO_REAL-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: NUMERO_REAL-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case ARITMETICO:{
-                                    System.out.println("Token: '"+t.image+"' - Type: ARITMETICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: ARITMETICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case IDENTIFICADOR:{
-                                    System.out.println("Token: '"+t.image+"' - Type: IDENTIFICADOR-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: IDENTIFICADOR-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case LOGICO:{
-                                    System.out.println("Token: '"+t.image+"' - Type: LOGICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: LOGICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case ESPECIAIS:{
-                                    System.out.println("Token: '"+t.image+"' - Type: ESPECIAIS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: ESPECIAIS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                case PALAVRAS_RESERVADAS:{
-                                    System.out.println("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                                default:{
-                                    System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn+"\n");
-                                    break;
-                                }
-                            }
-                        }
-                        System.out.println("<EOF>");
-                        results.append("<EOF>");
-                        return results.toString();
-    }
+                }
+                else{
+                        System.out.println("Use:\njava Tokenizer < inputFile");
+                        System.out.println("or java Tokenizer inputFile");
+                        return "Use:java Tokenizer < inputFile";
+                }
+
+                this.handleToken();
+
+                System.out.println("<EOF>");
+                results.append("<EOF>");
+                return results.toString();
+        }
 
 
-    public static void main(String args[]) {
+    public static void main(String args[])  throws ParseException {
         Tokenizer parser = new Tokenizer( System.in ) ;
         parser.getTokens(args, "");
         System.out.println(parser.results);
@@ -227,7 +244,7 @@ public class Tokenizer implements TokenizerConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[17];
+	 boolean[] la1tokens = new boolean[14];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -241,7 +258,7 @@ public class Tokenizer implements TokenizerConstants {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 17; i++) {
+	 for (int i = 0; i < 14; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
