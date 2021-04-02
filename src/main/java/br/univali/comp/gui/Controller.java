@@ -1,6 +1,7 @@
 package br.univali.comp.gui;
 
 import br.univali.comp.parser.tokenizer.Tokenizer;
+import br.univali.comp.util.AppMetadataHelper;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -173,6 +174,25 @@ public class Controller {
             disableSaving(true);
         }
         return status;
+    }
+
+    public void showAboutDialog(ActionEvent event) {
+        event.consume();
+        Alert about = new Alert(Alert.AlertType.INFORMATION);
+        about.setTitle("Pluto Compiler");
+        String authorString = "";
+        for (String author : AppMetadataHelper.getAuthors()) {
+            authorString += "\n" + author;
+        }
+        about.setContentText(String.format(
+                "Authors: %s\n" +
+                        "\n\nSystem Info:\n" +
+                        "Running on JAVA Version: %s\n" +
+                        "Running JavaFX Version %s\n",
+                authorString, AppMetadataHelper.javaVersion(), AppMetadataHelper.javafxVersion())
+        );
+        about.setHeaderText("About this app");
+        about.show();
     }
 
 

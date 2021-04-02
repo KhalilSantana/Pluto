@@ -27,6 +27,10 @@
                     <MenuItem disable="true" text="Compile"/>
                     <MenuItem disable="true" text="Run"/>
                 </Menu>
+                <Menu text="Help">
+                    <MenuItem text="Help"/>
+                    <MenuItem text="About" onAction="#showAboutDialog"/>
+                </Menu>
             </MenuBar>
         </HBox>
         <HBox>
@@ -82,7 +86,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn"  onAction="#runProgramDialog">
+                <Button fx:id="runBtn" onAction="#runProgramDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
