@@ -185,7 +185,7 @@ public class Controller {
         }
     }
 
-    public void RunProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
+    public void runProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
         String args[] = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
         Tokenizer tokenizer = new Tokenizer(targetStream);

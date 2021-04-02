@@ -82,7 +82,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn"  onAction="#RunProgramDialog">
+                <Button fx:id="runBtn"  onAction="#runProgramDialog">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
