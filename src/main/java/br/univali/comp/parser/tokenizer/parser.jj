@@ -151,9 +151,8 @@ TOKEN : {
     "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
     "false" | "do" | "natural" | "real" | "char" | "boolean">
 }
-//TODO - Ajustar identificador conforme questão b da 3 - para resolver.
 TOKEN : {
-    <IDENTIFICADOR: ["a" - "z", "A" - "Z", "_"] (["a" - "z", "A" - "Z", "0" - "9", "_"])*>
+    <IDENTIFICADOR: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
 }
 TOKEN : {
     <LOGICO: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
