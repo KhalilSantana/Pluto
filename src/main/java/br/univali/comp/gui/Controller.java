@@ -1,5 +1,6 @@
 package br.univali.comp.gui;
 
+import br.univali.comp.parser.tokenizer.Tokenizer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,6 +12,7 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -181,5 +183,14 @@ public class Controller {
                 Platform.exit();
             }
         }
+    }
+
+    public void RunProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
+        String args[] = new String[0];
+        java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
+        Tokenizer tokenizer = new Tokenizer(targetStream);
+        String result = tokenizer.getTokens(args, inputTextArea.getText());
+        messageTextArea.setText(result);
+        System.out.println(result);
     }
 }
