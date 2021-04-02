@@ -1,7 +1,6 @@
 package br.univali.comp;
 
 import br.univali.comp.parser.tokenizer.Tokenizer;
-import br.univali.comp.parser.tokenizer.TokenizerTokenManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
