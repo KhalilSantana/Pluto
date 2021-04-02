@@ -5,7 +5,7 @@
 
 < > & | ! == != <= >=
 . , { ]} }] ()
-
+#
 program | define | not | variable | is |
     execute | set | to | get | put | loop | while | true |
     false | do | natural | real | char | boolean

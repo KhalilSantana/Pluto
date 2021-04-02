@@ -32,35 +32,35 @@ public class Tokenizer {
     		for(Token t = getNextToken(); t.kind != EOF; t = getNextToken()){
     		    switch(t.kind){
                         case NUMERO_INTEIRO:{
-                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_INTEIRO");
+                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_INTEIRO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case NUMERO_REAL:{
-                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_REAL");
+                            System.out.println("Token: '"+t.image+"' - Type: NUMERO_REAL-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case ARITMETICO:{
-                            System.out.println("Token: '"+t.image+"' - Type: ARITMETICO");
+                            System.out.println("Token: '"+t.image+"' - Type: ARITMETICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case IDENTIFICADOR:{
-                            System.out.println("Token: '"+t.image+"' - Type: IDENTIFICADOR");
+                            System.out.println("Token: '"+t.image+"' - Type: IDENTIFICADOR-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case LOGICO:{
-                            System.out.println("Token: '"+t.image+"' - Type: LOGICO");
+                            System.out.println("Token: '"+t.image+"' - Type: LOGICO-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case ESPECIAIS:{
-                            System.out.println("Token: '"+t.image+"' - Type: ESPECIAIS");
+                            System.out.println("Token: '"+t.image+"' - Type: ESPECIAIS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         case PALAVRAS_RESERVADAS:{
-                            System.out.println("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS");
+                            System.out.println("Token: '"+t.image+"' - Type: PALAVRAS_RESERVADAS-"+t.kind+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                         default:{
-                            System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">");
+                            System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Linha-Coluna: "+t.beginLine+"-"+t.beginColumn);
                             break;
                         }
                     }
