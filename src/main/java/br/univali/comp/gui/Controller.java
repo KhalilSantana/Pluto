@@ -170,7 +170,7 @@ public class Controller {
                     new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
             );
             Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.isPresent() && optional.get().equals(ButtonType.YES)) {
+            if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.YES.getButtonData())) {
                 EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
                 if (status != EditorFile.FileStatus.OK) {
                     new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
@@ -181,7 +181,7 @@ public class Controller {
                     op = Operation.SUCCESS;
                 }
             }
-            if (optional.isPresent() && optional.get().equals(ButtonType.NO)) {
+            if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.NO.getButtonData())) {
                 op = Operation.SUCCESS;
             }
         } else {
