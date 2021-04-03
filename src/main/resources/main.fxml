@@ -79,14 +79,14 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="buildBtn" disable="true">
+                <Button fx:id="buildBtn" onAction="#compileProgram">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/toolbox-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn" onAction="#runProgramDialog">
+                <Button fx:id="runBtn" disable="true">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>

@@ -223,7 +223,7 @@ public class Controller {
         }
     }
 
-    public void runProgramDialog(ActionEvent actionEvent) throws IOException {
+    public void compileProgram(ActionEvent actionEvent) throws IOException {
         if (inputTextArea.getText().length() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "A blank file cannot be compiled");
             alert.setTitle("Error");
