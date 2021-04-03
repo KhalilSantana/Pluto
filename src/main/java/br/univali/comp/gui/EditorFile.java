@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class EditorFile {
-    private final String FILE_EXT = ".txt";
+    public static final String FILE_EXT = ".txt";
     private File file = null;
 
     public EditorFile(File file, boolean isNewFile) {
@@ -21,6 +21,10 @@ public class EditorFile {
             }
         }
         this.file = file;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public String getFileContents() throws IOException {

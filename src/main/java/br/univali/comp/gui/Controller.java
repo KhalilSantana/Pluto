@@ -17,37 +17,28 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class Controller {
+    private EditorFile editorFile = null;
     private static boolean hasEditedFile = false;
     @FXML
+    private Stage stage;
     public CodeArea inputTextArea;
     public TextArea messageTextArea;
-    public Label statusBar;
-    public Label lineColLabel;
+    public Label statusBar, lineColLabel;
     // Menu bar items
-    public MenuItem saveMenuItem;
-    public MenuItem saveAsMenuItem;
-    public MenuItem cutMenuItem;
-    public MenuItem copyMenuItem;
-    public MenuItem pasteMenuItem;
+    public MenuItem saveMenuItem, saveAsMenuItem;
+    public MenuItem cutMenuItem, copyMenuItem, pasteMenuItem;
     //  Menu toolbar buttons
-    public Button newBtn;
-    public Button openBtn;
-    public Button saveBtn;
-    public Button copyBtn;
-    public Button cutBtn;
-    public Button pasteBtn;
-    public Button buildBtn;
-    public Button runBtn;
+    public Button newBtn, openBtn, saveBtn;
+    public Button copyBtn, cutBtn, pasteBtn;
+    public Button buildBtn, runBtn;
     public Button helpBtn;
-    private Stage stage;
-    private EditorFile editorFile = null;
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
         handleOpenUnsavedFile();
         FileChooser filePicker = new FileChooser();
-        filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
+        filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
         // Error handling
         if (!editorFile.isFileStatusOK()) {
@@ -64,7 +55,7 @@ public class Controller {
         handleOpenUnsavedFile();
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
+                .add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()), true);
         switch (editorFile.getFileStatus()) {
             case OK -> {
