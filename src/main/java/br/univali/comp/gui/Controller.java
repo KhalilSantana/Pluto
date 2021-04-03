@@ -15,7 +15,6 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -224,7 +223,14 @@ public class Controller {
         }
     }
 
-    public void runProgramDialog(ActionEvent actionEvent) throws FileNotFoundException {
+    public void runProgramDialog(ActionEvent actionEvent) throws IOException {
+        if (inputTextArea.getText().length() == 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "A blank file cannot be compiled");
+            alert.setTitle("Error");
+            alert.setHeaderText("Error");
+            alert.show();
+            return;
+        }
         String args[] = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
         Tokenizer tokenizer = new Tokenizer(targetStream);
