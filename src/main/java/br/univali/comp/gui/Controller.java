@@ -3,6 +3,8 @@ package br.univali.comp.gui;
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import br.univali.comp.util.AppMetadataHelper;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +25,7 @@ public class Controller {
     public CodeArea inputTextArea;
     public TextArea messageTextArea;
     public Label statusBar;
+    public Label lineColLabel;
     // Menu bar items
     public MenuItem saveMenuItem;
     public MenuItem saveAsMenuItem;
@@ -149,6 +152,21 @@ public class Controller {
         hasEditedFile = true;
     }
 
+    private void registerLineColUpdater() {
+        inputTextArea.caretPositionProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
+                int line = inputTextArea.getCurrentParagraph();
+                int col = inputTextArea.getCaretColumn();
+                setLineColLabel(line + 1, col + 1);
+            }
+        });
+    }
+
+    private void setLineColLabel(int line, int col) {
+        lineColLabel.setText(String.format("Line/Column: %d:%d", line, col));
+    }
+
     public void registerWindowClose() {
         this.stage.setOnCloseRequest(new ExitButtonListener());
     }
@@ -156,6 +174,7 @@ public class Controller {
     public void setStage(Stage primaryStage) {
         this.stage = primaryStage;
         registerWindowClose();
+        registerLineColUpdater();
     }
 
     private EditorFile.FileStatus handleOpenUnsavedFile() {

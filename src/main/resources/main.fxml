@@ -112,6 +112,9 @@
                     </content>
                 </VirtualizedScrollPane>
             </HBox>
+            <HBox>
+                <Label fx:id="lineColLabel">Line/Column:</Label>
+            </HBox>
             <Label>Message Area</Label>
             <HBox>
                 <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
