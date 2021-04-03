@@ -59,6 +59,7 @@ public class Controller {
             return;
         }
         fileContentsToCodeArea();
+        clearMessageArea();
     }
 
     public void newFileDialog(ActionEvent event) {
@@ -71,6 +72,7 @@ public class Controller {
         switch (editorFile.getFileStatus()) {
             case OK:
                 fileContentsToCodeArea();
+                clearMessageArea();
                 break;
             case INVALID_EXTENSION:
                 new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
@@ -212,6 +214,10 @@ public class Controller {
         );
         about.setHeaderText("About this app");
         about.show();
+    }
+
+    private void clearMessageArea() {
+        this.messageTextArea.clear();
     }
 
 
