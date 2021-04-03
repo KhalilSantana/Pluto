@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class EditorFile {
-    public static final String FILE_EXT = ".txt";
+    public static final String FILE_EXT = "txt";
     private File file = null;
 
     public EditorFile(File file, boolean isNewFile) {
@@ -58,11 +58,11 @@ public class EditorFile {
         if (this.file == null) {
             return false;
         }
-        boolean hasValidExt = FilenameUtils.isExtension(file.getName(), "txt");
+        boolean hasValidExt = FilenameUtils.isExtension(file.getName(), FILE_EXT);
         if (hasValidExt) {
             return true;
         }
-        System.err.printf("File doesn't have a valid extension, want %s, have %s\n", FILE_EXT, FilenameUtils.isExtension(file.getName(), "txt"));
+        System.err.printf("File doesn't have a valid extension, want %s, have %s\n", FILE_EXT, FilenameUtils.getExtension(file.getName()));
         return false;
     }
 
