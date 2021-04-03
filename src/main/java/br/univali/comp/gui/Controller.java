@@ -70,19 +70,13 @@ public class Controller {
                 .add(new FileChooser.ExtensionFilter("Text files", "*.txt"));
         editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()), true);
         switch (editorFile.getFileStatus()) {
-            case OK:
+            case OK -> {
                 fileContentsToCodeArea();
                 clearMessageArea();
-                break;
-            case INVALID_EXTENSION:
-                new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
-                break;
-            case IO_ERROR:
-                new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
-                break;
-            case NO_OPEN_FILE:
-                new Alert(Alert.AlertType.INFORMATION, "You've canceled creating a new file").show();
-                break;
+            }
+            case INVALID_EXTENSION -> new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
+            case IO_ERROR -> new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
+            case NO_OPEN_FILE -> new Alert(Alert.AlertType.INFORMATION, "You've canceled creating a new file").show();
         }
     }
 
