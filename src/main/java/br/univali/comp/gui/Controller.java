@@ -3,8 +3,6 @@ package br.univali.comp.gui;
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import br.univali.comp.util.AppMetadataHelper;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -96,7 +94,7 @@ public class Controller {
     }
 
     private void updateStageTitle() {
-        this.stage.setTitle(String.format("Compilador - [%s]", editorFile.getFilePath().get()));
+        this.stage.setTitle(String.format("Compiler - [%s]", editorFile.getFilePath().get()));
     }
 
     @FXML
@@ -148,13 +146,10 @@ public class Controller {
     }
 
     private void registerLineColUpdater() {
-        inputTextArea.caretPositionProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                int line = inputTextArea.getCurrentParagraph();
-                int col = inputTextArea.getCaretColumn();
-                setLineColLabel(line + 1, col + 1);
-            }
+        inputTextArea.caretPositionProperty().addListener((observableValue, integer, t1) -> {
+            int line = inputTextArea.getCurrentParagraph();
+            int col = inputTextArea.getCaretColumn();
+            setLineColLabel(line + 1, col + 1);
         });
     }
 
@@ -194,16 +189,16 @@ public class Controller {
         event.consume();
         Alert about = new Alert(Alert.AlertType.INFORMATION);
         about.setTitle("Pluto Compiler");
-        String authorString = "";
+        StringBuilder authorString = new StringBuilder();
         for (String author : AppMetadataHelper.getAuthors()) {
-            authorString += "\n" + author;
+            authorString.append("\n").append(author);
         }
         about.setContentText(String.format(
                 "Authors: %s\n" +
                         "\n\nSystem Info:\n" +
                         "Running on JAVA Version: %s\n" +
                         "Running JavaFX Version %s\n",
-                authorString, AppMetadataHelper.javaVersion(), AppMetadataHelper.javafxVersion())
+                authorString.toString(), AppMetadataHelper.javaVersion(), AppMetadataHelper.javafxVersion())
         );
         about.setHeaderText("About this app");
         about.show();
@@ -223,7 +218,8 @@ public class Controller {
         }
     }
 
-    public void compileProgram(ActionEvent actionEvent) throws IOException {
+    public void compileProgram(ActionEvent actionEvent) {
+        actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "A blank file cannot be compiled");
             alert.setTitle("Error");
@@ -231,7 +227,7 @@ public class Controller {
             alert.show();
             return;
         }
-        String args[] = new String[0];
+        String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
         Tokenizer tokenizer = new Tokenizer(targetStream);
         String result = tokenizer.getTokens(args, inputTextArea.getText());
