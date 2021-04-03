@@ -108,7 +108,7 @@
             <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
                 <VirtualizedScrollPane HBox.hgrow="ALWAYS">
                     <content>
-                        <CodeArea fx:id="inputTextArea"/>
+                        <CodeArea fx:id="inputTextArea" disable="true"/>
                     </content>
                 </VirtualizedScrollPane>
             </HBox>

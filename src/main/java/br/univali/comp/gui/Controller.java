@@ -2,6 +2,7 @@ package br.univali.comp.gui;
 
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import br.univali.comp.util.AppMetadataHelper;
+import br.univali.comp.util.Operation;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -158,22 +159,36 @@ public class Controller {
         registerLineColUpdater();
     }
 
-    private EditorFile.FileStatus handleOpenUnsavedFile() {
-        EditorFile.FileStatus status = EditorFile.FileStatus.OK;
+    private Operation handleOpenUnsavedFile() {
+        Operation op = Operation.CANCELED;
         if (hasEditedFile) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+            Alert alert = new Alert(Alert.AlertType.NONE,
                     "You have an edited file open and unsaved, do you want to save it?");
+            alert.getDialogPane().getButtonTypes().addAll(
+                    new ButtonType("Yes", ButtonBar.ButtonData.YES),
+                    new ButtonType("No", ButtonBar.ButtonData.NO),
+                    new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
+            );
             Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
-                status = editorFile.save(inputTextArea.getText());
+            if (optional.isPresent() && optional.get().equals(ButtonType.YES)) {
+                EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
                 if (status != EditorFile.FileStatus.OK) {
                     new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
+                    op = Operation.FAILURE;
+                } else {
+                    hasEditedFile = false;
+                    disableSaving(true);
+                    op = Operation.SUCCESS;
                 }
             }
-            hasEditedFile = false;
-            disableSaving(true);
+            if (optional.isPresent() && optional.get().equals(ButtonType.NO)) {
+                op = Operation.SUCCESS;
+            }
+        } else {
+            op = Operation.SUCCESS;
         }
-        return status;
+        System.out.println(op);
+        return op;
     }
 
     public void showAboutDialog(ActionEvent event) {
@@ -203,8 +218,10 @@ public class Controller {
     public class ExitButtonListener implements EventHandler<WindowEvent> {
         @Override
         public void handle(WindowEvent windowEvent) {
-            if (handleOpenUnsavedFile() == EditorFile.FileStatus.OK) {
+            if (handleOpenUnsavedFile() == Operation.SUCCESS) {
                 Platform.exit();
+            } else {
+                windowEvent.consume();
             }
         }
     }
