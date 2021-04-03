@@ -19,9 +19,9 @@
                     <MenuItem fx:id="saveAsMenuItem" disable="true" text="Save as..."/>
                 </Menu>
                 <Menu text="Edit">
-                    <MenuItem fx:id="cutMenuItem" disable="true" text="Cut"/>
-                    <MenuItem fx:id="copyMenuItem" disable="true" text="Copy"/>
-                    <MenuItem fx:id="pasteMenuItem" disable="true" text="Paste"/>
+                    <MenuItem fx:id="cutMenuItem" disable="true" text="Cut" onAction="#cutSelection"/>
+                    <MenuItem fx:id="copyMenuItem" disable="true" text="Copy" onAction="#copySelection"/>
+                    <MenuItem fx:id="pasteMenuItem" disable="true" text="Paste" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compile">
                     <MenuItem disable="true" text="Compile"/>
@@ -57,21 +57,21 @@
                     </graphic>
                 </Button>
                 <Separator/>
-                <Button fx:id="cutBtn" disable="true">
+                <Button fx:id="cutBtn" disable="true" onAction="#cutSelection">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/cut-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="copyBtn" disable="true">
+                <Button fx:id="copyBtn" disable="true" onAction="#copySelection">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/copy-48.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="pasteBtn" disable="true">
+                <Button fx:id="pasteBtn" disable="true" onAction="#pasteFromClipboard">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/paste-48.png"/>

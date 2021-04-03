@@ -232,4 +232,18 @@ public class Controller {
         messageTextArea.setText(result);
         System.out.println(result);
     }
+
+    public String copySelection() {
+        return inputTextArea.getSelectedText();
+    }
+
+    public String cutSelection() {
+        String selection = inputTextArea.getSelectedText();
+        inputTextArea.cut();
+        return selection;
+    }
+
+    public void pasteFromClipboard() {
+        inputTextArea.paste();
+    }
 }
