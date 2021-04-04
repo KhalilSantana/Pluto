@@ -14,6 +14,7 @@ import javafx.stage.WindowEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -92,25 +93,39 @@ public class Controller {
     @FXML
     public void saveFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        if (editorFile.isFileStatusOK()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    String.format("The file '%s' already exists, do you wish to overwrite it?", editorFile.getFilePath().get()));
-            Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.isPresent() && optional.get().equals(ButtonType.OK)) {
-                EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
-                if (status == EditorFile.FileStatus.OK) {
-                    setStatusMsg("File saved!");
-                    updateStageTitle();
-                    disableSaving(true);
-                } else {
-                    new Alert(Alert.AlertType.ERROR,
-                            String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
-                            .show();
-                }
-            }
-            hasEditedFile = false;
+        EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
+        if (status == EditorFile.FileStatus.OK) {
+            onSaveSuccess();
+        } else {
+            new Alert(Alert.AlertType.ERROR,
+                    String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
+                    .show();
         }
+    }
 
+    @FXML
+    private void saveAsDialog(ActionEvent actionEvent) {
+        actionEvent.consume();
+        FileChooser filePicker = new FileChooser();
+        filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
+        File newFile = filePicker.showSaveDialog(new Stage());
+        EditorFile newED = new EditorFile(newFile, false);
+        switch (newED.getFileStatus()) {
+            case INVALID_EXTENSION -> new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
+            case IO_ERROR -> new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
+            case NO_OPEN_FILE -> new Alert(Alert.AlertType.INFORMATION, "You've canceled saving to a new file").show();
+            case OK -> {
+                editorFile.saveAs(inputTextArea.getText(), newFile);
+                onSaveSuccess();
+            }
+        }
+    }
+
+    private void onSaveSuccess() {
+        setStatusMsg("File saved!");
+        updateStageTitle();
+        disableSaving(true);
+        hasEditedFile = false;
     }
 
     public void disableSaving(boolean b) {
@@ -224,6 +239,7 @@ public class Controller {
                 windowEvent.consume();
             }
         }
+
     }
 
     public void compileProgram(ActionEvent actionEvent) {

@@ -27,6 +27,10 @@ public class EditorFile {
         return file;
     }
 
+    public void setFile(File file) {
+        this.file = file;
+    }
+
     public String getFileContents() throws IOException {
         return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
     }
