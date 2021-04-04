@@ -21,21 +21,23 @@ public interface TokenizerConstants {
   /** RegularExpression Id. */
   int COMMENT_BLOCK = 5;
   /** RegularExpression Id. */
-  int INTEGER_NUMBER = 6;
+  int INTEGER_CONSTANT = 6;
   /** RegularExpression Id. */
-  int FLOAT_NUMBER = 7;
+  int FLOAT_CONSTANT = 7;
   /** RegularExpression Id. */
-  int ARITHMETIC = 8;
+  int LITERAL_CONSTANT = 8;
   /** RegularExpression Id. */
-  int RESERVED_WORDS = 9;
+  int ARITHMETIC = 9;
   /** RegularExpression Id. */
-  int IDENTIFIER = 10;
+  int RESERVED_WORDS = 10;
   /** RegularExpression Id. */
-  int LOGICAL = 11;
+  int IDENTIFIER = 11;
   /** RegularExpression Id. */
-  int SPECIAL = 12;
+  int LOGICAL = 12;
   /** RegularExpression Id. */
-  int ERROR_INVALID_SYMBOL = 13;
+  int SPECIAL_SYMBOL = 13;
+  /** RegularExpression Id. */
+  int ERROR_INVALID_SYMBOL = 14;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -48,13 +50,14 @@ public interface TokenizerConstants {
     "<SKIP_MARKERS>",
     "<COMMENT_LINE>",
     "<COMMENT_BLOCK>",
-    "<INTEGER_NUMBER>",
-    "<FLOAT_NUMBER>",
+    "<INTEGER_CONSTANT>",
+    "<FLOAT_CONSTANT>",
+    "<LITERAL_CONSTANT>",
     "<ARITHMETIC>",
     "<RESERVED_WORDS>",
     "<IDENTIFIER>",
     "<LOGICAL>",
-    "<SPECIAL>",
+    "<SPECIAL_SYMBOL>",
     "<ERROR_INVALID_SYMBOL>",
   };
 

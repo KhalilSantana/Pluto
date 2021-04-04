@@ -12,54 +12,48 @@ public class Tokenizer implements TokenizerConstants {
                 t = getNextToken();
                 if(t.kind == EOF) return;
                 switch(t.kind){
-                    case INTEGER_NUMBER:{
-                        System.out.println("Token: '"+t.image+"' - Type: INTEGER_NUMBER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        results.append("Token: '"+t.image+"' - Type: INTEGER_NUMBER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                    case INTEGER_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: INTEGER_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case FLOAT_NUMBER:{
-                        System.out.println("Token: '"+t.image+"' - Type: FLOAT_NUMBER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        results.append("Token: '"+t.image+"' - Type: FLOAT_NUMBER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                    case FLOAT_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: FLOAT_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case LITERAL_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case ARITHMETIC:{
-                        System.out.println("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case IDENTIFIER:{
-                        System.out.println("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case LOGICAL:{
-                        System.out.println("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case SPECIAL:{
-                        System.out.println("Token: '"+t.image+"' - Type: SPECIAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        results.append("Token: '"+t.image+"' - Type: SPECIAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                    case SPECIAL_SYMBOL:{
+                        results.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case RESERVED_WORDS:{
-                        System.out.println("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     //TO generic errors
 //                    case ERROR:{
-//                        System.out.println("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
                     case ERROR_INVALID_SYMBOL:{
-                        System.out.println("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     default:{
-                        System.out.println("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
@@ -97,7 +91,6 @@ public class Tokenizer implements TokenizerConstants {
 
                 this.handleToken();
 
-                System.out.println("<EOF>");
                 results.append("<EOF>");
                 return results.toString();
         }
@@ -248,7 +241,7 @@ public class Tokenizer implements TokenizerConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[14];
+	 boolean[] la1tokens = new boolean[15];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -262,7 +255,7 @@ public class Tokenizer implements TokenizerConstants {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 14; i++) {
+	 for (int i = 0; i < 15; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
