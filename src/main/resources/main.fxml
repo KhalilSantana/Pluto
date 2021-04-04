@@ -24,7 +24,7 @@
                     <MenuItem fx:id="pasteMenuItem" disable="true" text="Paste" onAction="#pasteFromClipboard"/>
                 </Menu>
                 <Menu text="Compile">
-                    <MenuItem disable="true" text="Compile" onAction="#compileProgram"/>
+                    <MenuItem text="Compile" onAction="#compileProgram"/>
                     <MenuItem disable="true" text="Run"/>
                 </Menu>
                 <Menu text="Help">

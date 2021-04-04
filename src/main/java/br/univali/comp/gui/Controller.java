@@ -247,6 +247,10 @@ public class Controller {
 
     public void compileProgram(ActionEvent actionEvent) {
         actionEvent.consume();
+        if (editorFile == null || editorFile.getFile() == null) {
+            AlertFactory.create(Alert.AlertType.ERROR,"Error","No file is open", "You must open or create a file first!").show();
+            return;
+        }
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
             alert.setTitle("Error");
