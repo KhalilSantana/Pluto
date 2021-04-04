@@ -189,6 +189,7 @@ public class Controller {
 
     public void setStage(Stage primaryStage) {
         this.stage = primaryStage;
+        inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
         registerWindowClose();
         registerLineColUpdater();
     }
