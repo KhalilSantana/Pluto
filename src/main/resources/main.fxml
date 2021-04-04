@@ -15,7 +15,7 @@
                 <Menu text="File">
                     <MenuItem onAction="#openFileDialog" text="Open"/>
                     <MenuItem onAction="#newFileDialog" text="New"/>
-                    <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Save"/>
+                    <MenuItem fx:id="saveMenuItem" disable="true" onAction="#saveFileDialog" text="Save" accelerator="Shortcut+S"/>
                     <MenuItem fx:id="saveAsMenuItem" disable="true" onAction="#saveAsDialog" text="Save as..."/>
                 </Menu>
                 <Menu text="Edit">
