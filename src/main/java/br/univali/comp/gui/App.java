@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -21,6 +22,7 @@ public class App extends Application {
         Parent root = fxmlLoader.load();
         root.getStylesheets().add("/main.css");
         primaryStage.setTitle("Compilador");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/toolbox-48.png")));
         primaryStage.setScene(new Scene(root));
 
         Controller controller = fxmlLoader.getController();
