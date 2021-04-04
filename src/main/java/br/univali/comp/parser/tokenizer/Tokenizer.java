@@ -44,7 +44,7 @@ public class Tokenizer implements TokenizerConstants {
                         results.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    //TO generic errors
+//                    TO generic errors
 //                    case ERROR:{
 //                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
