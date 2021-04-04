@@ -197,32 +197,30 @@ public class Controller {
     @FXML
     private Operation handleOpenUnsavedFile() {
         Operation op = Operation.CANCELED;
-        if (hasOpenFile) {
-            Alert alert = AlertFactory.AlertYesNoCancel(Alert.AlertType.CONFIRMATION,
+        Alert alert;
+        if (hasEditedFile) {
+            alert = AlertFactory.AlertYesNoCancel(Alert.AlertType.CONFIRMATION,
                     "Confirmation",
                     "Unsaved work",
                     "You have an edited file open and unsaved, do you want to save it?"
             );
-            Optional<ButtonType> optional = alert.showAndWait();
-            if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.YES.getButtonData())) {
-                EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
-                if (status != EditorFile.FileStatus.OK) {
-                    AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed", "Failed saving file!").show();
-                    op = Operation.FAILURE;
-                } else {
-                    fileContentsToCodeArea();
-                    disableSaving(true);
-                    op = Operation.SUCCESS;
-                }
-            }
-            if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.NO.getButtonData())) {
-                hasOpenFile = false;
-                op = Operation.SUCCESS;
-            }
         } else {
-            op = saveAsDialog(new ActionEvent());
+            return Operation.SUCCESS;
         }
-        System.out.println(op);
+        Optional<ButtonType> optional = alert.showAndWait();
+        if (optional.isEmpty()) {
+            return Operation.CANCELED;
+        }
+        var buttonData = optional.get().getButtonData();
+        if (buttonData.equals(ButtonType.YES.getButtonData()) && !hasOpenFile) {
+            return saveAsDialog(new ActionEvent());
+        }
+        if (buttonData.equals(ButtonType.YES.getButtonData())) {
+            return saveFileDialog(new ActionEvent());
+        }
+        if (buttonData.equals(ButtonType.NO.getButtonData())) {
+            return Operation.SUCCESS;
+        }
         return op;
     }
 
