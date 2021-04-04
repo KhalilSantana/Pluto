@@ -111,6 +111,10 @@ public class Controller {
     @FXML
     private void saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
+        if (editorFile == null || editorFile.getFile() == null) {
+            AlertFactory.create(Alert.AlertType.ERROR,"Error","No file is open", "You must open or create a file first!").show();
+            return;
+        }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         File newFile = filePicker.showSaveDialog(new Stage());
@@ -136,7 +140,6 @@ public class Controller {
     public void disableSaving(boolean b) {
         saveBtn.setDisable(b);
         saveMenuItem.setDisable(b);
-        saveAsMenuItem.setDisable(b);
     }
 
     public void disableEditOptions(boolean b) {
