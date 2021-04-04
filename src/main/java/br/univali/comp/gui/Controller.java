@@ -1,6 +1,7 @@
 package br.univali.comp.gui;
 
 import br.univali.comp.parser.tokenizer.Tokenizer;
+import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
 import javafx.application.Platform;
@@ -46,7 +47,7 @@ public class Controller {
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
         // Error handling
         if (!editorFile.isFileStatusOK()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, String.format("Failed opening file: %s", editorFile.getFileStatus()));
+            Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", String.format("Failed opening file: %s", editorFile.getFileStatus()));
             alert.showAndWait();
             return;
         }
@@ -68,9 +69,9 @@ public class Controller {
                 fileContentsToCodeArea();
                 clearMessageArea();
             }
-            case INVALID_EXTENSION -> new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
-            case IO_ERROR -> new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
-            case NO_OPEN_FILE -> new Alert(Alert.AlertType.INFORMATION, "You've canceled creating a new file").show();
+            case INVALID_EXTENSION -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
+            case IO_ERROR -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
+            case NO_OPEN_FILE -> AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation cancelled", "You've canceled creating a new file").show();
         }
     }
 
@@ -101,7 +102,7 @@ public class Controller {
         if (status == EditorFile.FileStatus.OK) {
             onSaveSuccess();
         } else {
-            new Alert(Alert.AlertType.ERROR,
+            AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed",
                     String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
                     .show();
         }
@@ -115,9 +116,9 @@ public class Controller {
         File newFile = filePicker.showSaveDialog(new Stage());
         EditorFile newED = new EditorFile(newFile, false);
         switch (newED.getFileStatus()) {
-            case INVALID_EXTENSION -> new Alert(Alert.AlertType.ERROR, "The file name must use the '.txt' suffix/extension!").show();
-            case IO_ERROR -> new Alert(Alert.AlertType.ERROR, "There was an IO error while handling this request!").show();
-            case NO_OPEN_FILE -> new Alert(Alert.AlertType.INFORMATION, "You've canceled saving to a new file").show();
+            case INVALID_EXTENSION -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
+            case IO_ERROR -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
+            case NO_OPEN_FILE -> AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation Canceled", "You've canceled saving to a new file").show();
             case OK -> {
                 editorFile.saveAs(inputTextArea.getText(), newFile);
                 onSaveSuccess();
@@ -181,18 +182,16 @@ public class Controller {
     private Operation handleOpenUnsavedFile() {
         Operation op = Operation.CANCELED;
         if (hasEditedFile) {
-            Alert alert = new Alert(Alert.AlertType.NONE,
-                    "You have an edited file open and unsaved, do you want to save it?");
-            alert.getDialogPane().getButtonTypes().addAll(
-                    new ButtonType("Yes", ButtonBar.ButtonData.YES),
-                    new ButtonType("No", ButtonBar.ButtonData.NO),
-                    new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE)
+            Alert alert = AlertFactory.AlertYesNoCancel(Alert.AlertType.CONFIRMATION,
+                    "Confirmation",
+                    "Unsaved work",
+                    "You have an edited file open and unsaved, do you want to save it?"
             );
             Optional<ButtonType> optional = alert.showAndWait();
             if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.YES.getButtonData())) {
                 EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
                 if (status != EditorFile.FileStatus.OK) {
-                    new Alert(Alert.AlertType.ERROR, "Failed saving file!").show();
+                    AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed", "Failed saving file!").show();
                     op = Operation.FAILURE;
                 } else {
                     hasEditedFile = false;
@@ -249,7 +248,7 @@ public class Controller {
     public void compileProgram(ActionEvent actionEvent) {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "A blank file cannot be compiled");
+            Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
             alert.setTitle("Error");
             alert.setHeaderText("Error");
             alert.show();
