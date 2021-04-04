@@ -12,6 +12,8 @@ public class EditorFile {
     public static final String FILE_EXT = "txt";
     private File file = null;
 
+    public EditorFile(){};
+
     public EditorFile(File file, boolean isNewFile) {
         if (isNewFile) {
             try {

@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class Controller {
-    private EditorFile editorFile = null;
+    private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
+    private static boolean hasOpenFile = false;
     @FXML
     private Stage stage;
     public CodeArea inputTextArea;
@@ -52,7 +53,6 @@ public class Controller {
             return;
         }
         fileContentsToCodeArea();
-        clearMessageArea();
     }
 
     public void newFileDialog(ActionEvent event) {
@@ -60,23 +60,13 @@ public class Controller {
         if (handleOpenUnsavedFile() != Operation.SUCCESS) {
             return;
         }
-        FileChooser filePicker = new FileChooser();
-        filePicker.getExtensionFilters()
-                .add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
-        editorFile = new EditorFile(filePicker.showSaveDialog(new Stage()), true);
-        switch (editorFile.getFileStatus()) {
-            case OK -> {
-                fileContentsToCodeArea();
-                clearMessageArea();
-            }
-            case INVALID_EXTENSION -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
-            case IO_ERROR -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
-            case NO_OPEN_FILE -> AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation cancelled", "You've canceled creating a new file").show();
-        }
+        inputTextArea.clear();
+        hasOpenFile = false;
     }
 
     private void fileContentsToCodeArea() {
         hasEditedFile = false;
+        hasOpenFile = true;
         inputTextArea.setWrapText(false);
         try {
             inputTextArea.replaceText(editorFile.getFileContents());
@@ -87,8 +77,7 @@ public class Controller {
 
         setStatusMsg(String.format("Success reading file %s", editorFile.getFilePath().get()));
         updateStageTitle();
-        disableEditOptions(false);
-        inputTextArea.setDisable(false);
+        clearMessageArea();
     }
 
     private void updateStageTitle() {
@@ -96,38 +85,59 @@ public class Controller {
     }
 
     @FXML
-    public void saveFileDialog(ActionEvent actionEvent) {
+    public Operation saveFileDialog(ActionEvent actionEvent) {
+        Operation op = Operation.FAILURE;
         actionEvent.consume();
         EditorFile.FileStatus status = editorFile.save(inputTextArea.getText());
         if (status == EditorFile.FileStatus.OK) {
             onSaveSuccess();
+            op = Operation.SUCCESS;
         } else {
             AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed",
                     String.format("Failed saving file to '%s'", editorFile.getFilePath().get()))
                     .show();
         }
+        return op;
     }
 
     @FXML
-    private void saveAsDialog(ActionEvent actionEvent) {
+    private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        if (editorFile == null || editorFile.getFile() == null) {
-            AlertFactory.create(Alert.AlertType.ERROR,"Error","No file is open", "You must open or create a file first!").show();
-            return;
-        }
+        Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         File newFile = filePicker.showSaveDialog(new Stage());
         EditorFile newED = new EditorFile(newFile, false);
         switch (newED.getFileStatus()) {
-            case INVALID_EXTENSION -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
-            case IO_ERROR -> AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
-            case NO_OPEN_FILE -> AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation Canceled", "You've canceled saving to a new file").show();
+            case INVALID_EXTENSION -> {
+                AlertFactory.create(Alert.AlertType.ERROR, "Error", "Invalid Extension", "The file name must use the '.txt' suffix/extension!").show();
+                op = Operation.FAILURE;
+            }
+            case IO_ERROR -> {
+                AlertFactory.create(Alert.AlertType.ERROR, "Error", "IO Error", "There was an IO error while handling this request!").show();
+                op = Operation.FAILURE;
+            }
+            case NO_OPEN_FILE -> {
+                AlertFactory.create(Alert.AlertType.INFORMATION, "Information", "Operation Canceled", "You've canceled saving to a new file").show();
+                op = Operation.CANCELED;
+            }
             case OK -> {
                 editorFile.saveAs(inputTextArea.getText(), newFile);
                 onSaveSuccess();
+                op = Operation.SUCCESS;
             }
         }
+        return op;
+    }
+
+    public Operation saveAction() {
+        if (hasOpenFile && hasEditedFile) {
+            return saveFileDialog(new ActionEvent());
+        }
+        if (!hasOpenFile && hasEditedFile) {
+            return saveAsDialog(new ActionEvent());
+        }
+        return Operation.SUCCESS;
     }
 
     private void onSaveSuccess() {
@@ -135,6 +145,7 @@ public class Controller {
         updateStageTitle();
         disableSaving(true);
         hasEditedFile = false;
+        hasOpenFile = true;
     }
 
     public void disableSaving(boolean b) {
@@ -182,9 +193,10 @@ public class Controller {
         registerLineColUpdater();
     }
 
+    @FXML
     private Operation handleOpenUnsavedFile() {
         Operation op = Operation.CANCELED;
-        if (hasEditedFile) {
+        if (hasOpenFile) {
             Alert alert = AlertFactory.AlertYesNoCancel(Alert.AlertType.CONFIRMATION,
                     "Confirmation",
                     "Unsaved work",
@@ -197,16 +209,17 @@ public class Controller {
                     AlertFactory.create(Alert.AlertType.ERROR, "Error", "Operation Failed", "Failed saving file!").show();
                     op = Operation.FAILURE;
                 } else {
-                    hasEditedFile = false;
+                    fileContentsToCodeArea();
                     disableSaving(true);
                     op = Operation.SUCCESS;
                 }
             }
             if (optional.isPresent() && optional.get().getButtonData().equals(ButtonType.NO.getButtonData())) {
+                hasOpenFile = false;
                 op = Operation.SUCCESS;
             }
         } else {
-            op = Operation.SUCCESS;
+            op = saveAsDialog(new ActionEvent());
         }
         System.out.println(op);
         return op;
@@ -250,14 +263,8 @@ public class Controller {
 
     public void compileProgram(ActionEvent actionEvent) {
         actionEvent.consume();
-        if (editorFile == null || editorFile.getFile() == null) {
-            AlertFactory.create(Alert.AlertType.ERROR,"Error","No file is open", "You must open or create a file first!").show();
-            return;
-        }
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
-            alert.setTitle("Error");
-            alert.setHeaderText("Error");
             alert.show();
             return;
         }
