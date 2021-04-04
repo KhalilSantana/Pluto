@@ -107,6 +107,7 @@ public class Controller {
     @FXML
     private Operation saveAsDialog(ActionEvent actionEvent) {
         actionEvent.consume();
+        System.out.println("Save as called");
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
@@ -127,6 +128,7 @@ public class Controller {
             }
             case OK -> {
                 editorFile.saveAs(inputTextArea.getText(), newFile);
+                System.out.println("Should run onSaveSuccess()");
                 onSaveSuccess();
                 op = Operation.SUCCESS;
             }
@@ -145,11 +147,11 @@ public class Controller {
     }
 
     private void onSaveSuccess() {
+        hasOpenFile = true;
+        hasEditedFile = false;
         setStatusMsg("File saved!");
         updateStageTitle();
         disableSaving(true);
-        hasEditedFile = false;
-        hasOpenFile = true;
     }
 
     public void disableSaving(boolean b) {
