@@ -62,6 +62,8 @@ public class Controller {
         }
         inputTextArea.clear();
         hasOpenFile = false;
+        this.editorFile.setFile(null);
+        updateStageTitle();
     }
 
     private void fileContentsToCodeArea() {
@@ -73,15 +75,17 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
-
         setStatusMsg(String.format("Success reading file %s", editorFile.getFilePath().get()));
         updateStageTitle();
         clearMessageArea();
     }
 
     private void updateStageTitle() {
-        this.stage.setTitle(String.format("Compiler - [%s]", editorFile.getFilePath().get()));
+        String title = "Compiler";
+        if (hasOpenFile) {
+            title += String.format(" - [%s]", editorFile.getFilePath().get());
+        }
+        this.stage.setTitle(title);
     }
 
     @FXML
