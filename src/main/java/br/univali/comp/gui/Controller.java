@@ -38,7 +38,9 @@ public class Controller {
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
         actionEvent.consume();
-        handleOpenUnsavedFile();
+        if (handleOpenUnsavedFile() != Operation.SUCCESS) {
+            return;
+        }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
@@ -54,7 +56,9 @@ public class Controller {
 
     public void newFileDialog(ActionEvent event) {
         event.consume();
-        handleOpenUnsavedFile();
+        if (handleOpenUnsavedFile() != Operation.SUCCESS) {
+            return;
+        }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters()
                 .add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
