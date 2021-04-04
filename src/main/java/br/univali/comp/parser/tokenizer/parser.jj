@@ -48,7 +48,7 @@ public class Tokenizer {
                         results.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    //TO generic errors
+//                    TO generic errors
 //                    case ERROR:{
 //                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
@@ -166,6 +166,6 @@ TOKEN : {
 }
 
 TOKEN : {
-   <ERROR_INVALID_SYMBOL: "#" | "$"| "¨"| "`"| "´"| "?"| "°"| "ª"| "°"| "'" > |
+   <ERROR_INVALID_SYMBOL: ["\u0000" - "\u00ff"] > |
    <ERROR_UNFINISHED_BLOCK_COMMENT: ":*" (~[]) (~["*" - ":"])* >
 }
