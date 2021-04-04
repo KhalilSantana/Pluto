@@ -21,7 +21,7 @@ public class Tokenizer implements TokenizerConstants {
                         break;
                     }
                     case LITERAL_CONSTANT:{
-                        results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
                     case ARITHMETIC:{
@@ -52,8 +52,21 @@ public class Tokenizer implements TokenizerConstants {
                     case ERROR_INVALID_SYMBOL:{
                         results.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
-                    }case ERROR_UNFINISHED_BLOCK_COMMENT:{
+                    }
+                    case ERROR_UNFINISHED_BLOCK_COMMENT:{
                         results.append("ERROR_UNFINISHED_BLOCK_COMMENT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_BLOCK_COMMENT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        break;
+                    }
+                    case ERROR_UNFINISHED_LITERAL_CONSTANT:{
+                        results.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        break;
+                    }
+                    case ERROR_INTEGER_CONSTANT_FORMAT:{
+                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ERROR_FLOAT_CONSTANT_FORMAT:{
+                        results.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     default:{
@@ -244,7 +257,7 @@ public class Tokenizer implements TokenizerConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[16];
+	 boolean[] la1tokens = new boolean[19];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -258,7 +271,7 @@ public class Tokenizer implements TokenizerConstants {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 16; i++) {
+	 for (int i = 0; i < 19; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
