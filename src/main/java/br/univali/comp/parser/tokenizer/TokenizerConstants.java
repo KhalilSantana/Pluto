@@ -38,6 +38,8 @@ public interface TokenizerConstants {
   int SPECIAL_SYMBOL = 13;
   /** RegularExpression Id. */
   int ERROR_INVALID_SYMBOL = 14;
+  /** RegularExpression Id. */
+  int ERROR_UNFINISHED_BLOCK_COMMENT = 15;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -59,6 +61,7 @@ public interface TokenizerConstants {
     "<LOGICAL>",
     "<SPECIAL_SYMBOL>",
     "<ERROR_INVALID_SYMBOL>",
+    "<ERROR_UNFINISHED_BLOCK_COMMENT>",
   };
 
 }
