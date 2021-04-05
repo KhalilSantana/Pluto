@@ -57,22 +57,6 @@ public class Tokenizer {
                         results.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case ERROR_UNFINISHED_BLOCK_COMMENT:{
-                        results.append("ERROR_UNFINISHED_BLOCK_COMMENT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_BLOCK_COMMENT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        break;
-                    }
-                    case ERROR_UNFINISHED_LITERAL_CONSTANT:{
-                        results.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        break;
-                    }
-                    case ERROR_INTEGER_CONSTANT_FORMAT:{
-                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-                    case ERROR_FLOAT_CONSTANT_FORMAT:{
-                        results.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
                     default:{
                         results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
@@ -187,9 +171,4 @@ TOKEN : {
 
 TOKEN : {
     <ERROR_INVALID_SYMBOL: ["\u0000" - "\u00ff"] >
-|   <ERROR_UNFINISHED_BLOCK_COMMENT: ":*" (~[]) (~["*" - ":"])* >
-|   <ERROR_UNFINISHED_LITERAL_CONSTANT: ("\"" (~["\""])*) | "'" (~["'"])* >
-|   <ERROR_INTEGER_CONSTANT_FORMAT: ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ >
-|   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
-
 }
