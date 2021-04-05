@@ -17,47 +17,55 @@ public interface TokenizerConstants {
   /** RegularExpression Id. */
   int SKIP_MARKERS = 3;
   /** RegularExpression Id. */
-  int COMMENT_LINE = 4;
+  int LINE = 4;
   /** RegularExpression Id. */
-  int COMMENT_BLOCK = 5;
+  int COMMENT_LINE = 6;
   /** RegularExpression Id. */
-  int INTEGER_CONSTANT = 6;
+  int HEADER = 7;
   /** RegularExpression Id. */
-  int FLOAT_CONSTANT = 7;
+  int INTEGER_CONSTANT = 10;
   /** RegularExpression Id. */
-  int LITERAL_CONSTANT = 8;
+  int FLOAT_CONSTANT = 11;
   /** RegularExpression Id. */
-  int ARITHMETIC = 9;
+  int LITERAL_CONSTANT = 12;
   /** RegularExpression Id. */
-  int RESERVED_WORDS = 10;
+  int ARITHMETIC = 13;
   /** RegularExpression Id. */
-  int IDENTIFIER = 11;
+  int RESERVED_WORDS = 14;
   /** RegularExpression Id. */
-  int LOGICAL = 12;
+  int IDENTIFIER = 15;
   /** RegularExpression Id. */
-  int SPECIAL_SYMBOL = 13;
+  int LOGICAL = 16;
   /** RegularExpression Id. */
-  int ERROR_INVALID_SYMBOL = 14;
+  int SPECIAL_SYMBOL = 17;
   /** RegularExpression Id. */
-  int ERROR_UNFINISHED_BLOCK_COMMENT = 15;
+  int ERROR_INVALID_SYMBOL = 18;
   /** RegularExpression Id. */
-  int ERROR_UNFINISHED_LITERAL_CONSTANT = 16;
+  int ERROR_UNFINISHED_BLOCK_COMMENT = 19;
   /** RegularExpression Id. */
-  int ERROR_INTEGER_CONSTANT_FORMAT = 17;
+  int ERROR_UNFINISHED_LITERAL_CONSTANT = 20;
   /** RegularExpression Id. */
-  int ERROR_FLOAT_CONSTANT_FORMAT = 18;
+  int ERROR_INTEGER_CONSTANT_FORMAT = 21;
+  /** RegularExpression Id. */
+  int ERROR_FLOAT_CONSTANT_FORMAT = 22;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int COMMENT = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
     "\" \"",
-    "\"\\n\"",
+    "<EOL>",
     "<SKIP_MARKERS>",
+    "<LINE>",
+    "\":*\"",
     "<COMMENT_LINE>",
-    "<COMMENT_BLOCK>",
+    "<HEADER>",
+    "\"*:\"",
+    "<token of kind 9>",
     "<INTEGER_CONSTANT>",
     "<FLOAT_CONSTANT>",
     "<LITERAL_CONSTANT>",

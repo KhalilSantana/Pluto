@@ -140,14 +140,21 @@ TOKEN_MGR_DECLS :
 //Skip the following elements
 SKIP : {
     <SPACE : " "> |
-    <EOL: "\n"> |
+    <EOL: ("\n" | "\r" | "\n\r")> |
     <SKIP_MARKERS: "\t" | "\r" | "\r\n" | <SPACE> | <EOL>>
-
 }
 
-SKIP:{
-    <COMMENT_LINE: ":-" (~["\n"])* <EOL>>
-|    <COMMENT_BLOCK: ":*" (~[])* "*:">
+SKIP : {
+    <#LINE: (~["\n", "\r"])* <EOL> | (~["\n", "\r"])*> |
+    ":*" : COMMENT                     |
+    <COMMENT_LINE: ":|" <LINE> >       |
+    <HEADER: ":-" <LINE>>
+ }
+<COMMENT> SKIP : {
+    "*:" : DEFAULT
+}
+<COMMENT> MORE : {
+    <~[]>
 }
 
 TOKEN : {
