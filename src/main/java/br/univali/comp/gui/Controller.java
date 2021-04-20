@@ -45,6 +45,7 @@ public class Controller {
         }
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
+        filePicker.setInitialDirectory(EditorFile.LAST_CURRENT_WORKING_DIR);
         editorFile = new EditorFile(filePicker.showOpenDialog(new Stage()), false);
         // Error handling
         if (!editorFile.isFileStatusOK()) {
@@ -52,6 +53,7 @@ public class Controller {
             alert.showAndWait();
             return;
         }
+        EditorFile.LAST_CURRENT_WORKING_DIR = editorFile.getFile().getParentFile();
         fileContentsToCodeArea();
     }
 
@@ -111,6 +113,7 @@ public class Controller {
         Operation op = Operation.CANCELED;
         FileChooser filePicker = new FileChooser();
         filePicker.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text files", "*." + EditorFile.FILE_EXT));
+        filePicker.setInitialDirectory(EditorFile.LAST_CURRENT_WORKING_DIR);
         File newFile = filePicker.showSaveDialog(new Stage());
         EditorFile newED = new EditorFile(newFile, false);
         switch (newED.getFileStatus()) {
