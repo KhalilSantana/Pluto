@@ -63,6 +63,7 @@ public class Controller {
             return;
         }
         inputTextArea.clear();
+        messageTextArea.clear();
         hasOpenFile = false;
         this.editorFile.setFile(null);
         updateStageTitle();
