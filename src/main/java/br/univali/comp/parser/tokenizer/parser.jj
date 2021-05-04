@@ -143,8 +143,7 @@ SKIP : {
 SKIP : {
     <#LINE: (~["\n", "\r"])* <EOL> | (~["\n", "\r"])*> |
     ":*" : COMMENT                     |
-    <COMMENT_LINE: ":|" <LINE> >       |
-    <HEADER: ":-" <LINE>>
+    <COMMENT_LINE: ":|" <LINE> >
  }
 <COMMENT> SKIP : {
     "*:" : DEFAULT
@@ -178,7 +177,7 @@ TOKEN : {
     <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
 }
 TOKEN : {
-    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] >
+    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" >
 }
 
 TOKEN : {

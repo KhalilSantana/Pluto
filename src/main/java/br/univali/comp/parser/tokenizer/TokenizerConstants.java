@@ -21,31 +21,29 @@ public interface TokenizerConstants {
   /** RegularExpression Id. */
   int COMMENT_LINE = 6;
   /** RegularExpression Id. */
-  int HEADER = 7;
+  int INTEGER_CONSTANT = 9;
   /** RegularExpression Id. */
-  int INTEGER_CONSTANT = 10;
+  int FLOAT_CONSTANT = 10;
   /** RegularExpression Id. */
-  int FLOAT_CONSTANT = 11;
+  int LITERAL_CONSTANT = 11;
   /** RegularExpression Id. */
-  int LITERAL_CONSTANT = 12;
+  int ARITHMETIC = 12;
   /** RegularExpression Id. */
-  int ARITHMETIC = 13;
+  int RESERVED_WORDS = 13;
   /** RegularExpression Id. */
-  int RESERVED_WORDS = 14;
+  int IDENTIFIER = 14;
   /** RegularExpression Id. */
-  int IDENTIFIER = 15;
+  int LOGICAL = 15;
   /** RegularExpression Id. */
-  int LOGICAL = 16;
+  int SPECIAL_SYMBOL = 16;
   /** RegularExpression Id. */
-  int SPECIAL_SYMBOL = 17;
+  int ERROR_INVALID_SYMBOL = 17;
   /** RegularExpression Id. */
-  int ERROR_INVALID_SYMBOL = 18;
+  int ERROR_UNFINISHED_LITERAL_CONSTANT = 18;
   /** RegularExpression Id. */
-  int ERROR_UNFINISHED_LITERAL_CONSTANT = 19;
+  int ERROR_INTEGER_CONSTANT_FORMAT = 19;
   /** RegularExpression Id. */
-  int ERROR_INTEGER_CONSTANT_FORMAT = 20;
-  /** RegularExpression Id. */
-  int ERROR_FLOAT_CONSTANT_FORMAT = 21;
+  int ERROR_FLOAT_CONSTANT_FORMAT = 20;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -61,9 +59,8 @@ public interface TokenizerConstants {
     "<LINE>",
     "\":*\"",
     "<COMMENT_LINE>",
-    "<HEADER>",
     "\"*:\"",
-    "<token of kind 9>",
+    "<token of kind 8>",
     "<INTEGER_CONSTANT>",
     "<FLOAT_CONSTANT>",
     "<LITERAL_CONSTANT>",
