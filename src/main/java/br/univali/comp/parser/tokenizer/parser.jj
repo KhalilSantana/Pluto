@@ -165,7 +165,7 @@ TOKEN : {
 TOKEN: {
     <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
 }
-TOKEN : {
+TOKEN [IGNORE_CASE]: {
     <RESERVED_WORDS: "program" | "define" | "not" | "variable" | "is" |
     "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
     "false" | "do" | "natural" | "real" | "char" | "boolean" | "if" | "else">
