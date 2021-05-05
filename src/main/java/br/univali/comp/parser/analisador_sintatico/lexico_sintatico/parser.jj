@@ -1,6 +1,7 @@
 options {
     STATIC = false;
     UNICODE_INPUT = true;
+    DEBUG_LOOKAHEAD = true;
 }
 
 PARSER_BEGIN(Tokenizer)
@@ -118,6 +119,7 @@ public class Tokenizer {
         Tokenizer parser = new Tokenizer( System.in ) ;
         parser.getTokens(args, "");
         System.out.println(parser.results);
+        parser.program();
     }
 
     public String getResults(){
@@ -199,3 +201,23 @@ TOKEN : {
     |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
 }
 
+void program() :
+{
+}
+{
+    [classlist()] <EOF>
+}
+
+void classlist() :
+{
+}
+{
+    classdecl() [classlist()]
+}
+
+void classdecl() :
+{
+}
+{
+    <RESERVED_WORDS> <IDENTIFIER> [<SPECIAL_SYMBOL> <LITERAL_CONSTANT> ]
+}

@@ -1,0 +1,148 @@
+options {
+    STATIC = false;
+    UNICODE_INPUT = true;
+    DEBUG_LOOKAHEAD = true;
+}
+
+PARSER_BEGIN(langX)
+//package parser;
+import java.io.*;
+
+
+public class langX {
+    public static void main(String args[])  throws ParseException {
+        langX parser = null;
+        String textToAnalyze = "program abc";
+        if(args.length == 0){
+            System.out.println("Reading from received text!");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+            parser = new langX(targetStream);
+        }
+        else if(args.length == 1){
+            String filename = args[0];
+            try{
+                System.out.println("Reading from file " + filename + " ... ");
+                parser = new langX(new java.io.FileInputStream(args[0]));
+            }
+            catch(java.io.FileNotFoundException e){
+                System.err.println(filename + " was not found." );
+                System.err.println(e);
+            }
+        }
+        else{
+            System.out.println("Use:\njava langX < inputFile");
+            System.out.println("or java langX inputFile");
+        }
+
+        try{
+            parser.program();
+        }catch (ParseException e){
+            System.out.println(e.getMessage());
+            //parser.contParseError = 1; //Não existe recuperação de erros
+        }
+        finally{
+            System.out.println("parser.token_source.foundLexError()" + " Lexical Errors found");
+            System.out.println("parser.contParserError" + " Syntactic Errors found");
+        }
+    } //main
+}
+PARSER_END(langX)
+
+void program() :
+{
+}
+{
+    [classlist()] <EOF>
+}
+
+void classlist() :
+{
+}
+{
+   <EOF> // classdecl() [classlist()]
+}
+
+void classdecl() :
+{
+}
+{
+    <CLASS> <IDENT> [<EXTENDS> <IDENT>] classbody()
+}
+
+void classbody() :
+{
+}
+{
+    <LBRACE>
+        [classlist()]
+        (LOOKAHEAD(3) vardecl() <SEMICOLON>)*
+        (constructdecl())*
+        (methoddecl())*
+    <RBRACE>
+}
+
+void vardecl() :
+{
+}
+{
+    (<INT> | <STRING> | <IDENT>)
+    <IDENT> (<LBRACKET> <RBRACKET>)*
+    (<COMMA> <IDENT> (<LBRACKET> <RBRACKET>)*)*
+}
+
+void constructdecl() :
+{
+}
+{
+    <CONSTRUCTOR> methodbody()
+}
+
+void methoddecl() :
+{
+}
+{
+    (<INT> | <STRING> | <IDENT>) (<RBRACKET> <LBRACKET>)*
+    <IDENT> methodbody()
+}
+
+void methodbody() :
+{
+}
+{
+    <LPAREN> paramlist()  <RPAREN> statement()
+}
+
+void paramlist() :
+{
+}
+{
+    [
+        (<INT> | <STRING> | <IDENT>)  <IDENT>(<RBRACKET> <LBRACKET>)*
+        ( <COMMA> (<INT> | <STRING> | <IDENT>) <IDENT>  (<RBRACKET> <LBRACKET>)*
+        )*
+    ]
+}
+
+void statement() :
+{
+}
+{
+    LOOKAHEAD(2)
+    vardecl() // os outros comandos do livro não forma implementados.
+}
+TOKEN : {
+ <CLASS: "class">
+ |<INT: "int">
+ |<STRING: "string">
+ | <IDENT: "ident">
+ | <RBRACKET: "}">
+ | <LBRACKET: "{">
+ | <COMMA: ",">
+ | <RPAREN: ")">
+ | <LPAREN: "(">
+ | <CONSTRUCTOR: "CONSTRUCTOR">
+ | <SEMICOLON: ";">
+ | <LBRACE: "[">
+ | <RBRACE: "]">
+ | <EXTENDS: "extends">
+}
