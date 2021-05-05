@@ -28,18 +28,20 @@ public class Tokenizer {
                         results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
-                    case ARITHMETIC:{
-                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
+                    // Removido de acordo com correção prof.
+//                    case ARITHMETIC:{
+//                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
                     case IDENTIFIER:{
                         results.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case LOGICAL:{
-                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
+                    // Removido de acordo com correção prof.
+//                    case LOGICAL:{
+//                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
                     case SPECIAL_SYMBOL:{
                         results.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
@@ -162,9 +164,11 @@ TOKEN : {
 TOKEN : {
     <LITERAL_CONSTANT: ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
 }
-TOKEN: {
-    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
-}
+
+// Removido de acordo com correção prof.
+//TOKEN: {
+//    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
+//}
 TOKEN [IGNORE_CASE]: {
     <RESERVED_WORDS: "program" | "define" | "not" | "variable" | "is" |
     "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
@@ -173,11 +177,19 @@ TOKEN [IGNORE_CASE]: {
 TOKEN : {
     <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
 }
+
+// Removido de acordo com correção prof.
+//TOKEN : {
+//    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
+
+
 TOKEN : {
-    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
-}
-TOKEN : {
-    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" >
+    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
+                     // Simbolos aritimético
+                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
+                     // Simbolos lógicos
+                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
+    >
 }
 
 TOKEN : {

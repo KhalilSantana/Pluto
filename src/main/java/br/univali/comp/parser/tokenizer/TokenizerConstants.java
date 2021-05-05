@@ -27,23 +27,19 @@ public interface TokenizerConstants {
   /** RegularExpression Id. */
   int LITERAL_CONSTANT = 11;
   /** RegularExpression Id. */
-  int ARITHMETIC = 12;
+  int RESERVED_WORDS = 12;
   /** RegularExpression Id. */
-  int RESERVED_WORDS = 13;
+  int IDENTIFIER = 13;
   /** RegularExpression Id. */
-  int IDENTIFIER = 14;
+  int SPECIAL_SYMBOL = 14;
   /** RegularExpression Id. */
-  int LOGICAL = 15;
+  int ERROR_INVALID_SYMBOL = 15;
   /** RegularExpression Id. */
-  int SPECIAL_SYMBOL = 16;
+  int ERROR_UNFINISHED_LITERAL_CONSTANT = 16;
   /** RegularExpression Id. */
-  int ERROR_INVALID_SYMBOL = 17;
+  int ERROR_INTEGER_CONSTANT_FORMAT = 17;
   /** RegularExpression Id. */
-  int ERROR_UNFINISHED_LITERAL_CONSTANT = 18;
-  /** RegularExpression Id. */
-  int ERROR_INTEGER_CONSTANT_FORMAT = 19;
-  /** RegularExpression Id. */
-  int ERROR_FLOAT_CONSTANT_FORMAT = 20;
+  int ERROR_FLOAT_CONSTANT_FORMAT = 18;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -64,10 +60,8 @@ public interface TokenizerConstants {
     "<INTEGER_CONSTANT>",
     "<FLOAT_CONSTANT>",
     "<LITERAL_CONSTANT>",
-    "<ARITHMETIC>",
     "<RESERVED_WORDS>",
     "<IDENTIFIER>",
-    "<LOGICAL>",
     "<SPECIAL_SYMBOL>",
     "<ERROR_INVALID_SYMBOL>",
     "<ERROR_UNFINISHED_LITERAL_CONSTANT>",

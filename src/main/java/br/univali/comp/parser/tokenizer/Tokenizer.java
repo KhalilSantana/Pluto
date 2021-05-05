@@ -24,18 +24,20 @@ public class Tokenizer implements TokenizerConstants {
                         results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
-                    case ARITHMETIC:{
-                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
+                    // Removido de acordo com correção prof.
+//                    case ARITHMETIC:{
+//                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
                     case IDENTIFIER:{
                         results.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case LOGICAL:{
-                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
+                    // Removido de acordo com correção prof.
+//                    case LOGICAL:{
+//                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
                     case SPECIAL_SYMBOL:{
                         results.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
@@ -253,7 +255,7 @@ public class Tokenizer implements TokenizerConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[21];
+	 boolean[] la1tokens = new boolean[19];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -267,7 +269,7 @@ public class Tokenizer implements TokenizerConstants {
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 21; i++) {
+	 for (int i = 0; i < 19; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
