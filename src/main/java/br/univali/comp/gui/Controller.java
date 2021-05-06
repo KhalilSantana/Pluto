@@ -1,5 +1,6 @@
 package br.univali.comp.gui;
 
+import br.univali.comp.javacc.*;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
@@ -278,7 +279,7 @@ public class Controller {
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
-        Token tokenizer = new Tokenizer(targetStream);
+        Tokenizer tokenizer = new Tokenizer(targetStream);
         String result = tokenizer.getTokens(args, inputTextArea.getText());
         messageTextArea.setText(result);
         System.out.println(result);
