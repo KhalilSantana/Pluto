@@ -9,7 +9,7 @@ package br.univali.comp.parser.analisador_sintatico.lexico_sintatico;
 
 
 public class Lexico {
-    private StringBuilder results = new StringBuilder();
+    private StringBuilder tokens = new StringBuilder();
 
     public void handleToken()  {
             try {
@@ -18,112 +18,117 @@ public class Lexico {
                 if(t.kind == EOF) return;
                 switch(t.kind){
                     case INTEGER_CONSTANT:{
-                        results.append("Token: '"+t.image+"' - Type: INTEGER_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: INTEGER_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case FLOAT_CONSTANT:{
-                        results.append("Token: '"+t.image+"' - Type: FLOAT_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: FLOAT_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case LITERAL_CONSTANT:{
-                        results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
                     // Removido de acordo com correção prof.
 //                    case ARITHMETIC:{
-//                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        tokens.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
                     case IDENTIFIER:{
-                        results.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     // Removido de acordo com correção prof.
 //                    case LOGICAL:{
-//                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        tokens.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
                     case SPECIAL_SYMBOL:{
-                        results.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case RESERVED_WORDS:{
-                        results.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
 //                    TO generic errors
 //                    case ERROR:{
-//                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        tokens.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
                     case ERROR_INVALID_SYMBOL:{
-                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case ERROR_UNFINISHED_LITERAL_CONSTANT:{
-                        results.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        tokens.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
                     case ERROR_INTEGER_CONSTANT_FORMAT:{
-                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     case ERROR_FLOAT_CONSTANT_FORMAT:{
-                        results.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                     default:{
-                        results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        tokens.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
                 }
                 handleToken();
             }catch(Error error){
-                results.append("Error - " + error.getMessage() + "\n");
+                tokens.append("Error - " + error.getMessage() + "\n");
                 System.out.println(error.toString());
                 handleToken();
             }
         }
 
-    public String getTokens(String args[], String textToAnalyze) {
-            Lexico lexico;
-            if(args.length == 0){
-                System.out.println("Reading from received text!");
-                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-                lexico = new Lexico(targetStream);
+    private Lexico readInput(String args[], String textToAnalyze) {
+        Lexico lexico = null;
+        if(args.length == 0){
+            System.out.println("Reading from received text!");
+            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+            lexico = new Lexico(targetStream);
+        }
+        else if(args.length == 1){
+            try{
+                lexico = new Lexico(new java.io.FileInputStream(args[0]));
             }
-                else if(args.length == 1){
-                        try{
-                    lexico = new Lexico(new java.io.FileInputStream(args[0]));
-                        }
-                        catch(java.io.FileNotFoundException e){
-                                System.err.println(args[0] + " was not found." );
-                                System.err.println(e);
-                                return args[0] + " was not found.";
-                        }
-                }
-                else{
-                        System.out.println("Use:\njava Lexico < inputFile");
-                        System.out.println("or java Lexico inputFile");
-                        return "Use:java Lexico < inputFile";
-                }
+            catch(java.io.FileNotFoundException e){
+                System.err.println(args[0] + " was not found." );
+                System.err.println(e);
+            }
+        }
+        else{
+            System.out.println("Use:\njava Lexico < inputFile");
+            System.out.println("or java Lexico inputFile");
+        }
+        return lexico;
+    }
 
-                this.handleToken();
+    public String analyze(String args[], String textToAnalyze) throws ParseException  {
+            Lexico lexico = this.readInput(args, textToAnalyze);
 
-                results.append("<EOF>");
-                return results.toString();
+            this.handleToken();
+            tokens.append("<EOF>");
+
+            //todo- validar se não teve erros na leitura de tokens antes de chamar o program para analizar o sintatico
+            lexico.program();
+
+            return tokens.toString();
         }
 
 
     public static void main(String args[])  throws ParseException {
         Lexico parser = new Lexico( System.in ) ;
-        parser.getTokens(args, "");
-        System.out.println(parser.results);
-        parser.program();
+        parser.analyze(args, "");
+        System.out.println("tokens: " + parser.tokens);
     }
 
     public String getResults(){
-            return results.toString();
+            return tokens.toString();
     }
 
 }

@@ -1,6 +1,7 @@
 package br.univali.comp.gui;
 
 import br.univali.comp.parser.analisador_sintatico.lexico_sintatico.Lexico;
+import br.univali.comp.parser.analisador_sintatico.lexico_sintatico.ParseException;
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
@@ -271,7 +272,7 @@ public class Controller {
 
     }
 
-    public void compileProgram(ActionEvent actionEvent) {
+    public void compileProgram(ActionEvent actionEvent) throws ParseException {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
@@ -283,7 +284,7 @@ public class Controller {
 //        Tokenizer tokenizer = new Tokenizer(targetStream);
 //        String result = tokenizer.getTokens(args, inputTextArea.getText());
         Lexico lexico = new Lexico(targetStream);
-        String result = lexico.getTokens(args, inputTextArea.getText());
+        String result = lexico.analyze(args, inputTextArea.getText());
         messageTextArea.setText(result);
         System.out.println(result);
     }
