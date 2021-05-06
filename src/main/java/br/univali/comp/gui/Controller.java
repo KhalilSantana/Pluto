@@ -1,5 +1,6 @@
 package br.univali.comp.gui;
 
+import br.univali.comp.parser.analisador_sintatico.lexico_sintatico.Lexico;
 import br.univali.comp.parser.tokenizer.Tokenizer;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
@@ -279,8 +280,10 @@ public class Controller {
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
-        Tokenizer tokenizer = new Tokenizer(targetStream);
-        String result = tokenizer.getTokens(args, inputTextArea.getText());
+//        Tokenizer tokenizer = new Tokenizer(targetStream);
+//        String result = tokenizer.getTokens(args, inputTextArea.getText());
+        Lexico lexico = new Lexico(targetStream);
+        String result = lexico.getTokens(args, inputTextArea.getText());
         messageTextArea.setText(result);
         System.out.println(result);
     }

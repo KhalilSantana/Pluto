@@ -4,11 +4,11 @@ options {
     DEBUG_LOOKAHEAD = true;
 }
 
-PARSER_BEGIN(Tokenizer)
-package br.univali.comp.parser.tokenizer;
+PARSER_BEGIN(Lexico)
+package br.univali.comp.parser.analisador_sintatico.lexico_sintatico;
 
 
-public class Tokenizer {
+public class Lexico {
     private StringBuilder results = new StringBuilder();
 
     public void handleToken()  {
@@ -86,15 +86,15 @@ public class Tokenizer {
         }
 
     public String getTokens(String args[], String textToAnalyze) {
-            Tokenizer tokenizer;
+            Lexico lexico;
             if(args.length == 0){
                 System.out.println("Reading from received text!");
                 java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-                tokenizer = new Tokenizer(targetStream);
+                lexico = new Lexico(targetStream);
             }
                 else if(args.length == 1){
                         try{
-                    tokenizer = new Tokenizer(new java.io.FileInputStream(args[0]));
+                    lexico = new Lexico(new java.io.FileInputStream(args[0]));
                         }
                         catch(java.io.FileNotFoundException e){
                                 System.err.println(args[0] + " was not found." );
@@ -103,9 +103,9 @@ public class Tokenizer {
                         }
                 }
                 else{
-                        System.out.println("Use:\njava Tokenizer < inputFile");
-                        System.out.println("or java Tokenizer inputFile");
-                        return "Use:java Tokenizer < inputFile";
+                        System.out.println("Use:\njava Lexico < inputFile");
+                        System.out.println("or java Lexico inputFile");
+                        return "Use:java Lexico < inputFile";
                 }
 
                 this.handleToken();
@@ -116,7 +116,7 @@ public class Tokenizer {
 
 
     public static void main(String args[])  throws ParseException {
-        Tokenizer parser = new Tokenizer( System.in ) ;
+        Lexico parser = new Lexico( System.in ) ;
         parser.getTokens(args, "");
         System.out.println(parser.results);
         parser.program();
@@ -127,7 +127,7 @@ public class Tokenizer {
     }
 
 }
-PARSER_END(Tokenizer)
+PARSER_END(Lexico)
 
 TOKEN_MGR_DECLS :
 {
