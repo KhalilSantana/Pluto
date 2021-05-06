@@ -1,0 +1,201 @@
+options {
+    STATIC = false;
+    UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(Tokenizer)
+package br.univali.comp.javacc;
+
+
+public class Tokenizer {
+    private StringBuilder results = new StringBuilder();
+
+    public void handleToken()  {
+            try {
+                Token t = null;
+                t = getNextToken();
+                if(t.kind == EOF) return;
+                switch(t.kind){
+                    case INTEGER_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: INTEGER_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case FLOAT_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: FLOAT_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case LITERAL_CONSTANT:{
+                        results.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        break;
+                    }
+                    // Removido de acordo com correção prof.
+//                    case ARITHMETIC:{
+//                        results.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
+                    case IDENTIFIER:{
+                        results.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    // Removido de acordo com correção prof.
+//                    case LOGICAL:{
+//                        results.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
+                    case SPECIAL_SYMBOL:{
+                        results.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case RESERVED_WORDS:{
+                        results.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+//                    TO generic errors
+//                    case ERROR:{
+//                        results.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
+                    case ERROR_INVALID_SYMBOL:{
+                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ERROR_UNFINISHED_LITERAL_CONSTANT:{
+                        results.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        break;
+                    }
+                    case ERROR_INTEGER_CONSTANT_FORMAT:{
+                        results.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    case ERROR_FLOAT_CONSTANT_FORMAT:{
+                        results.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                    default:{
+                        results.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
+                }
+                handleToken();
+            }catch(Error error){
+                results.append("Error - " + error.getMessage() + "\n");
+                System.out.println(error.toString());
+                handleToken();
+            }
+        }
+
+    public String getTokens(String args[], String textToAnalyze) {
+            Tokenizer tokenizer;
+            if(args.length == 0){
+                System.out.println("Reading from received text!");
+                java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
+                tokenizer = new Tokenizer(targetStream);
+            }
+                else if(args.length == 1){
+                        try{
+                    tokenizer = new Tokenizer(new java.io.FileInputStream(args[0]));
+                        }
+                        catch(java.io.FileNotFoundException e){
+                                System.err.println(args[0] + " was not found." );
+                                System.err.println(e);
+                                return args[0] + " was not found.";
+                        }
+                }
+                else{
+                        System.out.println("Use:\njava Tokenizer < inputFile");
+                        System.out.println("or java Tokenizer inputFile");
+                        return "Use:java Tokenizer < inputFile";
+                }
+
+                this.handleToken();
+
+                results.append("<EOF>");
+                return results.toString();
+        }
+
+
+    public static void main(String args[])  throws ParseException {
+        Tokenizer parser = new Tokenizer( System.in ) ;
+        parser.getTokens(args, "");
+        System.out.println(parser.results);
+    }
+
+    public String getResults(){
+            return results.toString();
+    }
+
+}
+PARSER_END(Tokenizer)
+
+TOKEN_MGR_DECLS :
+{
+	static int commentLevel = 0 ;
+}
+
+
+
+
+//Skip the following elements
+SKIP : {
+    <SPACE : " "> |
+    <EOL: ("\n" | "\r" | "\n\r")> |
+    <SKIP_MARKERS: "\t" | "\r" | "\r\n" | <SPACE> | <EOL>>
+}
+
+SKIP : {
+    <#LINE: (~["\n", "\r"])* <EOL> | (~["\n", "\r"])*> |
+    ":*" : COMMENT                     |
+    <COMMENT_LINE: ":|" <LINE> >
+ }
+<COMMENT> SKIP : {
+    "*:" : DEFAULT
+}
+<COMMENT> MORE : {
+    <~[]>
+}
+
+TOKEN : {
+    <INTEGER_CONSTANT: ["0"-"9"] (["0"-"9"])? (["0"-"9"])? >
+}
+TOKEN : {
+    <FLOAT_CONSTANT: ["0"-"9"] (["0"-"9"])? (["0"-"9"])? (["0"-"9"])? (["0"-"9"])? "." ["0"-"9"] (["0"-"9"])? >
+}
+
+TOKEN : {
+    <LITERAL_CONSTANT: ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
+}
+
+// Removido de acordo com correção prof.
+//TOKEN: {
+//    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
+//}
+TOKEN [IGNORE_CASE]: {
+    <RESERVED_WORDS: "program" | "define" | "not" | "variable" | "is" |
+    "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
+    "false" | "do" | "natural" | "real" | "char" | "boolean" | "if" | "else">
+}
+TOKEN : {
+    <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
+}
+
+// Removido de acordo com correção prof.
+//TOKEN : {
+//    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
+
+
+TOKEN : {
+    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
+                     // Simbolos aritimético
+                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
+                     // Simbolos lógicos
+                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
+    >
+}
+
+TOKEN : {
+    <ERROR_INVALID_SYMBOL: ["\u0000" - "\u00ff"] >
+    |   <ERROR_UNFINISHED_LITERAL_CONSTANT: ("\"" (~["\""])*) | "'" (~["'"])* >
+    |   <ERROR_INTEGER_CONSTANT_FORMAT: ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ >
+    |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
+}
+
