@@ -125,7 +125,8 @@ public class Lexico {
                 lexico.program();
             }
 
-            return tokens.toString();
+            //return tokens.toString();
+            return "Sintaticamente correto!";
         }
 
 
@@ -232,5 +233,11 @@ void classdecl() :
 {
 }
 {
-    <RESERVED_WORDS> <IDENTIFIER> [<SPECIAL_SYMBOL> <LITERAL_CONSTANT> ]
+    LOOKAHEAD(2)<RESERVED_WORDS> <IDENTIFIER> [<SPECIAL_SYMBOL> <LITERAL_CONSTANT> ] | abc()
+}
+
+void abc() :
+{}
+{
+    <RESERVED_WORDS>
 }
