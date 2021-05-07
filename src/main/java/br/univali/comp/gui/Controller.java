@@ -270,7 +270,7 @@ public class Controller {
 
     }
 
-    public void compileProgram(ActionEvent actionEvent) {
+    public void compileProgram(ActionEvent actionEvent) throws ParseException {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
@@ -279,8 +279,10 @@ public class Controller {
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
-        Tokenizer tokenizer = new Tokenizer(targetStream);
-        String result = tokenizer.getTokens(args, inputTextArea.getText());
+//        Tokenizer tokenizer = new Tokenizer(targetStream);
+//        String result = tokenizer.getTokens(args, inputTextArea.getText());
+        Sintatico sintatico = new Sintatico(targetStream);
+        String result = sintatico.analyze(args, inputTextArea.getText());
         messageTextArea.setText(result);
         System.out.println(result);
     }
