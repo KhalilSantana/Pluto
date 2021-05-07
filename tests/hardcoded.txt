@@ -1,4 +1,8 @@
 :- foo
+:| comment
+:* multi-line comment
+this text should be ignored
+*:
 program {
     define {
         not variable
@@ -7,4 +11,3 @@ program {
             boolean is const_c false .
     }
 } bar
-

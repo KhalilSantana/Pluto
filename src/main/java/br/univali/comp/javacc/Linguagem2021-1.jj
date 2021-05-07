@@ -159,9 +159,8 @@ SKIP : {
 }
 
 SKIP : {
-    <#LINE: (~["\n", "\r"])* <EOL> | (~["\n", "\r"])*> |
     ":*" : COMMENT                     |
-    <COMMENT_LINE: ":|" <LINE> >
+    <COMMENT_LINE: ":|" (~["\n", "\r"])* <EOL> >
  }
 <COMMENT> SKIP : {
     "*:" : DEFAULT
