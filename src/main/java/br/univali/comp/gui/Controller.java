@@ -1,6 +1,6 @@
 package br.univali.comp.gui;
 
-import br.univali.comp.javacc.*;
+import br.univali.comp.javacc.gen.*;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;

@@ -5,7 +5,7 @@ options {
 }
 
 PARSER_BEGIN(Sintatico)
-package br.univali.comp.javacc;
+package br.univali.comp.javacc.gen;
 
 
 public class Sintatico {
