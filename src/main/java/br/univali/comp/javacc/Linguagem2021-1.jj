@@ -46,10 +46,10 @@ public class Sintatico {
 //                        tokens.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
-                    case SPECIAL_SYMBOL:{
-                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
+//                    case SPECIAL_SYMBOL:{
+//                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+//                        break;
+//                    }
 //                  Reserved words
                     case   R_PROGRAM
                         |  R_PUT
@@ -240,13 +240,45 @@ TOKEN : {
 //    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
 
 
+//TOKEN : {
+//    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
+//                     // Simbolos aritimético
+//                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
+//                     // Simbolos lógicos
+//                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
+//    >
+//}
+
+//Special symbols
 TOKEN : {
-    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
-                     // Simbolos aritimético
-                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
-                     // Simbolos lógicos
-                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
-    >
+    // Pontuação
+  <SS_DOT: ".">
+  | <SS_COMMA: ",">
+  | <SS_CURLYBRACE_OPEN: "{">
+  | <SS_CURLYBRACE_CLOSE: "}">
+  | <SS_SQUACEBRACE_OPEN: "[">
+  | <SS_SQUAREBRACE_CLOSE: "]">
+  | <SS_PARENTESES_OPEN: "(">
+  | <SS_PARENTESES_CLOSE: ")">
+  | <SS_HEADER:  ":-" >
+    // Simbolos aritiméticos
+  | <SS_PLUS: "+">
+  | <SS_MINUS: "-">
+  | <SS_TIMES: "*">
+  | <SS_DIVIDE: "/">
+  | <SS_PERCENT: "%">
+  | <SS_EXPODENTIAL: "**">
+  | <SS_MODULO: "%%">
+  // Simbolos lógicos
+  | <SS_LESS_THAN: "<">
+  | <SS_MORE_THAN: ">">
+  | <SS_AND: "&">
+  | <SS_OR: "|">
+  | <SS_NOT: "!">
+  | <SS_EQUALS: "==">
+  | <SS_NOT_EQUALS: "!=">
+  | <SS_LESS_OR_EQUAL_THAN: "<=">
+  | <SS_MORE_OR_EQUAL_THAN: ">=">
 }
 
 TOKEN : {
@@ -268,12 +300,12 @@ void expressao() : {}
 void expressao_dash() : {}
 {
     [
-               expressao_aritmetica_ou_logica()
-        | "!=" expressao_aritmetica_ou_logica()
-        | "<"  expressao_aritmetica_ou_logica()
-        | ">"  expressao_aritmetica_ou_logica()
-        | "<=" expressao_aritmetica_ou_logica()
-        | ">=" expressao_aritmetica_ou_logica()
+                          expressao_aritmetica_ou_logica()
+        | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica()
+        | <SS_LESS_THAN>  expressao_aritmetica_ou_logica()
+        | <SS_MORE_THAN>  expressao_aritmetica_ou_logica()
+        | <SS_LESS_OR_EQUAL_THAN> expressao_aritmetica_ou_logica()
+        | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica()
     ]
 }
 void expressao_aritmetica_ou_logica() : {}
@@ -283,9 +315,9 @@ void expressao_aritmetica_ou_logica() : {}
 void menor_prioridade() : {}
 {
     [
-         "+" termo2() menor_prioridade()
-       | "-" termo2() menor_prioridade()
-       | "|" termo2() menor_prioridade()
+         <SS_PLUS> termo2() menor_prioridade()
+       | <SS_MINUS> termo2() menor_prioridade()
+       | <SS_OR> termo2() menor_prioridade()
     ]
 }
 void termo2() : {}
@@ -295,11 +327,11 @@ void termo2() : {}
 void media_prioridade() : {}
 {
     [
-         "*" termo1() media_prioridade()
-      |  "/" termo1() media_prioridade()
-      |  "%" termo1() media_prioridade()
-      | "%%" termo1() media_prioridade()
-      |  "&" termo1() media_prioridade()
+        <SS_TIMES>   termo1() media_prioridade()
+      | <SS_DIVIDE>  termo1() media_prioridade()
+      | <SS_PERCENT> termo1() media_prioridade()
+      | <SS_MODULO>  termo1() media_prioridade()
+      | <SS_AND>     termo1() media_prioridade()
     ]
 }
 void termo1() : {}
@@ -308,20 +340,20 @@ void termo1() : {}
 }
 void maior_prioridade() : {}
 {
-    "**" elemento() maior_prioridade()
+    <SS_EXPODENTIAL> elemento() maior_prioridade()
 }
 void elemento() : {}
 {
-        <IDENTIFIER> índice()
+        <IDENTIFIER> indice()
      |  <INTEGER_CONSTANT>
      |  <FLOAT_CONSTANT>
      |  <LITERAL_CONSTANT>
      |  <R_TRUE>
      |  <R_FALSE>
-     |  "(" expressao() ")"
-     |  "!" "(" expressao() ")"
+     |  <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE>
+     |  <SS_NOT> <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE>
 }
-void índice() : {}
+void indice() : {}
 {
-    [ "[" <INTEGER_CONSTANT> "]" ]
+    [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
 }
