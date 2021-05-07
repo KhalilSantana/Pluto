@@ -1,0 +1,10 @@
+:- foo
+program {
+    define {
+        not variable
+            natural is const_a 10 .
+            char is const_b, var_c t .
+            boolean is const_c false .
+    }
+} bar
+
