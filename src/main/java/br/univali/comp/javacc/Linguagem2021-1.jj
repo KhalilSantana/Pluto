@@ -46,10 +46,38 @@ public class Sintatico {
 //                        tokens.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
 //                        break;
 //                    }
-//                    case SPECIAL_SYMBOL:{
-//                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
+//                  Simbolos especiais
+                    case  // Pontuação
+                             SS_DOT
+                           | SS_COMMA
+                           | SS_CURLYBRACE_OPEN
+                           | SS_CURLYBRACE_CLOSE
+                           | SS_SQUACEBRACE_OPEN
+                           | SS_SQUAREBRACE_CLOSE
+                           | SS_PARENTESES_OPEN
+                           | SS_PARENTESES_CLOSE
+                           | SS_HEADER
+                           // Simbolos aritiméticos
+                           | SS_PLUS
+                           | SS_MINUS
+                           | SS_TIMES
+                           | SS_DIVIDE
+                           | SS_PERCENT
+                           | SS_EXPODENTIAL
+                           | SS_MODULO
+                           // Simbolos lógicos
+                           | SS_LESS_THAN
+                           | SS_MORE_THAN
+                           | SS_AND
+                           | SS_OR
+                           | SS_NOT
+                           | SS_EQUALS
+                           | SS_NOT_EQUALS
+                           | SS_LESS_OR_EQUAL_THAN
+                           | SS_MORE_OR_EQUAL_THAN : {
+                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        break;
+                    }
 //                  Reserved words
                     case   R_PROGRAM
                         |  R_PUT
