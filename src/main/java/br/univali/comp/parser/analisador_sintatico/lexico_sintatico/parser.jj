@@ -10,6 +10,7 @@ package br.univali.comp.parser.analisador_sintatico.lexico_sintatico;
 
 public class Lexico {
     private StringBuilder tokens = new StringBuilder();
+    private Boolean hasLexicalErrors = false;
 
     public void handleToken()  {
             try {
@@ -58,27 +59,33 @@ public class Lexico {
 //                    }
                     case ERROR_INVALID_SYMBOL:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_UNFINISHED_LITERAL_CONSTANT:{
                         tokens.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_INTEGER_CONSTANT_FORMAT:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_FLOAT_CONSTANT_FORMAT:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        hasLexicalErrors = true;
                         break;
                     }
                     default:{
                         tokens.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        hasLexicalErrors = true;
                         break;
                     }
                 }
                 handleToken();
             }catch(Error error){
+                hasLexicalErrors = true;
                 tokens.append("Error - " + error.getMessage() + "\n");
                 System.out.println(error.toString());
                 handleToken();
@@ -114,8 +121,9 @@ public class Lexico {
             this.handleToken();
             tokens.append("<EOF>");
 
-            //todo- validar se não teve erros na leitura de tokens antes de chamar o program para analizar o sintatico
-            lexico.program();
+            if(!hasLexicalErrors){
+                lexico.program();
+            }
 
             return tokens.toString();
         }
