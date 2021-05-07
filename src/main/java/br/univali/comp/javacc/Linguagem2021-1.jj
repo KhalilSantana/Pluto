@@ -2,6 +2,8 @@ options {
     STATIC = false;
     UNICODE_INPUT = true;
     DEBUG_LOOKAHEAD = true;
+//    DEBUG_PARSER = true;
+//    DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(Sintatico)
@@ -48,7 +50,29 @@ public class Sintatico {
                         tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    case RESERVED_WORDS:{
+//                  Reserved words
+                    case   R_PROGRAM
+                        |  R_PUT
+                        |  R_DEFINE
+                        |  R_NOT
+                        |  R_VARIABLE
+                        |  R_IS
+                        |  R_EXECUTE
+                        |  R_SET
+                        |  R_TO
+                        |  R_GET
+                        |  R_PUT
+                        |  R_LOOP
+                        |  R_WHILE
+                        |  R_TRUE
+                        |  R_FALSE
+                        |  R_DO
+                        |  R_NATURAL
+                        |  R_REAL
+                        |  R_CHAR
+                        |  R_BOOLEAN
+                        |  R_IF
+                        |  R_ELSE : {
                         tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
@@ -123,9 +147,9 @@ public class Sintatico {
 
             if(!hasLexicalErrors){
                 sintatico.program();
+            } else {
+                return tokens.toString();
             }
-
-            //return tokens.toString();
             return "Sintaticamente correto!";
         }
 
@@ -185,9 +209,27 @@ TOKEN : {
 //    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
 //}
 TOKEN [IGNORE_CASE]: {
-    <RESERVED_WORDS: "program" | "define" | "not" | "variable" | "is" |
-    "execute" | "set" | "to" | "get" | "put" | "loop" | "while" | "true" |
-    "false" | "do" | "natural" | "real" | "char" | "boolean" | "if" | "else">
+     <R_PROGRAM: "program">
+  |  <R_DEFINE: "define">
+  |  <R_NOT: "not">
+  |  <R_VARIABLE: "variable">
+  |  <R_IS: "is">
+  |  <R_EXECUTE: "execute">
+  |  <R_SET: "set">
+  |  <R_TO: "to">
+  |  <R_GET: "get">
+  |  <R_PUT: "put">
+  |  <R_LOOP: "loop">
+  |  <R_WHILE: "while">
+  |  <R_TRUE: "true">
+  |  <R_FALSE: "false">
+  |  <R_DO: "do">
+  |  <R_NATURAL: "natural">
+  |  <R_REAL: "real">
+  |  <R_CHAR: "char">
+  |  <R_BOOLEAN: "boolean">
+  |  <R_IF: "if">
+  |  <R_ELSE: "else">
 }
 TOKEN : {
     <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
@@ -214,29 +256,72 @@ TOKEN : {
     |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
 }
 
-void program() :
+void program() : {}
 {
-}
-{
-    [classlist()] <EOF>
+    expressao() <EOF>
 }
 
-void classlist() :
+void expressao() : {}
 {
+    expressao_aritmetica_ou_logica() expressao_dash()
 }
+void expressao_dash() : {}
 {
-    classdecl() [classlist()]
+    [
+               expressao_aritmetica_ou_logica()
+        | "!=" expressao_aritmetica_ou_logica()
+        | "<"  expressao_aritmetica_ou_logica()
+        | ">"  expressao_aritmetica_ou_logica()
+        | "<=" expressao_aritmetica_ou_logica()
+        | ">=" expressao_aritmetica_ou_logica()
+    ]
 }
-
-void classdecl() :
+void expressao_aritmetica_ou_logica() : {}
 {
+    termo2() menor_prioridade()
 }
+void menor_prioridade() : {}
 {
-    LOOKAHEAD(2)<RESERVED_WORDS> <IDENTIFIER> [<SPECIAL_SYMBOL> <LITERAL_CONSTANT> ] | abc()
+    [
+         "+" termo2() menor_prioridade()
+       | "-" termo2() menor_prioridade()
+       | "|" termo2() menor_prioridade()
+    ]
 }
-
-void abc() :
-{}
+void termo2() : {}
 {
-    <RESERVED_WORDS>
+    termo1() media_prioridade()
+}
+void media_prioridade() : {}
+{
+    [
+         "*" termo1() media_prioridade()
+      |  "/" termo1() media_prioridade()
+      |  "%" termo1() media_prioridade()
+      | "%%" termo1() media_prioridade()
+      |  "&" termo1() media_prioridade()
+    ]
+}
+void termo1() : {}
+{
+    elemento() maior_prioridade()
+}
+void maior_prioridade() : {}
+{
+    "**" elemento() maior_prioridade()
+}
+void elemento() : {}
+{
+        <IDENTIFIER> índice()
+     |  <INTEGER_CONSTANT>
+     |  <FLOAT_CONSTANT>
+     |  <LITERAL_CONSTANT>
+     |  <R_TRUE>
+     |  <R_FALSE>
+     |  "(" expressao() ")"
+     |  "!" "(" expressao() ")"
+}
+void índice() : {}
+{
+    [ "[" <INTEGER_CONSTANT> "]" ]
 }
