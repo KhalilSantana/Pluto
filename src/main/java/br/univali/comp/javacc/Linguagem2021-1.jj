@@ -340,7 +340,7 @@ void lista_de_identificadores() : {}
 // BEGIN get
 void get() : {}
 {
-    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE>
+    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT> 
 }
 // BEGIN verify
 void verify() : {}
