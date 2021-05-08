@@ -363,6 +363,25 @@ void get() : {}
 {
     <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT>
 }
+// BEGIN put
+void put() : {}
+// TODO: validate this, see note on the BNF google doc
+{
+    <R_PUT> <SS_CURLYBRACE_OPEN> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE> <SS_DOT>
+}
+void identificador_ou_constante() : {}
+{
+// TODO: double check this, see note on the BNF google doc
+    <IDENTIFIER> | constante()
+}
+void lista_de_identificadores_e_ou_constantes() : {}
+{
+    [ <SS_COMMA> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() ]
+}
+void constante() : {}
+{
+    <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
+}
 // BEGIN verify
 void verify() : {}
 {
