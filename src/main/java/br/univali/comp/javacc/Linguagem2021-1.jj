@@ -337,10 +337,15 @@ void lista_de_identificadores() : {}
     // TODO: Remove the placeholder token bellow and implement this
     <IDENTIFIER>
 }
+// BEGIN execute
+void execute() : {}
+{
+    <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+}
 // BEGIN get
 void get() : {}
 {
-    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT> 
+    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT>
 }
 // BEGIN verify
 void verify() : {}
