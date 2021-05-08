@@ -181,7 +181,6 @@ public class Sintatico {
                     return tokens.toString();
                 }
             } catch (ParseException ex) {
-                System.out.println(ex.getMessage().toString());
                 return ex.getMessage().toString();
             }
             return "Sintaticamente correto!";
