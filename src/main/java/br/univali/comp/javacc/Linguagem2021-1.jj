@@ -332,7 +332,7 @@ void expressao() : {}
 void expressao_dash() : {}
 {
     [
-                          expressao_aritmetica_ou_logica()
+          <SS_EQUALS>     expressao_aritmetica_ou_logica()
         | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica()
         | <SS_LESS_THAN>  expressao_aritmetica_ou_logica()
         | <SS_MORE_THAN>  expressao_aritmetica_ou_logica()
@@ -372,7 +372,9 @@ void termo1() : {}
 }
 void maior_prioridade() : {}
 {
-    <SS_EXPODENTIAL> elemento() maior_prioridade()
+    [
+        <SS_EXPODENTIAL> elemento() maior_prioridade()
+    ]
 }
 void elemento() : {}
 {
