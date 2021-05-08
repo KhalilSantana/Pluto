@@ -340,6 +340,53 @@ void lista_opt_de_identificadores() : {}
 {
     [ <SS_COMMA> lista_de_identificadores() ]
 }
+// BEGIN define
+// TODO: see notes on the BNF google doc, this is a temporary implentation
+// <valor> seems equal to <constante>
+void define() : {}
+{
+    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> dec_const_e_ou_var() <SS_CURLYBRACE_CLOSE> ]
+}
+void lista_atribuicao() : {}
+{
+    [ atribuicao() lista_atribuicao() ]
+}
+void atribuicao() : {}
+{
+    tipo() <R_IS> lista_de_identificadores()
+}
+void atribuicao_final() : {}
+{
+    atribuicao() lista_atribuicao()
+}
+void valor_opcional() : {}
+{
+    [ constante() ]
+}
+void dec_const_e_ou_var() : {}
+{
+    dec_const_opt_var() | dec_var_opt_const()
+}
+void dec_const_opt_var() : {}
+{
+    <R_NOT> <R_VARIABLE> atribuicao_final() constante() <SS_DOT> dec_var_opt()
+}
+void dec_var_opt() : {}
+{
+    [ <R_VARIABLE> atribuicao_final() valor_opcional() <SS_DOT> ]
+}
+void dec_var_opt_const() : {}
+{
+    <R_VARIABLE> atribuicao_final() valor_opcional()  <SS_DOT> dec_const_opt()
+}
+void dec_const_opt() : {}
+{
+    [ <R_NOT> <R_VARIABLE> atribuicao_final() constante() ]
+}
+void tipo() : {}
+{
+    <R_NATURAL> | <R_REAL> |  <R_CHAR> | <R_BOOLEAN>
+}
 // BEGIN loops
 void loops_repeticao() : {}
 {
