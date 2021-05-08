@@ -363,6 +363,11 @@ void get() : {}
 {
     <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT>
 }
+// BEGIN set
+void set() : {}
+{
+    <R_SET> expressao() <R_TO> lista_de_identificadores() <SS_DOT>
+}
 // BEGIN put
 void put() : {}
 // TODO: validate this, see note on the BNF google doc
