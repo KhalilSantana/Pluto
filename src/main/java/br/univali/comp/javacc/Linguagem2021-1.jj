@@ -47,60 +47,59 @@ public class Sintatico {
 //                        break;
 //                    }
 //                  Simbolos especiais
-                    case  // Pontuação
-                             SS_DOT
-                           | SS_COMMA
-                           | SS_CURLYBRACE_OPEN
-                           | SS_CURLYBRACE_CLOSE
-                           | SS_SQUACEBRACE_OPEN
-                           | SS_SQUAREBRACE_CLOSE
-                           | SS_PARENTESES_OPEN
-                           | SS_PARENTESES_CLOSE
-                           | SS_HEADER
-                           // Simbolos aritiméticos
-                           | SS_PLUS
-                           | SS_MINUS
-                           | SS_TIMES
-                           | SS_DIVIDE
-                           | SS_PERCENT
-                           | SS_EXPODENTIAL
-                           | SS_MODULO
-                           // Simbolos lógicos
-                           | SS_LESS_THAN
-                           | SS_MORE_THAN
-                           | SS_AND
-                           | SS_OR
-                           | SS_NOT
-                           | SS_EQUALS
-                           | SS_NOT_EQUALS
-                           | SS_LESS_OR_EQUAL_THAN
-                           | SS_MORE_OR_EQUAL_THAN : {
+                    // Pontuação
+                    case SS_DOT:
+                    case SS_COMMA:
+                    case SS_CURLYBRACE_OPEN:
+                    case SS_CURLYBRACE_CLOSE:
+                    case SS_SQUACEBRACE_OPEN:
+                    case SS_SQUAREBRACE_CLOSE:
+                    case SS_PARENTESES_OPEN:
+                    case SS_PARENTESES_CLOSE:
+                    case SS_HEADER:
+                    // Simbolos aritiméticos
+                    case SS_PLUS:
+                    case SS_MINUS:
+                    case SS_TIMES:
+                    case SS_DIVIDE:
+                    case SS_PERCENT:
+                    case SS_EXPODENTIAL:
+                    case SS_MODULO:
+                    // Simbolos lógicos
+                    case SS_LESS_THAN:
+                    case SS_MORE_THAN:
+                    case SS_AND:
+                    case SS_OR:
+                    case SS_NOT:
+                    case SS_EQUALS:
+                    case SS_NOT_EQUALS:
+                    case SS_LESS_OR_EQUAL_THAN:
+                    case SS_MORE_OR_EQUAL_THAN: {
                         tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
 //                  Reserved words
-                    case   R_PROGRAM
-                        |  R_PUT
-                        |  R_DEFINE
-                        |  R_NOT
-                        |  R_VARIABLE
-                        |  R_IS
-                        |  R_EXECUTE
-                        |  R_SET
-                        |  R_TO
-                        |  R_GET
-                        |  R_PUT
-                        |  R_LOOP
-                        |  R_WHILE
-                        |  R_TRUE
-                        |  R_FALSE
-                        |  R_DO
-                        |  R_NATURAL
-                        |  R_REAL
-                        |  R_CHAR
-                        |  R_BOOLEAN
-                        |  R_IF
-                        |  R_ELSE : {
+                    case  R_PROGRAM  :
+                    case  R_DEFINE   :
+                    case  R_NOT      :
+                    case  R_VARIABLE :
+                    case  R_IS       :
+                    case  R_EXECUTE  :
+                    case  R_SET      :
+                    case  R_TO       :
+                    case  R_GET      :
+                    case  R_PUT      :
+                    case  R_LOOP     :
+                    case  R_WHILE    :
+                    case  R_TRUE     :
+                    case  R_FALSE    :
+                    case  R_DO       :
+                    case  R_NATURAL  :
+                    case  R_REAL     :
+                    case  R_CHAR     :
+                    case  R_BOOLEAN  :
+                    case  R_IF       :
+                    case  R_ELSE     : {
                         tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
