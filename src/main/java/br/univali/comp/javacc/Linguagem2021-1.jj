@@ -172,10 +172,14 @@ public class Sintatico {
             this.handleToken();
             tokens.append("<EOF>");
 
-            if(!hasLexicalErrors){
-                sintatico.program();
-            } else {
-                return tokens.toString();
+            try {
+                if(!hasLexicalErrors){
+                    sintatico.program();
+                } else {
+                    return tokens.toString();
+                }
+            } catch (ParseException ex) {
+                return ex.getMessage().toString();
             }
             return "Sintaticamente correto!";
         }
