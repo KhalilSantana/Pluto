@@ -334,8 +334,11 @@ void lista_de_comandos() : {}
 }
 void lista_de_identificadores() : {}
 {
-    // TODO: Remove the placeholder token bellow and implement this
-    <IDENTIFIER>
+    <IDENTIFIER> lista_opt_de_identificadores()
+}
+void lista_opt_de_identificadores() : {}
+{
+    [ <SS_COMMA> lista_de_identificadores() ]
 }
 // BEGIN loops
 void loops_repeticao() : {}
