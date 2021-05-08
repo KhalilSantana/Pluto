@@ -84,6 +84,7 @@ public class Sintatico {
                     case  R_NOT      :
                     case  R_VARIABLE :
                     case  R_IS       :
+                    case  R_VERIFY   :
                     case  R_EXECUTE  :
                     case  R_SET      :
                     case  R_TO       :
@@ -98,8 +99,9 @@ public class Sintatico {
                     case  R_REAL     :
                     case  R_CHAR     :
                     case  R_BOOLEAN  :
-                    case  R_IF       :
-                    case  R_ELSE     : {
+//                    case  R_IF       :
+//                    case  R_ELSE     :
+                    {
                         tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
@@ -246,6 +248,7 @@ TOKEN [IGNORE_CASE]: {
   |  <R_NOT: "not">
   |  <R_VARIABLE: "variable">
   |  <R_IS: "is">
+  |  <R_VERIFY: "verify">
   |  <R_EXECUTE: "execute">
   |  <R_SET: "set">
   |  <R_TO: "to">
@@ -260,8 +263,8 @@ TOKEN [IGNORE_CASE]: {
   |  <R_REAL: "real">
   |  <R_CHAR: "char">
   |  <R_BOOLEAN: "boolean">
-  |  <R_IF: "if">
-  |  <R_ELSE: "else">
+//  |  <R_IF: "if">
+//  |  <R_ELSE: "else">
 }
 TOKEN : {
     <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
@@ -322,9 +325,45 @@ TOKEN : {
 
 void program() : {}
 {
-    expressao() <EOF>
+    verify() <EOF>
 }
 
+void lista_de_comandos() : {}
+{
+    // TODO: Remove the placeholder token bellow and implement this
+    <IDENTIFIER>
+}
+
+// BEGIN verify
+void verify() : {}
+{
+    <R_VERIFY> expressao() <R_IS> verify_truefalse() <SS_DOT>
+}
+void verify_truefalse() : {}
+{
+    verify_true() | verify_false()
+}
+void verify_true() : {}
+{
+    <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> verify_opt_false()
+}
+void verify_opt_false() : {}
+{
+  [
+    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+  ]
+}
+void verify_false() : {}
+{
+    <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> verify_opt_true()
+}
+void verify_opt_true() : {}
+{
+  [
+    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+  ]
+}
+// BEGIN espressao
 void expressao() : {}
 {
     expressao_aritmetica_ou_logica() expressao_dash()
