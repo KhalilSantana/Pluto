@@ -146,6 +146,7 @@ public class Sintatico {
             }catch(Error error){
                 hasLexicalErrors = true;
                 tokens.append("Error - " + error.getMessage() + "\n");
+                lexicalErrors.append("Error - " + error.getMessage() + "\n");
                 System.out.println(error.toString());
                 handleToken();
             }
