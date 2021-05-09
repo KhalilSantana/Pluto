@@ -416,7 +416,7 @@ try{
     consumeUntil(g, e, "program");
 }
 }
-void linguagem2021_1(RecoverySet g) : {}
+void linguagem2021_1(RecoverySet g) throws ParseEOFException: {}
 {
     header(g) <R_PROGRAM> <SS_CURLYBRACE_OPEN> define(g) execute(g) <SS_CURLYBRACE_CLOSE> ident_final(g)
 }
@@ -455,9 +455,15 @@ void lista_opt_de_identificadores(RecoverySet g) : {}
 // BEGIN define
 // TODO: see notes on the BNF google doc, this is a temporary implentation
 // <valor> seems equal to <constante>
-void define(RecoverySet g) : {}
+void define(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.define.union(g);
+ }
 {
-    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
+    try {
+        [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
+    } catch(ParseException e) {
+        consumeUntil(f, e, "execute");
+    }
 }
 void def_const_e_ou_var(RecoverySet g) : {}
 {
