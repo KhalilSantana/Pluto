@@ -15,7 +15,7 @@ public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
     private StringBuilder lexicalErrors = new StringBuilder("");
     private Boolean hasLexicalErrors = false;
-    private int contParseError = 0;
+    public int contParseError = 0;
     boolean debug_recovery = true;
     Token lastError = null;
 
@@ -179,6 +179,11 @@ public class Sintatico {
         return sintatico;
     }
 
+    public int getCountErrors() {
+        return this.contParseError;
+    }
+
+
     public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
             Sintatico sintatico = this.readInput(args, textToAnalyze);
 
@@ -194,7 +199,10 @@ public class Sintatico {
             } catch (ParseException ex) {
                 return ex.getMessage().toString();
             }
-            return "Sintaticamente correto!";
+            if(sintatico.getCountErrors() > 0){
+             return "This program has + " + sintatico.getCountErrors() + " syntactic errors";
+            }
+            return "Syntactically correct!";
         }
 
 
@@ -252,8 +260,10 @@ public class Sintatico {
                 tok = getToken(1);
                 if (tok.kind == EOF && ! g.contains(EOF) ) // fim da entrada?
                     eof = true;
-                }
+           }
+           System.out.println("Token: " + tok);
            if ( tok != lastError) {
+                System.out.println("Last Token: " + lastError);
                 System.out.println(e.getMessage());
                 lastError = tok;
                 contParseError++;  // incrementa número de erros
