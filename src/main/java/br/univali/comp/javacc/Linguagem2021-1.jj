@@ -14,8 +14,10 @@ import br.univali.comp.recovery.*;
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
     private StringBuilder lexicalErrors = new StringBuilder("");
+    public StringBuilder syntacticErrors = new StringBuilder("syntactic Errors: \n");
     private Boolean hasLexicalErrors = false;
     public int contParseError = 0;
+
     boolean debug_recovery = true;
     Token lastError = null;
 
@@ -183,6 +185,10 @@ public class Sintatico {
         return this.contParseError;
     }
 
+    public String getSyntacticErrors() {
+        return this.syntacticErrors.toString();
+    }
+
 
     public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
             Sintatico sintatico = this.readInput(args, textToAnalyze);
@@ -200,7 +206,7 @@ public class Sintatico {
                 return ex.getMessage().toString();
             }
             if(sintatico.getCountErrors() > 0){
-             return "This program has + " + sintatico.getCountErrors() + " syntactic errors";
+             return "This program has + " + sintatico.getCountErrors() + " syntactic errors \n" + sintatico.getSyntacticErrors();
             }
             return "Syntactically correct!";
         }
@@ -231,7 +237,7 @@ public class Sintatico {
     // o método abaixo consome tokens até alcançar um que pertença ao conjunto
     // de sincronização
 
-    void consumeUntil(RecoverySet g, ParseException e, String met)
+    public void consumeUntil(RecoverySet g, ParseException e, String met)
             throws ParseEOFException, ParseException {
 
             Token tok;
@@ -261,10 +267,9 @@ public class Sintatico {
                 if (tok.kind == EOF && ! g.contains(EOF) ) // fim da entrada?
                     eof = true;
            }
-           System.out.println("Token: " + tok);
            if ( tok != lastError) {
-                System.out.println("Last Token: " + lastError);
-                System.out.println(e.getMessage());
+                System.out.println("erro: "+ e.getMessage());
+                syntacticErrors.append(e.getMessage());
                 lastError = tok;
                 contParseError++;  // incrementa número de erros
            }
@@ -402,7 +407,7 @@ TOKEN : {
 
 void program() throws ParseEOFException :
 {
- RecoverySet g = new RecoverySet(EOF);
+ RecoverySet g = First.program;
 }
 {
 try{
