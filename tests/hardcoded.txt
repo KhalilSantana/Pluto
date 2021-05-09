@@ -10,7 +10,8 @@ program {
     }
     execute {
 	verify 1*1==1 is true {
-		get { foo }
-        }
+		get { foo }.
+		get { foo }.
+        }.
    }
 } bar

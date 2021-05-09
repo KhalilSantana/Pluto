@@ -348,7 +348,7 @@ void todos_os_comandos() : {}
 }
 void lista_de_comandos() : {}
 {
-    todos_os_comandos() lista_de_comandos_opt()
+    todos_os_comandos() <SS_DOT> lista_de_comandos_opt()
 }
 void lista_de_comandos_opt() : {}
 {
@@ -441,7 +441,7 @@ void set() : {}
 void put() : {}
 // TODO: validate this, see note on the BNF google doc
 {
-    <R_PUT> <SS_CURLYBRACE_OPEN> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE>
+    <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE>
 }
 void identificador_ou_constante() : {}
 {
@@ -450,7 +450,7 @@ void identificador_ou_constante() : {}
 }
 void lista_de_identificadores_e_ou_constantes() : {}
 {
-    [ <SS_COMMA> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() ]
+    identificador_ou_constante() [ <SS_COMMA> lista_de_identificadores_e_ou_constantes() ]
 }
 void constante() : {}
 {
