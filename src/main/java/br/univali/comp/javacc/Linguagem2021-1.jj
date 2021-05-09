@@ -9,11 +9,15 @@ options {
 PARSER_BEGIN(Sintatico)
 package br.univali.comp.javacc.gen;
 
+import br.univali.comp.recovery.*;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
     private StringBuilder lexicalErrors = new StringBuilder("");
     private Boolean hasLexicalErrors = false;
+    private int contParseError = 0;
+    boolean debug_recovery = true;
+    Token lastError = null;
 
     public void handleToken()  {
             try {
@@ -175,7 +179,7 @@ public class Sintatico {
         return sintatico;
     }
 
-    public String analyze(String args[], String textToAnalyze) throws ParseException  {
+    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
             Sintatico sintatico = this.readInput(args, textToAnalyze);
 
             this.handleToken();
@@ -194,11 +198,68 @@ public class Sintatico {
         }
 
 
-    public static void main(String args[])  throws ParseException {
+    public static void main(String args[])  throws ParseException, ParseEOFException {
         Sintatico parser = new Sintatico( System.in ) ;
         parser.analyze(args, "");
         System.out.println("tokens: " + parser.tokens);
     }
+
+
+    static public String im(int x) {
+        int k;
+        String s;
+        s = tokenImage[x];
+        k = s.lastIndexOf("\"");
+
+        try {
+            s = s.substring(1,k);
+        } catch (StringIndexOutOfBoundsException e)
+            {}
+        return s;
+    }
+
+
+    boolean eof;    // variável que indica se EOF foi alcançado
+    // o método abaixo consome tokens até alcançar um que pertença ao conjunto
+    // de sincronização
+
+    void consumeUntil(RecoverySet g, ParseException e, String met)
+            throws ParseEOFException, ParseException {
+
+            Token tok;
+
+           if ( debug_recovery) // informação sobre a recuperação
+           {
+               System.out.println();
+               System.out.println("*** " + met + " ***");
+               System.out.println("     Syncronizing Set: " + g);
+           }
+
+           if (g == null) throw e; // se o conjunto é null, propaga a exceção
+
+           tok = getToken(1); // pega token corrente
+           while ( ! eof )  // se não chegou ao fim do arquivo
+           {
+                if ( g.contains(tok.kind ) ) //achou um token no conjunto
+                {
+                     if ( debug_recovery)
+                        System.out.println("     Found syncronizing token: " + im(tok.kind));
+                     break;
+                }
+                if (debug_recovery)
+                    System.out.println("     Ignoring token: " + im(tok.kind));
+                getNextToken();     // pega próximo token
+                tok = getToken(1);
+                if (tok.kind == EOF && ! g.contains(EOF) ) // fim da entrada?
+                    eof = true;
+                }
+           if ( tok != lastError) {
+                System.out.println(e.getMessage());
+                lastError = tok;
+                contParseError++;  // incrementa número de erros
+           }
+           if ( eof ) throw new ParseEOFException("EOF found prematurely.");
+        }
 
     public String getResults(){
             return tokens.toString();
@@ -329,226 +390,233 @@ TOKEN : {
     |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
 }
 
-void program() : {}
+void program() throws ParseEOFException :
 {
-    linguagem2021_1() <EOF>
+ RecoverySet g = new RecoverySet(EOF);
 }
-void linguagem2021_1() : {}
 {
-    header() <R_PROGRAM> <SS_CURLYBRACE_OPEN> define() execute() <SS_CURLYBRACE_CLOSE> ident_final()
+try{
+    linguagem2021_1(g) <EOF>
+}catch (ParseException e){
+    consumeUntil(g, e, "program");
 }
-void header() : {}
+}
+void linguagem2021_1(RecoverySet g) : {}
+{
+    header(g) <R_PROGRAM> <SS_CURLYBRACE_OPEN> define(g) execute(g) <SS_CURLYBRACE_CLOSE> ident_final(g)
+}
+void header(RecoverySet g) : {}
 {
     [ <SS_HEADER> <LITERAL_CONSTANT> ]
 }
-void ident_final() : {}
+void ident_final(RecoverySet g) : {}
 {
     [ <IDENTIFIER> ]
 }
-void todos_os_comandos() : {}
+void todos_os_comandos(RecoverySet g) : {}
 {
-        loops_repeticao()
-    |   verify()
-    |   get()
-    |   set()
-    |   put()
+        loops_repeticao(g)
+    |   verify(g)
+    |   get(g)
+    |   set(g)
+    |   put(g)
 }
-void lista_de_comandos() : {}
+void lista_de_comandos(RecoverySet g) : {}
 {
-    todos_os_comandos() <SS_DOT> lista_de_comandos_opt()
+    todos_os_comandos(g) <SS_DOT> lista_de_comandos_opt(g)
 }
-void lista_de_comandos_opt() : {}
+void lista_de_comandos_opt(RecoverySet g) : {}
 {
-    (todos_os_comandos() <SS_DOT>)*
+    (todos_os_comandos(g) <SS_DOT>)*
 }
-void lista_de_identificadores() : {}
+void lista_de_identificadores(RecoverySet g) : {}
 {
-    <IDENTIFIER> lista_opt_de_identificadores()
+    <IDENTIFIER> lista_opt_de_identificadores(g)
 }
-void lista_opt_de_identificadores() : {}
+void lista_opt_de_identificadores(RecoverySet g) : {}
 {
-    [ <SS_COMMA> lista_de_identificadores() ]
+    [ <SS_COMMA> lista_de_identificadores(g) ]
 }
 // BEGIN define
 // TODO: see notes on the BNF google doc, this is a temporary implentation
 // <valor> seems equal to <constante>
-void define() : {}
+void define(RecoverySet g) : {}
 {
-    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var() <SS_CURLYBRACE_CLOSE> ]
+    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
 }
-void def_const_e_ou_var() : {}
+void def_const_e_ou_var(RecoverySet g) : {}
 {
-    define_const_var_opt() | define_var_opt_const()
+    define_const_var_opt(g) | define_var_opt_const(g)
 }
-void define_const_var_opt() : {}
+void define_const_var_opt(RecoverySet g) : {}
 {
-    <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor() define_var_opt()
+    <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)
 }
-void define_var_opt() : {}
+void define_var_opt(RecoverySet g) : {}
 {
-    [<R_VARIABLE> lista_de_atribuicao_sem_valor()]
+    [<R_VARIABLE> lista_de_atribuicao_sem_valor(g)]
 }
-void lista_de_atribuicao_com_valor() : {}
+void lista_de_atribuicao_com_valor(RecoverySet g) : {}
 {
-    tipo() <R_IS> lista_de_identificadores() constante() <SS_DOT> [ lista_de_atribuicao_com_valor() ]
+    tipo(g) <R_IS> lista_de_identificadores(g) constante(g) <SS_DOT> [ lista_de_atribuicao_com_valor(g) ]
 }
 
-void lista_de_atribuicao_sem_valor() : {}
+void lista_de_atribuicao_sem_valor(RecoverySet g) : {}
 {
-    tipo() <R_IS> lista_de_identificadores() <SS_DOT> [ lista_de_atribuicao_sem_valor() ]
+    tipo(g) <R_IS> lista_de_identificadores(g) <SS_DOT> [ lista_de_atribuicao_sem_valor(g) ]
 }
-void define_var_opt_const() : {}
+void define_var_opt_const(RecoverySet g) : {}
 {
-    <R_VARIABLE> lista_de_atribuicao_sem_valor() define_const_opt()
+    <R_VARIABLE> lista_de_atribuicao_sem_valor(g) define_const_opt(g)
 }
-void define_const_opt() : {}
+void define_const_opt(RecoverySet g) : {}
 {
-    [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor() define_var_opt()]
+    [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)]
 }
-void tipo() : {}
+void tipo(RecoverySet g) : {}
 {
     <R_NATURAL> | <R_REAL> |  <R_CHAR> | <R_BOOLEAN>
 }
 // BEGIN loops
-void loops_repeticao() : {}
+void loops_repeticao(RecoverySet g) : {}
 {
-    while_expr() | do_loop()
+    while_expr(g) | do_loop(g)
 }
-void while_expr() : {}
+void while_expr(RecoverySet g) : {}
 {
-    <R_WHILE> expressao() <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+    <R_WHILE> expressao(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
 }
-void do_loop() : {}
+void do_loop(RecoverySet g) : {}
 {
-    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() <R_IS> <R_TRUE>
+    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) <R_IS> <R_TRUE>
 }
 // BEGIN execute
-void execute() : {}
+void execute(RecoverySet g) : {}
 {
-    <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+    <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
 }
 // BEGIN get
-void get() : {}
+void get(RecoverySet g) : {}
 {
-    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE>
+    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
 }
 // BEGIN set
-void set() : {}
+void set(RecoverySet g) : {}
 {
-    <R_SET> expressao() <R_TO> lista_de_identificadores()
+    <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
 }
 // BEGIN put
-void put() : {}
+void put(RecoverySet g) : {}
 // TODO: validate this, see note on the BNF google doc
 {
-    <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE>
+    <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
 }
-void identificador_ou_constante() : {}
+void identificador_ou_constante(RecoverySet g) : {}
 {
 // TODO: double check this, see note on the BNF google doc
-    <IDENTIFIER> | constante()
+    <IDENTIFIER> | constante(g)
 }
-void lista_de_identificadores_e_ou_constantes() : {}
+void lista_de_identificadores_e_ou_constantes(RecoverySet g) : {}
 {
-    identificador_ou_constante() [ <SS_COMMA> lista_de_identificadores_e_ou_constantes() ]
+    identificador_ou_constante(g) [ <SS_COMMA> lista_de_identificadores_e_ou_constantes(g) ]
 }
-void constante() : {}
+void constante(RecoverySet g) : {}
 {
     <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
 }
 // BEGIN verify
-void verify() : {}
+void verify(RecoverySet g) : {}
 {
-    <R_VERIFY> expressao() <R_IS> verify_truefalse()
+    <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
 }
-void verify_truefalse() : {}
+void verify_truefalse(RecoverySet g) : {}
 {
-    verify_true() | verify_false()
+    verify_true(g) | verify_false(g)
 }
-void verify_true() : {}
+void verify_true(RecoverySet g) : {}
 {
-    <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> verify_opt_false()
+    <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
 }
-void verify_opt_false() : {}
+void verify_opt_false(RecoverySet g) : {}
 {
   [
-    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
-void verify_false() : {}
+void verify_false(RecoverySet g) : {}
 {
-    <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> verify_opt_true()
+    <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
 }
-void verify_opt_true() : {}
+void verify_opt_true(RecoverySet g) : {}
 {
   [
-    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
+    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
 // BEGIN espressao
-void expressao() : {}
+void expressao(RecoverySet g) : {}
 {
-    expressao_aritmetica_ou_logica() expressao_dash()
+    expressao_aritmetica_ou_logica(g) expressao_dash(g)
 }
-void expressao_dash() : {}
+void expressao_dash(RecoverySet g) : {}
 {
     [
-          <SS_EQUALS>     expressao_aritmetica_ou_logica()
-        | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica()
-        | <SS_LESS_THAN>  expressao_aritmetica_ou_logica()
-        | <SS_MORE_THAN>  expressao_aritmetica_ou_logica()
-        | <SS_LESS_OR_EQUAL_THAN> expressao_aritmetica_ou_logica()
-        | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica()
+          <SS_EQUALS>     expressao_aritmetica_ou_logica(g)
+        | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica(g)
+        | <SS_LESS_THAN>  expressao_aritmetica_ou_logica(g)
+        | <SS_MORE_THAN>  expressao_aritmetica_ou_logica(g)
+        | <SS_LESS_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
+        | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
     ]
 }
-void expressao_aritmetica_ou_logica() : {}
+void expressao_aritmetica_ou_logica(RecoverySet g) : {}
 {
-    termo2() menor_prioridade()
+    termo2(g) menor_prioridade(g)
 }
-void menor_prioridade() : {}
+void menor_prioridade(RecoverySet g) : {}
 {
     [
-         <SS_PLUS> termo2() menor_prioridade()
-       | <SS_MINUS> termo2() menor_prioridade()
-       | <SS_OR> termo2() menor_prioridade()
+         <SS_PLUS> termo2(g) menor_prioridade(g)
+       | <SS_MINUS> termo2(g) menor_prioridade(g)
+       | <SS_OR> termo2(g) menor_prioridade(g)
     ]
 }
-void termo2() : {}
+void termo2(RecoverySet g) : {}
 {
-    termo1() media_prioridade()
+    termo1(g) media_prioridade(g)
 }
-void media_prioridade() : {}
+void media_prioridade(RecoverySet g) : {}
 {
     [
-        <SS_TIMES>   termo1() media_prioridade()
-      | <SS_DIVIDE>  termo1() media_prioridade()
-      | <SS_PERCENT> termo1() media_prioridade()
-      | <SS_MODULO>  termo1() media_prioridade()
-      | <SS_AND>     termo1() media_prioridade()
+        <SS_TIMES>   termo1(g) media_prioridade(g)
+      | <SS_DIVIDE>  termo1(g) media_prioridade(g)
+      | <SS_PERCENT> termo1(g) media_prioridade(g)
+      | <SS_MODULO>  termo1(g) media_prioridade(g)
+      | <SS_AND>     termo1(g) media_prioridade(g)
     ]
 }
-void termo1() : {}
+void termo1(RecoverySet g) : {}
 {
-    elemento() maior_prioridade()
+    elemento(g) maior_prioridade(g)
 }
-void maior_prioridade() : {}
+void maior_prioridade(RecoverySet g) : {}
 {
     [
-        <SS_EXPODENTIAL> elemento() maior_prioridade()
+        <SS_EXPODENTIAL> elemento(g) maior_prioridade(g)
     ]
 }
-void elemento() : {}
+void elemento(RecoverySet g) : {}
 {
-        <IDENTIFIER> indice()
+        <IDENTIFIER> indice(g)
      |  <INTEGER_CONSTANT>
      |  <FLOAT_CONSTANT>
      |  <LITERAL_CONSTANT>
      |  <R_TRUE>
      |  <R_FALSE>
-     |  <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE>
-     |  <SS_NOT> <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE>
+     |  <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
+     |  <SS_NOT> <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
 }
-void indice() : {}
+void indice(RecoverySet g) : {}
 {
     [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
 }

@@ -1,6 +1,7 @@
 package br.univali.comp.gui;
 
 import br.univali.comp.javacc.gen.*;
+import br.univali.comp.recovery.*;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
@@ -270,7 +271,7 @@ public class Controller {
 
     }
 
-    public void compileProgram(ActionEvent actionEvent) throws ParseException {
+    public void compileProgram(ActionEvent actionEvent) throws ParseException, ParseEOFException {
         actionEvent.consume();
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
