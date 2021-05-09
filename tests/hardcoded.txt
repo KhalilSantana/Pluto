@@ -7,11 +7,19 @@ program {
     define {
         not variable
             natural is const_a 10 .
+            char is const_b, const_c "foo".
+        variable
+            real is var_a .
+            boolean is var_b .
     }
     execute {
 	verify 1*1==1 is true {
-		get { foo }.
-		get { foo }.
+            get { foo }.
+            put { foo }.
         }.
+	loop {
+            set 2 to bar, baz.
+        } while 1==1 is true .
+            
    }
 } bar

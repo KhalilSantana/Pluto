@@ -367,43 +367,36 @@ void lista_opt_de_identificadores() : {}
 // <valor> seems equal to <constante>
 void define() : {}
 {
-    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> dec_const_e_ou_var() <SS_CURLYBRACE_CLOSE> ]
+    [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var() <SS_CURLYBRACE_CLOSE> ]
 }
-void lista_atribuicao() : {}
+void def_const_e_ou_var() : {}
 {
-    [ atribuicao() lista_atribuicao() ]
+    define_const_var_opt() | define_var_opt_const()
 }
-void atribuicao() : {}
+void define_const_var_opt() : {}
 {
-    tipo() <R_IS> lista_de_identificadores()
+    <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor() define_var_opt()
 }
-void atribuicao_final() : {}
+void define_var_opt() : {}
 {
-    atribuicao() lista_atribuicao()
+    [<R_VARIABLE> lista_de_atribuicao_sem_valor()]
 }
-void valor_opcional() : {}
+void lista_de_atribuicao_com_valor() : {}
 {
-    [ constante() ]
+    tipo() <R_IS> lista_de_identificadores() constante() <SS_DOT> [ lista_de_atribuicao_com_valor() ]
 }
-void dec_const_e_ou_var() : {}
+
+void lista_de_atribuicao_sem_valor() : {}
 {
-    dec_const_opt_var() | dec_var_opt_const()
+    tipo() <R_IS> lista_de_identificadores() <SS_DOT> [ lista_de_atribuicao_sem_valor() ]
 }
-void dec_const_opt_var() : {}
+void define_var_opt_const() : {}
 {
-    <R_NOT> <R_VARIABLE> atribuicao_final() constante() <SS_DOT> dec_var_opt()
+    <R_VARIABLE> lista_de_atribuicao_sem_valor() define_const_opt()
 }
-void dec_var_opt() : {}
+void define_const_opt() : {}
 {
-    [ <R_VARIABLE> atribuicao_final() valor_opcional() <SS_DOT> ]
-}
-void dec_var_opt_const() : {}
-{
-    <R_VARIABLE> atribuicao_final() valor_opcional()  <SS_DOT> dec_const_opt()
-}
-void dec_const_opt() : {}
-{
-    [ <R_NOT> <R_VARIABLE> atribuicao_final() constante() ]
+    [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor() define_var_opt()]
 }
 void tipo() : {}
 {
