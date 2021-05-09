@@ -17,7 +17,8 @@ public class AppCLI {
         String fileContents = editorFile.getFileContents();
         InputStream targetStream = new java.io.ByteArrayInputStream(fileContents.getBytes());
         Sintatico s = new Sintatico(targetStream);
-        String output = s.analyze(args, editorFile.getFileContents());
-        System.out.println(output);
+        String status = s.analyze();
+        System.out.println(status);
+        System.out.println(s.getOutput());
     }
 }

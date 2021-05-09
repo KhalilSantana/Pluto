@@ -1,5 +1,6 @@
 package br.univali.comp.gui;
 
+import br.univali.comp.javacc.gen.Sintatico.ParserOutput;
 import br.univali.comp.javacc.gen.*;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
@@ -282,9 +283,15 @@ public class Controller {
 //        Tokenizer tokenizer = new Tokenizer(targetStream);
 //        String result = tokenizer.getTokens(args, inputTextArea.getText());
         Sintatico sintatico = new Sintatico(targetStream);
-        String result = sintatico.analyze(args, inputTextArea.getText());
-        messageTextArea.setText(result);
-        System.out.println(result);
+        String status = sintatico.analyze();
+        StringBuilder output = new StringBuilder();
+        for (ParserOutput p : sintatico.getOutput()) {
+            output.append(p).append('\n');
+            output.append(status);
+        }
+
+        messageTextArea.setText(output.toString());
+        System.out.println(output);
     }
 
     public String copySelection() {
