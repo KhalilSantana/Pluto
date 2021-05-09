@@ -324,13 +324,35 @@ TOKEN : {
 
 void program() : {}
 {
-    verify() <EOF>
+    linguagem2021_1() <EOF>
 }
-
+void linguagem2021_1() : {}
+{
+    header() <R_PROGRAM> <SS_CURLYBRACE_OPEN> define() execute() <SS_CURLYBRACE_CLOSE> ident_final()
+}
+void header() : {}
+{
+    [ <SS_HEADER> <LITERAL_CONSTANT> ]
+}
+void ident_final() : {}
+{
+    [ <IDENTIFIER> ]
+}
+void todos_os_comandos() : {}
+{
+        loops_repeticao()
+    |   verify()
+    |   get()
+    |   set()
+    |   put()
+}
 void lista_de_comandos() : {}
 {
-    // TODO: Remove the placeholder token bellow and implement this
-    <IDENTIFIER>
+    todos_os_comandos() lista_de_comandos_opt()
+}
+void lista_de_comandos_opt() : {}
+{
+    (todos_os_comandos() <SS_DOT>)*
 }
 void lista_de_identificadores() : {}
 {
@@ -394,11 +416,11 @@ void loops_repeticao() : {}
 }
 void while_expr() : {}
 {
-    <R_WHILE> expressao() <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> <SS_DOT>
+    <R_WHILE> expressao() <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE>
 }
 void do_loop() : {}
 {
-    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() <R_IS> <R_TRUE> <SS_DOT>
+    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() <R_IS> <R_TRUE>
 }
 // BEGIN execute
 void execute() : {}
@@ -408,18 +430,18 @@ void execute() : {}
 // BEGIN get
 void get() : {}
 {
-    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE> <SS_DOT>
+    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores() <SS_CURLYBRACE_CLOSE>
 }
 // BEGIN set
 void set() : {}
 {
-    <R_SET> expressao() <R_TO> lista_de_identificadores() <SS_DOT>
+    <R_SET> expressao() <R_TO> lista_de_identificadores()
 }
 // BEGIN put
 void put() : {}
 // TODO: validate this, see note on the BNF google doc
 {
-    <R_PUT> <SS_CURLYBRACE_OPEN> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE> <SS_DOT>
+    <R_PUT> <SS_CURLYBRACE_OPEN> identificador_ou_constante() lista_de_identificadores_e_ou_constantes() <SS_CURLYBRACE_CLOSE>
 }
 void identificador_ou_constante() : {}
 {
@@ -437,7 +459,7 @@ void constante() : {}
 // BEGIN verify
 void verify() : {}
 {
-    <R_VERIFY> expressao() <R_IS> verify_truefalse() <SS_DOT>
+    <R_VERIFY> expressao() <R_IS> verify_truefalse()
 }
 void verify_truefalse() : {}
 {
