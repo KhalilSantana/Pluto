@@ -421,9 +421,15 @@ void linguagem2021_1(RecoverySet g) throws ParseEOFException: {}
 {
     header(g) <R_PROGRAM> <SS_CURLYBRACE_OPEN> define(g) execute(g) <SS_CURLYBRACE_CLOSE> ident_final(g)
 }
-void header(RecoverySet g) : {}
+void header(RecoverySet g) throws ParseEOFException: {
+    RecoverySet f = First.header.union(g);
+}
 {
-    [ <SS_HEADER> <LITERAL_CONSTANT> ]
+    try {
+        [ <SS_HEADER> <LITERAL_CONSTANT> ]
+    } catch(ParseException e) {
+        consumeUntil(f, e, "Invalid header expression, missing literal constant before program", "program");
+    }
 }
 void ident_final(RecoverySet g) : {}
 {

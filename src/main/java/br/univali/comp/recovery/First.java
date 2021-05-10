@@ -9,6 +9,7 @@ public class First { //implementa os conjuntos first p/ alguns n.terminais
     public static RecoverySet define = new RecoverySet();
     public static RecoverySet execute = new RecoverySet();
     public static RecoverySet expressao = new RecoverySet();
+    public static RecoverySet header = new RecoverySet();
     static {
         //DEPOIS da configuração ajustar o próximo token
         //program.add(new Integer(SintaticoConstants.R_PROGRAM));
@@ -18,5 +19,7 @@ public class First { //implementa os conjuntos first p/ alguns n.terminais
         // expressao
         expressao.add(SintaticoConstants.R_IS);
         expressao.add(SintaticoConstants.R_TO);
+        // header
+        header.add(SintaticoConstants.R_PROGRAM);
     }
 }
