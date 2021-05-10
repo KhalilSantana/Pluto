@@ -530,9 +530,15 @@ void execute(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN get
-void get(RecoverySet g) throws ParseEOFException : {}
+void get(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.todos_os_comandos.union(g);
+ }
 {
-    <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
+    try {
+        <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
+    } catch(ParseException e) {
+        consumeUntil(f, e, "Missing or invalid get expression", "<SS_DOT>");
+    }
 }
 // BEGIN set
 void set(RecoverySet g) throws ParseEOFException : {}
