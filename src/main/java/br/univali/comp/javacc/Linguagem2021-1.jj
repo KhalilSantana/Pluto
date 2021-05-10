@@ -541,9 +541,15 @@ void get(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN set
-void set(RecoverySet g) throws ParseEOFException : {}
+void set(RecoverySet g) throws ParseEOFException : {
+     RecoverySet f = First.todos_os_comandos.union(g);
+ }
 {
-    <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
+    try {
+        <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
+    } catch(ParseException e) {
+        consumeUntil(f, e, "Missing or invalid set expression", "<SS_DOT>");
+    }
 }
 // BEGIN put
 void put(RecoverySet g) throws ParseEOFException : {}
