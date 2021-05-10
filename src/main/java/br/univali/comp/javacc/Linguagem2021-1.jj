@@ -429,7 +429,7 @@ void ident_final(RecoverySet g) : {}
 {
     [ <IDENTIFIER> ]
 }
-void todos_os_comandos(RecoverySet g) : {}
+void todos_os_comandos(RecoverySet g) throws ParseEOFException : {}
 {
         loops_repeticao(g)
     |   verify(g)
@@ -437,19 +437,19 @@ void todos_os_comandos(RecoverySet g) : {}
     |   set(g)
     |   put(g)
 }
-void lista_de_comandos(RecoverySet g) : {}
+void lista_de_comandos(RecoverySet g) throws ParseEOFException : {}
 {
     todos_os_comandos(g) <SS_DOT> lista_de_comandos_opt(g)
 }
-void lista_de_comandos_opt(RecoverySet g) : {}
+void lista_de_comandos_opt(RecoverySet g) throws ParseEOFException : {}
 {
     (todos_os_comandos(g) <SS_DOT>)*
 }
-void lista_de_identificadores(RecoverySet g) : {}
+void lista_de_identificadores(RecoverySet g) throws ParseEOFException : {}
 {
     <IDENTIFIER> lista_opt_de_identificadores(g)
 }
-void lista_opt_de_identificadores(RecoverySet g) : {}
+void lista_opt_de_identificadores(RecoverySet g) throws ParseEOFException : {}
 {
     [ <SS_COMMA> lista_de_identificadores(g) ]
 }
@@ -466,32 +466,32 @@ void define(RecoverySet g) throws ParseEOFException : {
         consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
     }
 }
-void def_const_e_ou_var(RecoverySet g) : {}
+void def_const_e_ou_var(RecoverySet g) throws ParseEOFException : {}
 {
     define_const_var_opt(g) | define_var_opt_const(g)
 }
-void define_const_var_opt(RecoverySet g) : {}
+void define_const_var_opt(RecoverySet g) throws ParseEOFException: {}
 {
     <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)
 }
-void define_var_opt(RecoverySet g) : {}
+void define_var_opt(RecoverySet g) throws ParseEOFException : {}
 {
     [<R_VARIABLE> lista_de_atribuicao_sem_valor(g)]
 }
-void lista_de_atribuicao_com_valor(RecoverySet g) : {}
+void lista_de_atribuicao_com_valor(RecoverySet g) throws ParseEOFException : {}
 {
     tipo(g) <R_IS> lista_de_identificadores(g) constante(g) <SS_DOT> [ lista_de_atribuicao_com_valor(g) ]
 }
 
-void lista_de_atribuicao_sem_valor(RecoverySet g) : {}
+void lista_de_atribuicao_sem_valor(RecoverySet g) throws ParseEOFException: {}
 {
     tipo(g) <R_IS> lista_de_identificadores(g) <SS_DOT> [ lista_de_atribuicao_sem_valor(g) ]
 }
-void define_var_opt_const(RecoverySet g) : {}
+void define_var_opt_const(RecoverySet g) throws ParseEOFException : {}
 {
     <R_VARIABLE> lista_de_atribuicao_sem_valor(g) define_const_opt(g)
 }
-void define_const_opt(RecoverySet g) : {}
+void define_const_opt(RecoverySet g) throws ParseEOFException : {}
 {
     [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)]
 }
@@ -500,15 +500,15 @@ void tipo(RecoverySet g) : {}
     <R_NATURAL> | <R_REAL> |  <R_CHAR> | <R_BOOLEAN>
 }
 // BEGIN loops
-void loops_repeticao(RecoverySet g) : {}
+void loops_repeticao(RecoverySet g) throws ParseEOFException : {}
 {
     while_expr(g) | do_loop(g)
 }
-void while_expr(RecoverySet g) : {}
+void while_expr(RecoverySet g) throws ParseEOFException : {}
 {
     <R_WHILE> expressao(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
 }
-void do_loop(RecoverySet g) : {}
+void do_loop(RecoverySet g) throws ParseEOFException : {}
 {
     <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) <R_IS> <R_TRUE>
 }
@@ -524,17 +524,17 @@ void execute(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN get
-void get(RecoverySet g) : {}
+void get(RecoverySet g) throws ParseEOFException : {}
 {
     <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
 }
 // BEGIN set
-void set(RecoverySet g) : {}
+void set(RecoverySet g) throws ParseEOFException : {}
 {
     <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
 }
 // BEGIN put
-void put(RecoverySet g) : {}
+void put(RecoverySet g) throws ParseEOFException : {}
 // TODO: validate this, see note on the BNF google doc
 {
     <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
@@ -553,40 +553,40 @@ void constante(RecoverySet g) : {}
     <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
 }
 // BEGIN verify
-void verify(RecoverySet g) : {}
+void verify(RecoverySet g) throws ParseEOFException : {}
 {
     <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
 }
-void verify_truefalse(RecoverySet g) : {}
+void verify_truefalse(RecoverySet g) throws ParseEOFException : {}
 {
     verify_true(g) | verify_false(g)
 }
-void verify_true(RecoverySet g) : {}
+void verify_true(RecoverySet g) throws ParseEOFException : {}
 {
     <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
 }
-void verify_opt_false(RecoverySet g) : {}
+void verify_opt_false(RecoverySet g) throws ParseEOFException : {}
 {
   [
     <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
-void verify_false(RecoverySet g) : {}
+void verify_false(RecoverySet g) throws ParseEOFException : {}
 {
     <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
 }
-void verify_opt_true(RecoverySet g) : {}
+void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
 {
   [
     <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
 // BEGIN espressao
-void expressao(RecoverySet g) : {}
+void expressao(RecoverySet g) throws ParseEOFException : {}
 {
     expressao_aritmetica_ou_logica(g) expressao_dash(g)
 }
-void expressao_dash(RecoverySet g) : {}
+void expressao_dash(RecoverySet g) throws ParseEOFException : {}
 {
     [
           <SS_EQUALS>     expressao_aritmetica_ou_logica(g)
@@ -597,11 +597,11 @@ void expressao_dash(RecoverySet g) : {}
         | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
     ]
 }
-void expressao_aritmetica_ou_logica(RecoverySet g) : {}
+void expressao_aritmetica_ou_logica(RecoverySet g) throws ParseEOFException : {}
 {
     termo2(g) menor_prioridade(g)
 }
-void menor_prioridade(RecoverySet g) : {}
+void menor_prioridade(RecoverySet g) throws ParseEOFException : {}
 {
     [
          <SS_PLUS> termo2(g) menor_prioridade(g)
@@ -609,11 +609,11 @@ void menor_prioridade(RecoverySet g) : {}
        | <SS_OR> termo2(g) menor_prioridade(g)
     ]
 }
-void termo2(RecoverySet g) : {}
+void termo2(RecoverySet g) throws ParseEOFException : {}
 {
     termo1(g) media_prioridade(g)
 }
-void media_prioridade(RecoverySet g) : {}
+void media_prioridade(RecoverySet g) throws ParseEOFException : {}
 {
     [
         <SS_TIMES>   termo1(g) media_prioridade(g)
@@ -623,17 +623,17 @@ void media_prioridade(RecoverySet g) : {}
       | <SS_AND>     termo1(g) media_prioridade(g)
     ]
 }
-void termo1(RecoverySet g) : {}
+void termo1(RecoverySet g) throws ParseEOFException : {}
 {
     elemento(g) maior_prioridade(g)
 }
-void maior_prioridade(RecoverySet g) : {}
+void maior_prioridade(RecoverySet g) throws ParseEOFException : {}
 {
     [
         <SS_EXPODENTIAL> elemento(g) maior_prioridade(g)
     ]
 }
-void elemento(RecoverySet g) : {}
+void elemento(RecoverySet g) throws ParseEOFException : {}
 {
         <IDENTIFIER> indice(g)
      |  <INTEGER_CONSTANT>
@@ -644,7 +644,7 @@ void elemento(RecoverySet g) : {}
      |  <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
      |  <SS_NOT> <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
 }
-void indice(RecoverySet g) : {}
+void indice(RecoverySet g) throws ParseEOFException : {}
 {
     [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
 }
