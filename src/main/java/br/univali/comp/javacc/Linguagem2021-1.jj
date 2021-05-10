@@ -501,9 +501,15 @@ void define_const_opt(RecoverySet g) throws ParseEOFException : {}
 {
     [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)]
 }
-void tipo(RecoverySet g) : {}
+void tipo(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.tipo.union(g);
+}
 {
+  try {
     <R_NATURAL> | <R_REAL> |  <R_CHAR> | <R_BOOLEAN>
+  } catch(ParseException e) {
+    consumeUntil(f, e, "Invalid data type, must be one of: natural, real, char or boolean", "is");
+  }
 }
 // BEGIN loops
 void loops_repeticao(RecoverySet g) throws ParseEOFException : {}

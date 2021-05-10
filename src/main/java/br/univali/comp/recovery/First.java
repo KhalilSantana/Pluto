@@ -11,6 +11,7 @@ public class First { //implementa os conjuntos first p/ alguns n.terminais
     public static RecoverySet expressao = new RecoverySet();
     public static RecoverySet header = new RecoverySet();
     public static RecoverySet todos_os_comandos = new RecoverySet();
+    public static RecoverySet tipo = new RecoverySet();
     static {
         //DEPOIS da configuração ajustar o próximo token
         //program.add(new Integer(SintaticoConstants.R_PROGRAM));
@@ -24,5 +25,7 @@ public class First { //implementa os conjuntos first p/ alguns n.terminais
         header.add(SintaticoConstants.R_PROGRAM);
         // todos_os_comandos
         todos_os_comandos.add(SintaticoConstants.SS_DOT);
+        // tipo
+        tipo.add(SintaticoConstants.R_IS);
     }
 }
