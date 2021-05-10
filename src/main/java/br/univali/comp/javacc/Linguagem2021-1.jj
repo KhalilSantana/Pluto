@@ -8,13 +8,15 @@ options {
 
 PARSER_BEGIN(Sintatico)
 package br.univali.comp.javacc.gen;
-
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import br.univali.comp.recovery.*;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
     private StringBuilder lexicalErrors = new StringBuilder("");
-    public StringBuilder syntacticErrors = new StringBuilder("syntactic Errors: \n");
+    public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
     private Boolean hasLexicalErrors = false;
     public int contParseError = 0;
 
@@ -268,7 +270,11 @@ public class Sintatico {
                     eof = true;
            }
            if ( tok != lastError) {
-               String output = "=== ERROR ===\n"+errorMsg+"\n"+e.getMessage()+"\n";
+               String output = String.format("\n===| ERROR |===" +
+                                             "\nError message: %s"+
+                                             "\nFound at line/column [%s:%s]: \""+tok+"\""+
+                                             "\nExpected one of: %s"
+                ,errorMsg, tok.beginLine, tok.beginColumn, expectedTokens(e) );
                 System.out.println(output);
                 syntacticErrors.append(output);
                 lastError = tok;
@@ -276,6 +282,16 @@ public class Sintatico {
            }
            if ( eof ) throw new ParseEOFException("EOF found prematurely.");
         }
+
+    public static List<String> expectedTokens(ParseException e) {
+        List<String> output = new ArrayList<String>();
+        for (int[] group : e.expectedTokenSequences) {
+            for (int tokenConst : group) {
+                output.add(SintaticoConstants.tokenImage[tokenConst]);
+            }
+        }
+        return output;
+    }
 
     public String getResults(){
             return tokens.toString();
