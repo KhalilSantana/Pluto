@@ -268,7 +268,7 @@ public class Sintatico {
                     eof = true;
            }
            if ( tok != lastError) {
-               String output = "=== Error ===\n"+errorMsg+"\n"+e.getMessage()+"\n=== END ERROR ===\n";
+               String output = "=== ERROR ===\n"+errorMsg+"\n"+e.getMessage()+"\n";
                 System.out.println(output);
                 syntacticErrors.append(output);
                 lastError = tok;
