@@ -552,10 +552,15 @@ void set(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN put
-void put(RecoverySet g) throws ParseEOFException : {}
-// TODO: validate this, see note on the BNF google doc
+void put(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.todos_os_comandos.union(g);
+}
 {
-    <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
+    try {
+        <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
+    } catch(ParseException e) {
+        consumeUntil(f, e, "Missing or invalid put expression", "<SS_DOT>");
+    }
 }
 void identificador_ou_constante(RecoverySet g) : {}
 {
@@ -608,7 +613,7 @@ void expressao(RecoverySet g) throws ParseEOFException : {
             expressao_aritmetica_ou_logica(g) expressao_dash(g)
         } catch(ParseException e) {
             consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
-    }
+        }
 }
 void expressao_dash(RecoverySet g) throws ParseEOFException : {}
 {
