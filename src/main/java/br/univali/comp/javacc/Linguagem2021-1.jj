@@ -513,9 +513,15 @@ void do_loop(RecoverySet g) : {}
     <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) <R_IS> <R_TRUE>
 }
 // BEGIN execute
-void execute(RecoverySet g) : {}
+void execute(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.execute.union(g);
+}
 {
-    <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+    try {
+        <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+    } catch (ParseException e) {
+        consumeUntil(g, e, "Missing or invalid execute expression", "}");
+    }
 }
 // BEGIN get
 void get(RecoverySet g) : {}
