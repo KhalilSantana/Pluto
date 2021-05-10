@@ -582,9 +582,16 @@ void constante(RecoverySet g) : {}
     <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
 }
 // BEGIN verify
-void verify(RecoverySet g) throws ParseEOFException : {}
+void verify(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.todos_os_comandos.union(g);
+ }
 {
-    <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
+    try {
+        <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
+    } catch (ParseException e) {
+        consumeUntil(f, e, "Missing or invalid verify expression", "<SS_DOT>");
+    }
+
 }
 void verify_truefalse(RecoverySet g) throws ParseEOFException : {}
 {
