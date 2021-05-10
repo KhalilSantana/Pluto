@@ -237,7 +237,7 @@ public class Sintatico {
     // o método abaixo consome tokens até alcançar um que pertença ao conjunto
     // de sincronização
 
-    public void consumeUntil(RecoverySet g, ParseException e, String met)
+    public void consumeUntil(RecoverySet g, ParseException e, String errorMsg, String met)
             throws ParseEOFException, ParseException {
 
             Token tok;
@@ -268,8 +268,9 @@ public class Sintatico {
                     eof = true;
            }
            if ( tok != lastError) {
-                System.out.println("erro: "+ e.getMessage());
-                syntacticErrors.append(e.getMessage());
+               String output = "=== Error ===\n"+errorMsg+"\n"+e.getMessage()+"\n=== END ERROR ===\n";
+                System.out.println(output);
+                syntacticErrors.append(output);
                 lastError = tok;
                 contParseError++;  // incrementa número de erros
            }
@@ -413,7 +414,7 @@ void program() throws ParseEOFException :
 try{
     linguagem2021_1(g) <EOF>
 }catch (ParseException e){
-    consumeUntil(g, e, "program");
+    consumeUntil(g, e, "Missing incorrect XXXX", "program");
 }
 }
 void linguagem2021_1(RecoverySet g) throws ParseEOFException: {}
@@ -462,7 +463,7 @@ void define(RecoverySet g) throws ParseEOFException : {
     try {
         [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
     } catch(ParseException e) {
-        consumeUntil(f, e, "execute");
+        consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
     }
 }
 void def_const_e_ou_var(RecoverySet g) : {}
