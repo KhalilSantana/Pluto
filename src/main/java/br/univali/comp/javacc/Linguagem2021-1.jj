@@ -582,9 +582,15 @@ void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
   ]
 }
 // BEGIN espressao
-void expressao(RecoverySet g) throws ParseEOFException : {}
+void expressao(RecoverySet g) throws ParseEOFException : {
+    RecoverySet f = First.expressao.union(g);
+}
 {
-    expressao_aritmetica_ou_logica(g) expressao_dash(g)
+    try {
+            expressao_aritmetica_ou_logica(g) expressao_dash(g)
+        } catch(ParseException e) {
+            consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
+    }
 }
 void expressao_dash(RecoverySet g) throws ParseEOFException : {}
 {
