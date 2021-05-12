@@ -8,24 +8,24 @@ public class First { //implementa os conjuntos first p/ alguns n.terminais
     static public final RecoverySet program = new RecoverySet();
     public static RecoverySet define = new RecoverySet();
     public static RecoverySet execute = new RecoverySet();
-    public static RecoverySet expressao = new RecoverySet();
+    public static RecoverySet expression = new RecoverySet();
     public static RecoverySet header = new RecoverySet();
-    public static RecoverySet todos_os_comandos = new RecoverySet();
-    public static RecoverySet tipo = new RecoverySet();
+    public static RecoverySet all_commands = new RecoverySet();
+    public static RecoverySet type = new RecoverySet();
     static {
         //DEPOIS da configuração ajustar o próximo token
         //program.add(new Integer(SintaticoConstants.R_PROGRAM));
-        program.add(new Integer(SintaticoConstants.EOF));
-        define.add(SintaticoConstants.R_EXECUTE);
-        execute.add(SintaticoConstants.SS_CURLYBRACE_CLOSE);
+        program.add(Linguagem2021_1Constants.EOF);
+        define.add(Linguagem2021_1Constants.R_EXECUTE);
+        execute.add(Linguagem2021_1Constants.SS_CURLYBRACE_CLOSE);
         // expressao
-        expressao.add(SintaticoConstants.R_IS);
-        expressao.add(SintaticoConstants.R_TO);
+        expression.add(Linguagem2021_1Constants.R_IS);
+        expression.add(Linguagem2021_1Constants.R_TO);
         // header
-        header.add(SintaticoConstants.R_PROGRAM);
+        header.add(Linguagem2021_1Constants.R_PROGRAM);
         // todos_os_comandos
-        todos_os_comandos.add(SintaticoConstants.SS_DOT);
+        all_commands.add(Linguagem2021_1Constants.SS_DOT);
         // tipo
-        tipo.add(SintaticoConstants.R_IS);
+        type.add(Linguagem2021_1Constants.R_IS);
     }
 }
