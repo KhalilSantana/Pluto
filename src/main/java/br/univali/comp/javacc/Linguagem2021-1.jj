@@ -1,9 +1,6 @@
 options {
     STATIC = false;
     UNICODE_INPUT = true;
-    DEBUG_LOOKAHEAD = true;
-//    DEBUG_PARSER = true;
-//    DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(Sintatico)
@@ -14,299 +11,11 @@ import java.util.List;
 import br.univali.comp.recovery.*;
 
 public class Sintatico {
-    private StringBuilder tokens = new StringBuilder();
-    private StringBuilder lexicalErrors = new StringBuilder("");
-    public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
-    private Boolean hasLexicalErrors = false;
-    public int contParseError = 0;
-
-    boolean debug_recovery = true;
-    Token lastError = null;
-
-    public void handleToken()  {
-            try {
-                Token t = null;
-                t = getNextToken();
-                if(t.kind == EOF) return;
-                switch(t.kind){
-                    case INTEGER_CONSTANT:{
-                        tokens.append("Token: '"+t.image+"' - Type: INTEGER_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-                    case FLOAT_CONSTANT:{
-                        tokens.append("Token: '"+t.image+"' - Type: FLOAT_CONSTANT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-                    case LITERAL_CONSTANT:{
-                        tokens.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        break;
-                    }
-                    // Removido de acordo com correção prof.
-//                    case ARITHMETIC:{
-//                        tokens.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
-                    case IDENTIFIER:{
-                        tokens.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-                    // Removido de acordo com correção prof.
-//                    case LOGICAL:{
-//                        tokens.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
-//                  Simbolos especiais
-                    // Pontuação
-                    case SS_DOT:
-                    case SS_COMMA:
-                    case SS_CURLYBRACE_OPEN:
-                    case SS_CURLYBRACE_CLOSE:
-                    case SS_SQUACEBRACE_OPEN:
-                    case SS_SQUAREBRACE_CLOSE:
-                    case SS_PARENTESES_OPEN:
-                    case SS_PARENTESES_CLOSE:
-                    case SS_HEADER:
-                    // Simbolos aritiméticos
-                    case SS_PLUS:
-                    case SS_MINUS:
-                    case SS_TIMES:
-                    case SS_DIVIDE:
-                    case SS_PERCENT:
-                    case SS_EXPODENTIAL:
-                    case SS_MODULO:
-                    // Simbolos lógicos
-                    case SS_LESS_THAN:
-                    case SS_MORE_THAN:
-                    case SS_AND:
-                    case SS_OR:
-                    case SS_NOT:
-                    case SS_EQUALS:
-                    case SS_NOT_EQUALS:
-                    case SS_LESS_OR_EQUAL_THAN:
-                    case SS_MORE_OR_EQUAL_THAN: {
-                        tokens.append("Token: '"+t.image+"' - Type: SPECIAL_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-//                  Reserved words
-                    case  R_PROGRAM  :
-                    case  R_DEFINE   :
-                    case  R_NOT      :
-                    case  R_VARIABLE :
-                    case  R_IS       :
-                    case  R_VERIFY   :
-                    case  R_EXECUTE  :
-                    case  R_SET      :
-                    case  R_TO       :
-                    case  R_GET      :
-                    case  R_PUT      :
-                    case  R_LOOP     :
-                    case  R_WHILE    :
-                    case  R_TRUE     :
-                    case  R_FALSE    :
-                    case  R_DO       :
-                    case  R_NATURAL  :
-                    case  R_REAL     :
-                    case  R_CHAR     :
-                    case  R_BOOLEAN  :
-//                    case  R_IF       :
-//                    case  R_ELSE     :
-                    {
-                        tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        break;
-                    }
-//                    TO generic errors
-//                    case ERROR:{
-//                        tokens.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
-                    case ERROR_INVALID_SYMBOL:{
-                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        hasLexicalErrors = true;
-                        break;
-                    }
-                    case ERROR_UNFINISHED_LITERAL_CONSTANT:{
-                        tokens.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        lexicalErrors.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        hasLexicalErrors = true;
-                        break;
-                    }
-                    case ERROR_INTEGER_CONSTANT_FORMAT:{
-                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        hasLexicalErrors = true;
-                        break;
-                    }
-                    case ERROR_FLOAT_CONSTANT_FORMAT:{
-                        tokens.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        hasLexicalErrors = true;
-                        break;
-                    }
-                    default:{
-                        tokens.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("<ERROR - DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        hasLexicalErrors = true;
-                        break;
-                    }
-                }
-                handleToken();
-            }catch(Error error){
-                hasLexicalErrors = true;
-                tokens.append("Error - " + error.getMessage() + "\n");
-                lexicalErrors.append("Error - " + error.getMessage() + "\n");
-                System.out.println(error.toString());
-                handleToken();
-            }
-        }
-
-    private Sintatico readInput(String args[], String textToAnalyze) {
-        Sintatico sintatico = null;
-        if(args.length == 0){
-            System.out.println("Reading from received text!");
-            java.io.InputStream targetStream = new java.io.ByteArrayInputStream(textToAnalyze.getBytes());
-            sintatico = new Sintatico(targetStream);
-        }
-        else if(args.length == 1){
-            try{
-                sintatico = new Sintatico(new java.io.FileInputStream(args[0]));
-            }
-            catch(java.io.FileNotFoundException e){
-                System.err.println(args[0] + " was not found." );
-                System.err.println(e);
-            }
-        }
-        else{
-            System.out.println("Use:\njava Sintatico < inputFile");
-            System.out.println("or java Sintatico inputFile");
-        }
-        return sintatico;
-    }
-
-    public int getCountErrors() {
-        return this.contParseError;
-    }
-
-    public String getSyntacticErrors() {
-        return this.syntacticErrors.toString();
-    }
-
-
-    public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
-            Sintatico sintatico = this.readInput(args, textToAnalyze);
-
-            this.handleToken();
-            tokens.append("<EOF>");
-
-            try {
-                if(!hasLexicalErrors){
-                    sintatico.program();
-                } else {
-                    return lexicalErrors.toString();
-                }
-            } catch (ParseException ex) {
-                return ex.getMessage().toString();
-            }
-            if(sintatico.getCountErrors() > 0){
-             return "This program has + " + sintatico.getCountErrors() + " syntactic errors \n" + sintatico.getSyntacticErrors();
-            }
-            return "Syntactically correct!";
-        }
-
-
-    public static void main(String args[])  throws ParseException, ParseEOFException {
-        Sintatico parser = new Sintatico( System.in ) ;
-        parser.analyze(args, "");
-        System.out.println("tokens: " + parser.tokens);
-    }
-
-
-    static public String im(int x) {
-        int k;
-        String s;
-        s = tokenImage[x];
-        k = s.lastIndexOf("\"");
-
-        try {
-            s = s.substring(1,k);
-        } catch (StringIndexOutOfBoundsException e)
-            {}
-        return s;
-    }
-
-
-    boolean eof;    // variável que indica se EOF foi alcançado
-    // o método abaixo consome tokens até alcançar um que pertença ao conjunto
-    // de sincronização
-
-    public void consumeUntil(RecoverySet g, ParseException e, String errorMsg, String met)
-            throws ParseEOFException, ParseException {
-
-            Token tok;
-
-           if ( debug_recovery) // informação sobre a recuperação
-           {
-               System.out.println();
-               System.out.println("*** " + met + " ***");
-               System.out.println("     Syncronizing Set: " + g);
-           }
-
-           if (g == null) throw e; // se o conjunto é null, propaga a exceção
-
-           tok = getToken(1); // pega token corrente
-           while ( ! eof )  // se não chegou ao fim do arquivo
-           {
-                if ( g.contains(tok.kind ) ) //achou um token no conjunto
-                {
-                     if ( debug_recovery)
-                        System.out.println("     Found syncronizing token: " + im(tok.kind));
-                     break;
-                }
-                if (debug_recovery)
-                    System.out.println("     Ignoring token: " + im(tok.kind));
-                getNextToken();     // pega próximo token
-                tok = getToken(1);
-                if (tok.kind == EOF && ! g.contains(EOF) ) // fim da entrada?
-                    eof = true;
-           }
-           if ( tok != lastError) {
-               String output = String.format("\n===| ERROR |===" +
-                                             "\nError message: %s"+
-                                             "\nFound at line/column [%s:%s]: \""+tok+"\""+
-                                             "\nExpected one of: %s"
-                ,errorMsg, tok.beginLine, tok.beginColumn, expectedTokens(e) );
-                System.out.println(output);
-                syntacticErrors.append(output);
-                lastError = tok;
-                contParseError++;  // incrementa número de erros
-           }
-           if ( eof ) throw new ParseEOFException("EOF found prematurely.");
-        }
-
-    public static List<String> expectedTokens(ParseException e) {
-        List<String> output = new ArrayList<String>();
-        for (int[] group : e.expectedTokenSequences) {
-            for (int tokenConst : group) {
-                output.add(SintaticoConstants.tokenImage[tokenConst]);
-            }
-        }
-        return output;
-    }
-
-    public String getResults(){
-            return tokens.toString();
-    }
 
 }
 PARSER_END(Sintatico)
 
-TOKEN_MGR_DECLS :
-{
-	static int commentLevel = 0 ;
-}
-
-
-
+TOKEN_MGR_DECLS : {}
 
 //Skip the following elements
 SKIP : {
@@ -337,10 +46,6 @@ TOKEN : {
     <LITERAL_CONSTANT: ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
 }
 
-// Removido de acordo com correção prof.
-//TOKEN: {
-//    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
-//}
 TOKEN [IGNORE_CASE]: {
      <R_PROGRAM: "program">
   |  <R_DEFINE: "define">
@@ -362,26 +67,10 @@ TOKEN [IGNORE_CASE]: {
   |  <R_REAL: "real">
   |  <R_CHAR: "char">
   |  <R_BOOLEAN: "boolean">
-//  |  <R_IF: "if">
-//  |  <R_ELSE: "else">
 }
 TOKEN : {
     <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
 }
-
-// Removido de acordo com correção prof.
-//TOKEN : {
-//    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
-
-
-//TOKEN : {
-//    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
-//                     // Simbolos aritimético
-//                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
-//                     // Simbolos lógicos
-//                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
-//    >
-//}
 
 //Special symbols
 TOKEN : {
@@ -476,8 +165,6 @@ void lista_opt_de_identificadores(RecoverySet g) throws ParseEOFException : {}
     [ <SS_COMMA> lista_de_identificadores(g) ]
 }
 // BEGIN define
-// TODO: see notes on the BNF google doc, this is a temporary implentation
-// <valor> seems equal to <constante>
 void define(RecoverySet g) throws ParseEOFException : {
     RecoverySet f = First.define.union(g);
  }
@@ -586,7 +273,6 @@ void put(RecoverySet g) throws ParseEOFException : {
 }
 void identificador_ou_constante(RecoverySet g) : {}
 {
-// TODO: double check this, see note on the BNF google doc
     <IDENTIFIER> | constante(g)
 }
 void lista_de_identificadores_e_ou_constantes(RecoverySet g) : {}
