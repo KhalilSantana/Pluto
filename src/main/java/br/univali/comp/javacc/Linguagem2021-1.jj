@@ -5,13 +5,12 @@ options {
 
 PARSER_BEGIN(Linguagem2021_1)
 package br.univali.comp.javacc.gen;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
 import br.univali.comp.recovery.*;
 
 public class Linguagem2021_1 {
-
+    public void compile(String input) {
+    }
+}}
 }
 PARSER_END(Linguagem2021_1)
 
@@ -205,7 +204,7 @@ void define_const_opt(RecoverySet g) throws ParseEOFException : {}
     [<R_NOT> <R_VARIABLE> list_of_attribution_with_value(g) define_var_opt(g)]
 }
 void type(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.tipo.union(g);
+    RecoverySet f = First.type.union(g);
 }
 {
   try {
@@ -240,8 +239,8 @@ void execute(RecoverySet g) throws ParseEOFException : {
 }
 // BEGIN get
 void get(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
- }
+   RecoverySet f = First.all_commands.union(g);
+}
 {
     try {
         <R_GET>  <SS_CURLYBRACE_OPEN> list_of_identifiers(g) <SS_CURLYBRACE_CLOSE>
@@ -321,7 +320,7 @@ void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
 }
 // BEGIN espressao
 void expression(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.expressao.union(g);
+    RecoverySet f = First.expression.union(g);
 }
 {
     try {
