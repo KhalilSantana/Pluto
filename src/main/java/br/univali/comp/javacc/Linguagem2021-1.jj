@@ -140,29 +140,29 @@ void ident_final(RecoverySet g) : {}
 {
     [ <IDENTIFIER> ]
 }
-void todos_os_comandos(RecoverySet g) throws ParseEOFException : {}
+void all_commands(RecoverySet g) throws ParseEOFException : {}
 {
-        loops_repeticao(g)
+        loops(g)
     |   verify(g)
     |   get(g)
     |   set(g)
     |   put(g)
 }
-void lista_de_comandos(RecoverySet g) throws ParseEOFException : {}
+void list_of_commands(RecoverySet g) throws ParseEOFException : {}
 {
-    todos_os_comandos(g) <SS_DOT> lista_de_comandos_opt(g)
+    all_commands(g) <SS_DOT> list_of_commands_optional(g)
 }
-void lista_de_comandos_opt(RecoverySet g) throws ParseEOFException : {}
+void list_of_commands_optional(RecoverySet g) throws ParseEOFException : {}
 {
-    (todos_os_comandos(g) <SS_DOT>)*
+    (all_commands(g) <SS_DOT>)*
 }
-void lista_de_identificadores(RecoverySet g) throws ParseEOFException : {}
+void list_of_identifiers(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> lista_opt_de_identificadores(g)
+    <IDENTIFIER> list_of_identifiers_optional(g)
 }
-void lista_opt_de_identificadores(RecoverySet g) throws ParseEOFException : {}
+void list_of_identifiers_optional(RecoverySet g) throws ParseEOFException : {}
 {
-    [ <SS_COMMA> lista_de_identificadores(g) ]
+    [ <SS_COMMA> list_of_identifiers(g) ]
 }
 // BEGIN define
 void define(RecoverySet g) throws ParseEOFException : {
@@ -170,41 +170,41 @@ void define(RecoverySet g) throws ParseEOFException : {
  }
 {
     try {
-        [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
+        [ <R_DEFINE> <SS_CURLYBRACE_OPEN> define_const_and_or_var(g) <SS_CURLYBRACE_CLOSE> ]
     } catch(ParseException e) {
         consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
     }
 }
-void def_const_e_ou_var(RecoverySet g) throws ParseEOFException : {}
+void define_const_and_or_var(RecoverySet g) throws ParseEOFException : {}
 {
     define_const_var_opt(g) | define_var_opt_const(g)
 }
 void define_const_var_opt(RecoverySet g) throws ParseEOFException: {}
 {
-    <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)
+    <R_NOT> <R_VARIABLE> list_of_attribution_with_value(g) define_var_opt(g)
 }
 void define_var_opt(RecoverySet g) throws ParseEOFException : {}
 {
-    [<R_VARIABLE> lista_de_atribuicao_sem_valor(g)]
+    [<R_VARIABLE> list_of_attribution_without_value(g)]
 }
-void lista_de_atribuicao_com_valor(RecoverySet g) throws ParseEOFException : {}
+void list_of_attribution_with_value(RecoverySet g) throws ParseEOFException : {}
 {
-    tipo(g) <R_IS> lista_de_identificadores(g) constante(g) <SS_DOT> [ lista_de_atribuicao_com_valor(g) ]
+    type(g) <R_IS> list_of_identifiers(g) constant(g) <SS_DOT> [ list_of_attribution_with_value(g) ]
 }
 
-void lista_de_atribuicao_sem_valor(RecoverySet g) throws ParseEOFException: {}
+void list_of_attribution_without_value(RecoverySet g) throws ParseEOFException: {}
 {
-    tipo(g) <R_IS> lista_de_identificadores(g) <SS_DOT> [ lista_de_atribuicao_sem_valor(g) ]
+    type(g) <R_IS> list_of_identifiers(g) <SS_DOT> [ list_of_attribution_without_value(g) ]
 }
 void define_var_opt_const(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_VARIABLE> lista_de_atribuicao_sem_valor(g) define_const_opt(g)
+    <R_VARIABLE> list_of_attribution_without_value(g) define_const_opt(g)
 }
 void define_const_opt(RecoverySet g) throws ParseEOFException : {}
 {
-    [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)]
+    [<R_NOT> <R_VARIABLE> list_of_attribution_with_value(g) define_var_opt(g)]
 }
-void tipo(RecoverySet g) throws ParseEOFException : {
+void type(RecoverySet g) throws ParseEOFException : {
     RecoverySet f = First.tipo.union(g);
 }
 {
@@ -215,17 +215,17 @@ void tipo(RecoverySet g) throws ParseEOFException : {
   }
 }
 // BEGIN loops
-void loops_repeticao(RecoverySet g) throws ParseEOFException : {}
+void loops(RecoverySet g) throws ParseEOFException : {}
 {
     while_expr(g) | do_loop(g)
 }
 void while_expr(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_WHILE> expressao(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+    <R_WHILE> expression(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
 }
 void do_loop(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) <R_IS> <R_TRUE>
+    <R_LOOP> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expression(g) <R_IS> <R_TRUE>
 }
 // BEGIN execute
 void execute(RecoverySet g) throws ParseEOFException : {
@@ -233,7 +233,7 @@ void execute(RecoverySet g) throws ParseEOFException : {
 }
 {
     try {
-        <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+        <R_EXECUTE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
     } catch (ParseException e) {
         consumeUntil(g, e, "Missing or invalid execute expression", "}");
     }
@@ -244,7 +244,7 @@ void get(RecoverySet g) throws ParseEOFException : {
  }
 {
     try {
-        <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
+        <R_GET>  <SS_CURLYBRACE_OPEN> list_of_identifiers(g) <SS_CURLYBRACE_CLOSE>
     } catch(ParseException e) {
         consumeUntil(f, e, "Missing or invalid get expression", "<SS_DOT>");
     }
@@ -255,7 +255,7 @@ void set(RecoverySet g) throws ParseEOFException : {
  }
 {
     try {
-        <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
+        <R_SET> expression(g) <R_TO> list_of_identifiers(g)
     } catch(ParseException e) {
         consumeUntil(f, e, "Missing or invalid set expression", "<SS_DOT>");
     }
@@ -266,20 +266,20 @@ void put(RecoverySet g) throws ParseEOFException : {
 }
 {
     try {
-        <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
+        <R_PUT> <SS_CURLYBRACE_OPEN> list_of_identifiers_and_or_constants(g) <SS_CURLYBRACE_CLOSE>
     } catch(ParseException e) {
         consumeUntil(f, e, "Missing or invalid put expression", "<SS_DOT>");
     }
 }
-void identificador_ou_constante(RecoverySet g) : {}
+void identifier_or_constant(RecoverySet g) : {}
 {
-    <IDENTIFIER> | constante(g)
+    <IDENTIFIER> | constant(g)
 }
-void lista_de_identificadores_e_ou_constantes(RecoverySet g) : {}
+void list_of_identifiers_and_or_constants(RecoverySet g) : {}
 {
-    identificador_ou_constante(g) [ <SS_COMMA> lista_de_identificadores_e_ou_constantes(g) ]
+    identifier_or_constant(g) [ <SS_COMMA> list_of_identifiers_and_or_constants(g) ]
 }
-void constante(RecoverySet g) : {}
+void constant(RecoverySet g) : {}
 {
     <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
 }
@@ -289,7 +289,7 @@ void verify(RecoverySet g) throws ParseEOFException : {
  }
 {
     try {
-        <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
+        <R_VERIFY> expression(g) <R_IS> verify_truefalse(g)
     } catch (ParseException e) {
         consumeUntil(f, e, "Missing or invalid verify expression", "<SS_DOT>");
     }
@@ -301,94 +301,94 @@ void verify_truefalse(RecoverySet g) throws ParseEOFException : {}
 }
 void verify_true(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
+    <R_TRUE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
 }
 void verify_opt_false(RecoverySet g) throws ParseEOFException : {}
 {
   [
-    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
 void verify_false(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
+    <R_FALSE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
 }
 void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
 {
   [
-    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
+    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
 // BEGIN espressao
-void expressao(RecoverySet g) throws ParseEOFException : {
+void expression(RecoverySet g) throws ParseEOFException : {
     RecoverySet f = First.expressao.union(g);
 }
 {
     try {
-            expressao_aritmetica_ou_logica(g) expressao_dash(g)
+            arith_or_logical_expresion(g) expression_dash(g)
         } catch(ParseException e) {
             consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
         }
 }
-void expressao_dash(RecoverySet g) throws ParseEOFException : {}
+void expression_dash(RecoverySet g) throws ParseEOFException : {}
 {
     [
-          <SS_EQUALS>     expressao_aritmetica_ou_logica(g)
-        | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica(g)
-        | <SS_LESS_THAN>  expressao_aritmetica_ou_logica(g)
-        | <SS_MORE_THAN>  expressao_aritmetica_ou_logica(g)
-        | <SS_LESS_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
-        | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
+          <SS_EQUALS>     arith_or_logical_expresion(g)
+        | <SS_NOT_EQUALS> arith_or_logical_expresion(g)
+        | <SS_LESS_THAN>  arith_or_logical_expresion(g)
+        | <SS_MORE_THAN>  arith_or_logical_expresion(g)
+        | <SS_LESS_OR_EQUAL_THAN> arith_or_logical_expresion(g)
+        | <SS_MORE_OR_EQUAL_THAN> arith_or_logical_expresion(g)
     ]
 }
-void expressao_aritmetica_ou_logica(RecoverySet g) throws ParseEOFException : {}
+void arith_or_logical_expresion(RecoverySet g) throws ParseEOFException : {}
 {
-    termo2(g) menor_prioridade(g)
+    term2(g) least_priority(g)
 }
-void menor_prioridade(RecoverySet g) throws ParseEOFException : {}
+void least_priority(RecoverySet g) throws ParseEOFException : {}
 {
     [
-         <SS_PLUS> termo2(g) menor_prioridade(g)
-       | <SS_MINUS> termo2(g) menor_prioridade(g)
-       | <SS_OR> termo2(g) menor_prioridade(g)
+         <SS_PLUS> term2(g) least_priority(g)
+       | <SS_MINUS> term2(g) least_priority(g)
+       | <SS_OR> term2(g) least_priority(g)
     ]
 }
-void termo2(RecoverySet g) throws ParseEOFException : {}
+void term2(RecoverySet g) throws ParseEOFException : {}
 {
-    termo1(g) media_prioridade(g)
+    term1(g) medium_priority(g)
 }
-void media_prioridade(RecoverySet g) throws ParseEOFException : {}
+void medium_priority(RecoverySet g) throws ParseEOFException : {}
 {
     [
-        <SS_TIMES>   termo1(g) media_prioridade(g)
-      | <SS_DIVIDE>  termo1(g) media_prioridade(g)
-      | <SS_PERCENT> termo1(g) media_prioridade(g)
-      | <SS_MODULO>  termo1(g) media_prioridade(g)
-      | <SS_AND>     termo1(g) media_prioridade(g)
+        <SS_TIMES>   term1(g) medium_priority(g)
+      | <SS_DIVIDE>  term1(g) medium_priority(g)
+      | <SS_PERCENT> term1(g) medium_priority(g)
+      | <SS_MODULO>  term1(g) medium_priority(g)
+      | <SS_AND>     term1(g) medium_priority(g)
     ]
 }
-void termo1(RecoverySet g) throws ParseEOFException : {}
+void term1(RecoverySet g) throws ParseEOFException : {}
 {
-    elemento(g) maior_prioridade(g)
+    element(g) most_priority(g)
 }
-void maior_prioridade(RecoverySet g) throws ParseEOFException : {}
+void most_priority(RecoverySet g) throws ParseEOFException : {}
 {
     [
-        <SS_EXPODENTIAL> elemento(g) maior_prioridade(g)
+        <SS_EXPODENTIAL> element(g) most_priority(g)
     ]
 }
-void elemento(RecoverySet g) throws ParseEOFException : {}
+void element(RecoverySet g) throws ParseEOFException : {}
 {
-        <IDENTIFIER> indice(g)
+        <IDENTIFIER> index(g)
      |  <INTEGER_CONSTANT>
      |  <FLOAT_CONSTANT>
      |  <LITERAL_CONSTANT>
      |  <R_TRUE>
      |  <R_FALSE>
-     |  <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
-     |  <SS_NOT> <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
+     |  <SS_PARENTESES_OPEN> expression(g) <SS_PARENTESES_CLOSE>
+     |  <SS_NOT> <SS_PARENTESES_OPEN> expression(g) <SS_PARENTESES_CLOSE>
 }
-void indice(RecoverySet g) throws ParseEOFException : {}
+void index(RecoverySet g) throws ParseEOFException : {}
 {
     [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
 }
