@@ -3,17 +3,17 @@ options {
     UNICODE_INPUT = true;
 }
 
-PARSER_BEGIN(Sintatico)
+PARSER_BEGIN(Linguagem2021_1)
 package br.univali.comp.javacc.gen;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import br.univali.comp.recovery.*;
 
-public class Sintatico {
+public class Linguagem2021_1 {
 
 }
-PARSER_END(Sintatico)
+PARSER_END(Linguagem2021_1)
 
 TOKEN_MGR_DECLS : {}
 
