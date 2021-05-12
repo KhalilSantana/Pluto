@@ -10,7 +10,6 @@ import br.univali.comp.recovery.*;
 public class Linguagem2021_1 {
     public void compile(String input) {
     }
-}}
 }
 PARSER_END(Linguagem2021_1)
 
