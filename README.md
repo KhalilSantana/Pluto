@@ -8,7 +8,7 @@ Authors: Khalil Santana, Aream Luersen, Guilherme Cruz
 
 ## App screenshot
 
-![](/home/khalil/Documentos/CS/Fase7/Compiladores/Projetos/Pluto/app-screenshot.png)
+![](app-screenshot.png)
 
 ---
 
