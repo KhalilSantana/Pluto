@@ -5,15 +5,71 @@ options {
 
 PARSER_BEGIN(Linguagem2021_1)
 package br.univali.comp.javacc.gen;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import br.univali.comp.recovery.*;
+import br.univali.comp.javacc.gen.Linguagem2021_1.*;
 
 public class Linguagem2021_1 {
-    public void compile(String input) {
+    private LexicalOutput lexicalOutput;
+    public ParserOutput compile(String input) {
+        lexicalOutput = new LexicalOutput();
+        try {
+            this.program();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new ParserOutput(e.currentToken, e.getMessage());
+        }
+        return null;
+    }
+    public void lexError(Token t, ParseException pe) {
+        this.lexicalOutput.allTokens.add(new ParserOutput(t, pe.getMessage()));
+    }
+    private void consumeUntil(RecoverySet rs, ParseException pe, String errorMsg, String optional) {
+        // TODO: implement this;
+    }
+    public class LexicalOutput {
+        private List<ParserOutput> allTokens = new ArrayList<ParserOutput>();
+
+        public final List<ParserOutput> getErrorOutputs() {
+            return allTokens.stream().collect(Collectors.toList());
+        }
+    }
+    public class ParserOutput {
+        public final String errorMsg;
+        public final String token;
+        public final String tokenType;
+        public final int startLine;
+        public final int endLine;
+        public final int startColumn;
+        public final int endColumn;
+
+        public ParserOutput(Token token, String errorMsg) {
+            this.errorMsg = errorMsg;
+            this.token = token.image;
+            this.tokenType = this.getTokenType(token);
+            this.startLine = token.beginLine;
+            this.endLine = token.endLine;
+            this.startColumn = token.beginColumn;
+            this.endColumn = token.endColumn;
+        }
+
+        private String getTokenType(Token t) {
+            return Linguagem2021_1.tokenImage[t.kind].replace("<", "").replace(">", "");
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Token: %s - Type: %s - Line: %s - Column: %s", token, tokenType, startLine, startColumn);
+        }
     }
 }
 PARSER_END(Linguagem2021_1)
 
-TOKEN_MGR_DECLS : {}
+TOKEN_MGR_DECLS : {
+    String fooobar;
+}
 
 //Skip the following elements
 SKIP : {
@@ -102,14 +158,16 @@ TOKEN : {
   | <SS_MORE_OR_EQUAL_THAN: ">=">
 }
 
-TOKEN : {
-    <ERROR_INVALID_SYMBOL: ["\u0000" - "\u00ff"] >
+SPECIAL_TOKEN : {
+    <ERROR_INVALID_SYMBOL: ["\u0000" - "\u00ff"]> {
+        fooobar=image;
+    }
     |   <ERROR_UNFINISHED_LITERAL_CONSTANT: ("\"" (~["\""])*) | "'" (~["'"])* >
     |   <ERROR_INTEGER_CONSTANT_FORMAT: ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ >
     |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
 }
 
-void program() throws ParseEOFException :
+void program() :
 {
  RecoverySet g = First.program;
 }
@@ -120,11 +178,11 @@ try{
     consumeUntil(g, e, "Missing incorrect XXXX", "program");
 }
 }
-void linguagem2021_1(RecoverySet g) throws ParseEOFException: {}
+void linguagem2021_1(RecoverySet g): {}
 {
     header(g) <R_PROGRAM> <SS_CURLYBRACE_OPEN> define(g) execute(g) <SS_CURLYBRACE_CLOSE> ident_final(g)
 }
-void header(RecoverySet g) throws ParseEOFException: {
+void header(RecoverySet g): {
     RecoverySet f = First.header.union(g);
 }
 {
@@ -138,7 +196,7 @@ void ident_final(RecoverySet g) : {}
 {
     [ <IDENTIFIER> ]
 }
-void all_commands(RecoverySet g) throws ParseEOFException : {}
+void all_commands(RecoverySet g) : {}
 {
         loops(g)
     |   verify(g)
@@ -146,24 +204,24 @@ void all_commands(RecoverySet g) throws ParseEOFException : {}
     |   set(g)
     |   put(g)
 }
-void list_of_commands(RecoverySet g) throws ParseEOFException : {}
+void list_of_commands(RecoverySet g) : {}
 {
     all_commands(g) <SS_DOT> list_of_commands_optional(g)
 }
-void list_of_commands_optional(RecoverySet g) throws ParseEOFException : {}
+void list_of_commands_optional(RecoverySet g) : {}
 {
     (all_commands(g) <SS_DOT>)*
 }
-void list_of_identifiers(RecoverySet g) throws ParseEOFException : {}
+void list_of_identifiers(RecoverySet g) : {}
 {
     <IDENTIFIER> list_of_identifiers_optional(g)
 }
-void list_of_identifiers_optional(RecoverySet g) throws ParseEOFException : {}
+void list_of_identifiers_optional(RecoverySet g) : {}
 {
     [ <SS_COMMA> list_of_identifiers(g) ]
 }
 // BEGIN define
-void define(RecoverySet g) throws ParseEOFException : {
+void define(RecoverySet g) : {
     RecoverySet f = First.define.union(g);
  }
 {
@@ -173,36 +231,36 @@ void define(RecoverySet g) throws ParseEOFException : {
         consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
     }
 }
-void define_const_and_or_var(RecoverySet g) throws ParseEOFException : {}
+void define_const_and_or_var(RecoverySet g) : {}
 {
     define_const_var_opt(g) | define_var_opt_const(g)
 }
-void define_const_var_opt(RecoverySet g) throws ParseEOFException: {}
+void define_const_var_opt(RecoverySet g): {}
 {
     <R_NOT> <R_VARIABLE> list_of_attribution_with_value(g) define_var_opt(g)
 }
-void define_var_opt(RecoverySet g) throws ParseEOFException : {}
+void define_var_opt(RecoverySet g) : {}
 {
     [<R_VARIABLE> list_of_attribution_without_value(g)]
 }
-void list_of_attribution_with_value(RecoverySet g) throws ParseEOFException : {}
+void list_of_attribution_with_value(RecoverySet g) : {}
 {
     type(g) <R_IS> list_of_identifiers(g) constant(g) <SS_DOT> [ list_of_attribution_with_value(g) ]
 }
 
-void list_of_attribution_without_value(RecoverySet g) throws ParseEOFException: {}
+void list_of_attribution_without_value(RecoverySet g): {}
 {
     type(g) <R_IS> list_of_identifiers(g) <SS_DOT> [ list_of_attribution_without_value(g) ]
 }
-void define_var_opt_const(RecoverySet g) throws ParseEOFException : {}
+void define_var_opt_const(RecoverySet g) : {}
 {
     <R_VARIABLE> list_of_attribution_without_value(g) define_const_opt(g)
 }
-void define_const_opt(RecoverySet g) throws ParseEOFException : {}
+void define_const_opt(RecoverySet g) : {}
 {
     [<R_NOT> <R_VARIABLE> list_of_attribution_with_value(g) define_var_opt(g)]
 }
-void type(RecoverySet g) throws ParseEOFException : {
+void type(RecoverySet g) : {
     RecoverySet f = First.type.union(g);
 }
 {
@@ -213,20 +271,20 @@ void type(RecoverySet g) throws ParseEOFException : {
   }
 }
 // BEGIN loops
-void loops(RecoverySet g) throws ParseEOFException : {}
+void loops(RecoverySet g) : {}
 {
     while_expr(g) | do_loop(g)
 }
-void while_expr(RecoverySet g) throws ParseEOFException : {}
+void while_expr(RecoverySet g) : {}
 {
     <R_WHILE> expression(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
 }
-void do_loop(RecoverySet g) throws ParseEOFException : {}
+void do_loop(RecoverySet g) : {}
 {
     <R_LOOP> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expression(g) <R_IS> <R_TRUE>
 }
 // BEGIN execute
-void execute(RecoverySet g) throws ParseEOFException : {
+void execute(RecoverySet g) : {
     RecoverySet f = First.execute.union(g);
 }
 {
@@ -237,7 +295,7 @@ void execute(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN get
-void get(RecoverySet g) throws ParseEOFException : {
+void get(RecoverySet g) : {
    RecoverySet f = First.all_commands.union(g);
 }
 {
@@ -248,8 +306,8 @@ void get(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN set
-void set(RecoverySet g) throws ParseEOFException : {
-     RecoverySet f = First.todos_os_comandos.union(g);
+void set(RecoverySet g) : {
+     RecoverySet f = First.all_commands.union(g);
  }
 {
     try {
@@ -259,8 +317,8 @@ void set(RecoverySet g) throws ParseEOFException : {
     }
 }
 // BEGIN put
-void put(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
+void put(RecoverySet g) : {
+    RecoverySet f = First.all_commands.union(g);
 }
 {
     try {
@@ -282,8 +340,8 @@ void constant(RecoverySet g) : {}
     <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
 }
 // BEGIN verify
-void verify(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
+void verify(RecoverySet g) : {
+    RecoverySet f = First.all_commands.union(g);
  }
 {
     try {
@@ -293,32 +351,32 @@ void verify(RecoverySet g) throws ParseEOFException : {
     }
 
 }
-void verify_truefalse(RecoverySet g) throws ParseEOFException : {}
+void verify_truefalse(RecoverySet g) : {}
 {
     verify_true(g) | verify_false(g)
 }
-void verify_true(RecoverySet g) throws ParseEOFException : {}
+void verify_true(RecoverySet g) : {}
 {
     <R_TRUE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
 }
-void verify_opt_false(RecoverySet g) throws ParseEOFException : {}
+void verify_opt_false(RecoverySet g) : {}
 {
   [
     <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
-void verify_false(RecoverySet g) throws ParseEOFException : {}
+void verify_false(RecoverySet g) : {}
 {
     <R_FALSE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
 }
-void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
+void verify_opt_true(RecoverySet g) : {}
 {
   [
     <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> list_of_commands(g) <SS_CURLYBRACE_CLOSE>
   ]
 }
 // BEGIN espressao
-void expression(RecoverySet g) throws ParseEOFException : {
+void expression(RecoverySet g) : {
     RecoverySet f = First.expression.union(g);
 }
 {
@@ -328,7 +386,7 @@ void expression(RecoverySet g) throws ParseEOFException : {
             consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
         }
 }
-void expression_dash(RecoverySet g) throws ParseEOFException : {}
+void expression_dash(RecoverySet g) : {}
 {
     [
           <SS_EQUALS>     arith_or_logical_expresion(g)
@@ -339,11 +397,11 @@ void expression_dash(RecoverySet g) throws ParseEOFException : {}
         | <SS_MORE_OR_EQUAL_THAN> arith_or_logical_expresion(g)
     ]
 }
-void arith_or_logical_expresion(RecoverySet g) throws ParseEOFException : {}
+void arith_or_logical_expresion(RecoverySet g) : {}
 {
     term2(g) least_priority(g)
 }
-void least_priority(RecoverySet g) throws ParseEOFException : {}
+void least_priority(RecoverySet g) : {}
 {
     [
          <SS_PLUS> term2(g) least_priority(g)
@@ -351,11 +409,11 @@ void least_priority(RecoverySet g) throws ParseEOFException : {}
        | <SS_OR> term2(g) least_priority(g)
     ]
 }
-void term2(RecoverySet g) throws ParseEOFException : {}
+void term2(RecoverySet g) : {}
 {
     term1(g) medium_priority(g)
 }
-void medium_priority(RecoverySet g) throws ParseEOFException : {}
+void medium_priority(RecoverySet g) : {}
 {
     [
         <SS_TIMES>   term1(g) medium_priority(g)
@@ -365,17 +423,17 @@ void medium_priority(RecoverySet g) throws ParseEOFException : {}
       | <SS_AND>     term1(g) medium_priority(g)
     ]
 }
-void term1(RecoverySet g) throws ParseEOFException : {}
+void term1(RecoverySet g) : {}
 {
     element(g) most_priority(g)
 }
-void most_priority(RecoverySet g) throws ParseEOFException : {}
+void most_priority(RecoverySet g) : {}
 {
     [
         <SS_EXPODENTIAL> element(g) most_priority(g)
     ]
 }
-void element(RecoverySet g) throws ParseEOFException : {}
+void element(RecoverySet g) : {}
 {
         <IDENTIFIER> index(g)
      |  <INTEGER_CONSTANT>
@@ -386,7 +444,7 @@ void element(RecoverySet g) throws ParseEOFException : {}
      |  <SS_PARENTESES_OPEN> expression(g) <SS_PARENTESES_CLOSE>
      |  <SS_NOT> <SS_PARENTESES_OPEN> expression(g) <SS_PARENTESES_CLOSE>
 }
-void index(RecoverySet g) throws ParseEOFException : {}
+void index(RecoverySet g) : {}
 {
     [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
 }

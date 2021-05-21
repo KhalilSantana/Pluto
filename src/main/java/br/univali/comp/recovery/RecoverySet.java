@@ -46,19 +46,4 @@ public class RecoverySet extends HashSet {
 
         return t; // retorna um novo conjunto, sem 1 dos elementos
     }
-
-    // cria string descrevendo os tokens que pertencem ao conjunto
-    public String toString() {
-        Iterator it = this.iterator();
-        String s = "";
-        int k;
-
-        while (it.hasNext()) {
-            k = ((Integer) it.next()).intValue();
-            s += (Sintatico.im(k) + " ");
-        }
-
-        return s;
-    }
-
 }
