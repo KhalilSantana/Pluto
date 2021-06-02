@@ -84,8 +84,8 @@ public class VirtualMachine {
             x_val = x_val + y_val;
             stack.push(new StackElement(x_val, type));
         } else {
-            var x_val = (Double) x.content;
-            var y_val = (Double) y.content;
+            var x_val = (Float) x.content;
+            var y_val = (Float) y.content;
             x_val = x_val + y_val;
             stack.push(new StackElement(x_val, type));
         }

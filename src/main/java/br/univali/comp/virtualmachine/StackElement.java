@@ -14,7 +14,7 @@ public class StackElement {
         String contentStr = null;
         switch (dataType) {
             case FLOAT -> {
-                contentStr = ((Double) content).toString();
+                contentStr = ((Float) content).toString();
             }
             case INTEGER -> {
                 contentStr = ((Integer) content).toString();
