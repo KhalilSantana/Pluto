@@ -48,7 +48,7 @@ public class VirtualMachine {
             case LDI -> loadInteger(ins.parameter);
             case LDR -> loadFloat(ins.parameter);
             case LDS -> loadLiteral(ins.parameter);
-//                    LDV,
+            case LDV -> loadValueAt(ins.parameter);
 //                    STR,
 //                    AND,
 //                    NOT,
@@ -136,6 +136,15 @@ public class VirtualMachine {
         }
         var content = (String) parameter.content;
         stack.push(new StackElement(content, DataType.LITERAL));
+    }
+
+    private void loadValueAt(InstructionParameter parameter) {
+        System.out.println("LDV");
+        if (parameter.type != ParameterType.ADDRESS) {
+            invalidInstructionParameter(ParameterType.ADDRESS, parameter.type);
+        }
+        var stackElement = stack.get((Integer) parameter.content);
+        stack.push(new StackElement(stackElement.content, stackElement.dataType));
     }
 
     private static DataType checkType(StackElement x, StackElement y) {
