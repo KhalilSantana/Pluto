@@ -18,11 +18,13 @@ public class VirtualMachine {
     }
 
     public String printStack() {
-        StringBuilder sb = new StringBuilder("-- STACK TOP --\n");
-        stack.forEach(entry -> {
-            sb.append("- ").append(entry).append("\n");
-        });
-        sb.append("-- BOTTOM --");
+        int stackPos = 0;
+        StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
+        for (StackElement se : stack) {
+            sb.append(stackPos+" - ").append(se).append("\n");
+            stackPos++;
+        }
+        sb.append("-- STACK TOP --");
         return sb.toString();
     }
 
