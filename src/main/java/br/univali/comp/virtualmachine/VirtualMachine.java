@@ -106,7 +106,7 @@ public class VirtualMachine {
     private void loadBoolean(InstructionParameter parameter) {
         System.out.println("LDB");
         if (parameter.type != ParameterType.BOOLEAN_CONSTANT) {
-            throw new RuntimeException(String.format("Invalid instruction, expected BOOLEAN_CONSTANT parameter, got: %s", parameter.type));
+            invalidInstructionParameter(ParameterType.BOOLEAN_CONSTANT, parameter.type);
         }
         var content = (Boolean) parameter.content;
         stack.push(new StackElement(content, DataType.LOGIC));
@@ -114,7 +114,7 @@ public class VirtualMachine {
     private void loadInteger(InstructionParameter parameter) {
         System.out.println("LOAD");
         if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            throw new RuntimeException(String.format("Invalid instruction, expected integer constant parameter, got: %s", parameter.type));
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
         }
         var content = (Integer) parameter.content;
         stack.push(new StackElement(content, DataType.INTEGER));
@@ -142,5 +142,9 @@ public class VirtualMachine {
             throw new RuntimeException(String.format("Incompatible stack data types! Parameter x: %s, Parameter y: %s", x.dataType, y.dataType));
         }
         return effectiveOutputDataType;
+    }
+
+    private static RuntimeException invalidInstructionParameter(ParameterType expected, ParameterType got) {
+        throw new RuntimeException(String.format("Invalid instruction, expected %s parameter, got: %s", expected, got));
     }
 }
