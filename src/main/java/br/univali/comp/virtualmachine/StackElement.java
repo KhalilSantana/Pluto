@@ -22,6 +22,10 @@ public class StackElement {
             case LOGIC -> {
                 contentStr = ((Boolean) content).toString();
             }
+
+            case LITERAL -> {
+                contentStr = (String) content;
+            }
         }
 
         return String.format("C: %s; T: %s", contentStr, dataType);
