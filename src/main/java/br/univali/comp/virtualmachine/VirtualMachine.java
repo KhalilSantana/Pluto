@@ -46,7 +46,7 @@ public class VirtualMachine {
 //                    ALS,
             case LDB -> loadBoolean(ins.parameter);
             case LDI -> loadInteger(ins.parameter);
-//                    LDR,
+            case LDR -> loadFloat(ins.parameter);
 //                    LDS,
 //                    LDV,
 //                    STR,
@@ -118,6 +118,15 @@ public class VirtualMachine {
         }
         var content = (Integer) parameter.content;
         stack.push(new StackElement(content, DataType.INTEGER));
+    }
+
+    private void loadFloat(InstructionParameter parameter) {
+        System.out.println("LDR");
+        if (parameter.type != ParameterType.FLOAT_CONSTANT) {
+            invalidInstructionParameter(ParameterType.FLOAT_CONSTANT, parameter.type);
+        }
+        var content = (Float) parameter.content;
+        stack.push(new StackElement(content, DataType.FLOAT));
     }
 
     private static DataType checkType(StackElement x, StackElement y) {
