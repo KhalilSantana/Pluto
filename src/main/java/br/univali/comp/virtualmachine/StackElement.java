@@ -19,6 +19,9 @@ public class StackElement {
             case INTEGER -> {
                 contentStr = ((Integer) content).toString();
             }
+            case LOGIC -> {
+                contentStr = ((Boolean) content).toString();
+            }
         }
 
         return String.format("C: %s; T: %s", contentStr, dataType);

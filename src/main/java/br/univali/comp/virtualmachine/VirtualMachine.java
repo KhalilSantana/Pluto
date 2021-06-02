@@ -44,7 +44,7 @@ public class VirtualMachine {
 //                    ALI,
 //                    ALR,
 //                    ALS,
-//                    LDB,
+            case LDB -> loadBoolean(ins.parameter);
             case LDI -> loadInteger(ins.parameter);
 //                    LDR,
 //                    LDS,
@@ -67,6 +67,8 @@ public class VirtualMachine {
 //                    WRT,
 //                    STC
         }
+        System.out.println(this.printStack());
+        System.out.println(instructionPointer);
         instructionPointer++;
     }
 
@@ -101,6 +103,14 @@ public class VirtualMachine {
         //TODO
     }
 
+    private void loadBoolean(InstructionParameter parameter) {
+        System.out.println("LDB");
+        if (parameter.type != ParameterType.BOOLEAN_CONSTANT) {
+            throw new RuntimeException(String.format("Invalid instruction, expected BOOLEAN_CONSTANT parameter, got: %s", parameter.type));
+        }
+        var content = (Boolean) parameter.content;
+        stack.push(new StackElement(content, DataType.LOGIC));
+    }
     private void loadInteger(InstructionParameter parameter) {
         System.out.println("LOAD");
         if (parameter.type != ParameterType.INTEGER_CONSTANT) {

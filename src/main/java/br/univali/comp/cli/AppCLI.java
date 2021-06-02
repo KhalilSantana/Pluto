@@ -20,12 +20,14 @@ public class AppCLI {
         var ins0 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 1));
         var ins1 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 1));
         var ins2 = new Instruction(InstructionMnemonic.ADD, new InstructionParameter(ParameterType.NONE, null));
+        var ins3 = new Instruction(InstructionMnemonic.LDB, new InstructionParameter(ParameterType.BOOLEAN_CONSTANT, true));
         var insStop = new Instruction(InstructionMnemonic.STP, new InstructionParameter(ParameterType.NONE, null));
 
-        var instructionList = Arrays.asList(ins0, ins1, ins2, insStop);
+        var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, insStop);
 
         VirtualMachine vm = new VirtualMachine(instructionList);
         vm.executeAll();
+        System.out.println("==| EXEC RESULT |==");
         System.out.println(vm.printStack());
     }
 }

@@ -7,5 +7,6 @@ public enum ParameterType {
     INTEGER_CONSTANT,
     FLOAT_CONSTANT,
     LITERAL_CONSTANT,
+    BOOLEAN_CONSTANT,
     IO_TYPE,
 }
