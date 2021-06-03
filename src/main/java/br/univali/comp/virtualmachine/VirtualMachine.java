@@ -57,7 +57,7 @@ public class VirtualMachine {
             case LDV -> loadValueAt(ins);
 //                    STR,
             case AND -> logicalAnd(ins);
-//                    NOT,
+            case NOT -> logicalNOT(ins);
 //                    OR,
 //                    BGE,
 //                    BGR,
@@ -215,6 +215,13 @@ public class VirtualMachine {
         var x_val = (Boolean) x.content;
         var y_val = (Boolean) y.content;
         x_val = x_val & y_val;
+        stack.push(new DataFrame(type, x_val));
+    }
+
+    private void logicalNOT(Instruction ins) {
+        DataFrame x = stack.pop();
+        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, x);
+        var x_val = !(Boolean) x.content;
         stack.push(new DataFrame(type, x_val));
     }
 
