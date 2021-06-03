@@ -98,7 +98,20 @@ public class VirtualMachine {
     }
 
     private void multply(Instruction ins) {
-        //TODO
+        DataFrame x = stack.pop();
+        DataFrame y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            x_val = x_val * y_val;
+            stack.push(new DataFrame(type, x_val));
+        } else {
+            var x_val = (Float) x.content;
+            var y_val = (Float) y.content;
+            x_val = x_val * y_val;
+            stack.push(new DataFrame(type, x_val));
+        }
     }
 
     private void subtract(Instruction ins) {

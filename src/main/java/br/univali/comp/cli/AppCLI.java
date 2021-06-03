@@ -24,12 +24,14 @@ public class AppCLI {
         var ins9 = new Instruction(Instruction.Mnemonic.ALR, new DataFrame(DataType.INTEGER, 2));
         var ins10 = new Instruction(Instruction.Mnemonic.ALS, new DataFrame(DataType.INTEGER, 2));
         var ins11 = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 3));
-        var ins12 = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 4));
+        var ins12 = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 1));
         var ins13 = new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.NONE, null));
+        var ins14 = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 5));
+        var ins15 = new Instruction(Instruction.Mnemonic.MUL, new DataFrame(DataType.NONE, null));
         var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
 
         var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, ins8,
-                ins9, ins10, ins11, ins12, ins13,
+                ins9, ins10, ins11, ins12, ins13, ins14, ins15,
                 insStop);
 
         VirtualMachine vm = new VirtualMachine(instructionList);
