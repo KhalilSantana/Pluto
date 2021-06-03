@@ -43,7 +43,7 @@ public class VirtualMachine {
             case MUL -> multply(ins.parameter);
             case SUB -> subtract(ins.parameter);
             case ALB -> allocateBoolean(ins.parameter);
-//                    ALI,
+            case ALI -> allocateInteger(ins.parameter);
 //                    ALR,
 //                    ALS,
             case LDB -> loadBoolean(ins.parameter);
@@ -112,6 +112,16 @@ public class VirtualMachine {
         }
         for (int i = 0; i < (Integer) parameter.content; i++) {
             stack.push(new StackElement(false, DataType.LOGIC));
+        }
+    }
+
+    private void allocateInteger(InstructionParameter parameter) {
+        System.out.println("ALI");
+        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        }
+        for (int i = 0; i < (Integer) parameter.content; i++) {
+            stack.push(new StackElement(0, DataType.INTEGER));
         }
     }
 

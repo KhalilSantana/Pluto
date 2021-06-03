@@ -25,9 +25,10 @@ public class AppCLI {
         var ins5 = new Instruction(InstructionMnemonic.LDS, new InstructionParameter(ParameterType.LITERAL_CONSTANT, "abc"));
         var ins6 = new Instruction(InstructionMnemonic.LDV, new InstructionParameter(ParameterType.ADDRESS, 1));
         var ins7 = new Instruction(InstructionMnemonic.ALB, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 3));
+        var ins8 = new Instruction(InstructionMnemonic.ALI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 2));
         var insStop = new Instruction(InstructionMnemonic.STP, new InstructionParameter(ParameterType.NONE, null));
 
-        var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, insStop);
+        var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, ins8, insStop);
 
         VirtualMachine vm = new VirtualMachine(instructionList);
         vm.executeAll();
