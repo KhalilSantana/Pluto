@@ -28,13 +28,13 @@ public class AppCLI {
         var ins8 = new Instruction(InstructionMnemonic.ALI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 2));
         var ins9 = new Instruction(InstructionMnemonic.ALR, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 2));
         var ins10 = new Instruction(InstructionMnemonic.ALS, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 2));
-//        var ins11 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 3));
-//        var ins12 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 4));
+        var ins11 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 3));
+        var ins12 = new Instruction(InstructionMnemonic.LDI, new InstructionParameter(ParameterType.INTEGER_CONSTANT, 4));
         var ins13 = new Instruction(InstructionMnemonic.SUB, new InstructionParameter(ParameterType.NONE, null));
         var insStop = new Instruction(InstructionMnemonic.STP, new InstructionParameter(ParameterType.NONE, null));
 
         var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, ins8,
-                ins9, ins10, ins13,
+                ins9, ins10, ins11, ins12, ins13,
                 insStop);
 
         VirtualMachine vm = new VirtualMachine(instructionList);

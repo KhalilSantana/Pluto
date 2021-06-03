@@ -39,18 +39,18 @@ public class VirtualMachine {
         Instruction ins = instructions.get(instructionPointer);
         switch (ins.mnemonic) {
             case ADD -> add(ins);
-            case DIV -> divide(ins.parameter);
-            case MUL -> multply(ins.parameter);
+            case DIV -> divide(ins);
+            case MUL -> multply(ins);
             case SUB -> subtract(ins);
-            case ALB -> allocateBoolean(ins.parameter);
-            case ALI -> allocateInteger(ins.parameter);
-            case ALR -> allocateFloat(ins.parameter);
-            case ALS -> allocateLiteralValue(ins.parameter);
-            case LDB -> loadBoolean(ins.parameter);
-            case LDI -> loadInteger(ins.parameter);
-            case LDR -> loadFloat(ins.parameter);
-            case LDS -> loadLiteral(ins.parameter);
-            case LDV -> loadValueAt(ins.parameter);
+            case ALB -> allocateBoolean(ins);
+            case ALI -> allocateInteger(ins);
+            case ALR -> allocateFloat(ins);
+            case ALS -> allocateLiteralValue(ins);
+            case LDB -> loadBoolean(ins);
+            case LDI -> loadInteger(ins);
+            case LDR -> loadFloat(ins);
+            case LDS -> loadLiteral(ins);
+            case LDV -> loadValueAt(ins);
 //                    STR,
 //                    AND,
 //                    NOT,
@@ -93,11 +93,11 @@ public class VirtualMachine {
         }
     }
 
-    private void divide(InstructionParameter parameter) {
+    private void divide(Instruction ins) {
         //TODO
     }
 
-    private void multply(InstructionParameter parameter) {
+    private void multply(Instruction ins) {
         //TODO
     }
 
@@ -119,87 +119,87 @@ public class VirtualMachine {
         }
     }
 
-    private void allocateBoolean(InstructionParameter parameter) {
+    private void allocateBoolean(Instruction ins) {
         System.out.println("ALB");
-        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
-        for (int i = 0; i < (Integer) parameter.content; i++) {
+        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new StackElement(false, DataType.LOGIC));
         }
     }
 
-    private void allocateInteger(InstructionParameter parameter) {
+    private void allocateInteger(Instruction ins) {
         System.out.println("ALI");
-        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
-        for (int i = 0; i < (Integer) parameter.content; i++) {
+        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new StackElement(0, DataType.INTEGER));
         }
     }
 
-    private void allocateFloat(InstructionParameter parameter) {
+    private void allocateFloat(Instruction ins) {
         System.out.println("ALR");
-        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
-        for (int i = 0; i < (Integer) parameter.content; i++) {
+        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new StackElement(0f, DataType.FLOAT));
         }
     }
 
-    private void allocateLiteralValue(InstructionParameter parameter) {
+    private void allocateLiteralValue(Instruction ins) {
         System.out.println("ALS");
-        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
-        for (int i = 0; i < (Integer) parameter.content; i++) {
+        for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new StackElement("", DataType.LITERAL));
         }
     }
 
-    private void loadBoolean(InstructionParameter parameter) {
+    private void loadBoolean(Instruction ins) {
         System.out.println("LDB");
-        if (parameter.type != ParameterType.BOOLEAN_CONSTANT) {
-            invalidInstructionParameter(ParameterType.BOOLEAN_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.BOOLEAN_CONSTANT) {
+            invalidInstructionParameter(ParameterType.BOOLEAN_CONSTANT, ins.parameter.type);
         }
-        var content = (Boolean) parameter.content;
+        var content = (Boolean) ins.parameter.content;
         stack.push(new StackElement(content, DataType.LOGIC));
     }
-    private void loadInteger(InstructionParameter parameter) {
+    private void loadInteger(Instruction ins) {
         System.out.println("LOAD");
-        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
-            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
-        var content = (Integer) parameter.content;
+        var content = (Integer) ins.parameter.content;
         stack.push(new StackElement(content, DataType.INTEGER));
     }
 
-    private void loadFloat(InstructionParameter parameter) {
+    private void loadFloat(Instruction ins) {
         System.out.println("LDR");
-        if (parameter.type != ParameterType.FLOAT_CONSTANT) {
-            invalidInstructionParameter(ParameterType.FLOAT_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.FLOAT_CONSTANT) {
+            invalidInstructionParameter(ParameterType.FLOAT_CONSTANT, ins.parameter.type);
         }
-        var content = (Float) parameter.content;
+        var content = (Float) ins.parameter.content;
         stack.push(new StackElement(content, DataType.FLOAT));
     }
 
-    private void loadLiteral(InstructionParameter parameter) {
+    private void loadLiteral(Instruction ins) {
         System.out.println("LDS");
-        if (parameter.type != ParameterType.LITERAL_CONSTANT) {
-            invalidInstructionParameter(ParameterType.LITERAL_CONSTANT, parameter.type);
+        if (ins.parameter.type != ParameterType.LITERAL_CONSTANT) {
+            invalidInstructionParameter(ParameterType.LITERAL_CONSTANT, ins.parameter.type);
         }
-        var content = (String) parameter.content;
+        var content = (String) ins.parameter.content;
         stack.push(new StackElement(content, DataType.LITERAL));
     }
 
-    private void loadValueAt(InstructionParameter parameter) {
+    private void loadValueAt(Instruction ins) {
         System.out.println("LDV");
-        if (parameter.type != ParameterType.ADDRESS) {
-            invalidInstructionParameter(ParameterType.ADDRESS, parameter.type);
+        if (ins.parameter.type != ParameterType.ADDRESS) {
+            invalidInstructionParameter(ParameterType.ADDRESS, ins.parameter.type);
         }
-        var stackElement = stack.get((Integer) parameter.content);
+        var stackElement = stack.get((Integer) ins.parameter.content);
         stack.push(new StackElement(stackElement.content, stackElement.dataType));
     }
 
