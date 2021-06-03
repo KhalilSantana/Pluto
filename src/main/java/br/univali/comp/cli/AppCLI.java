@@ -32,10 +32,13 @@ public class AppCLI {
         var ins17 = new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, true));
         var ins18 = new Instruction(Instruction.Mnemonic.AND, new DataFrame(DataType.NONE, null));
         var ins19 = new Instruction(Instruction.Mnemonic.NOT, new DataFrame(DataType.NONE, null));
+        var ins20 = new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, true));
+        var ins21 = new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, false));
+        var ins22 = new Instruction(Instruction.Mnemonic.OR, new DataFrame(DataType.NONE, null));
         var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
 
         var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, ins8,
-                ins9, ins10, ins11, ins12, ins13, ins14, ins15, ins16, ins17, ins18, ins19,
+                ins9, ins10, ins11, ins12, ins13, ins14, ins15, ins16, ins17, ins18, ins19, ins20, ins21, ins22,
                 insStop);
 
         VirtualMachine vm = new VirtualMachine(instructionList);

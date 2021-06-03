@@ -58,7 +58,7 @@ public class VirtualMachine {
 //                    STR,
             case AND -> logicalAnd(ins);
             case NOT -> logicalNOT(ins);
-//                    OR,
+            case OR  -> logicalOr(ins);
 //                    BGE,
 //                    BGR,
 //                    DIF,
@@ -222,6 +222,16 @@ public class VirtualMachine {
         DataFrame x = stack.pop();
         var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, x);
         var x_val = !(Boolean) x.content;
+        stack.push(new DataFrame(type, x_val));
+    }
+
+    private void logicalOr(Instruction ins) {
+        DataFrame x = stack.pop();
+        DataFrame y = stack.pop();
+        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var x_val = (Boolean) x.content;
+        var y_val = (Boolean) y.content;
+        x_val = x_val || y_val;
         stack.push(new DataFrame(type, x_val));
     }
 
