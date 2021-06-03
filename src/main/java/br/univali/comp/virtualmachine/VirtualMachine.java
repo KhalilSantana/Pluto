@@ -1,5 +1,6 @@
 package br.univali.comp.virtualmachine;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -55,7 +56,7 @@ public class VirtualMachine {
             case LDS -> loadLiteral(ins);
             case LDV -> loadValueAt(ins);
 //                    STR,
-//                    AND,
+            case AND -> logicalAnd(ins);
 //                    NOT,
 //                    OR,
 //                    BGE,
@@ -207,6 +208,16 @@ public class VirtualMachine {
         stack.push(new DataFrame(stackElement.type, stackElement.content));
     }
 
+    private void logicalAnd(Instruction ins) {
+        DataFrame x = stack.pop();
+        DataFrame y = stack.pop();
+        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var x_val = (Boolean) x.content;
+        var y_val = (Boolean) y.content;
+        x_val = x_val & y_val;
+        stack.push(new DataFrame(type, x_val));
+    }
+
     private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
         DataType effectiveOutputDataType = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
@@ -221,6 +232,11 @@ public class VirtualMachine {
                     switch (y.type) {
                         case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
                         case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
+                    }
+                }
+                case BOOLEAN -> {
+                    switch (y.type) {
+                        case BOOLEAN -> effectiveOutputDataType = DataType.BOOLEAN;
                     }
                 }
             }
