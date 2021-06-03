@@ -42,7 +42,7 @@ public class VirtualMachine {
             case DIV -> divide(ins.parameter);
             case MUL -> multply(ins.parameter);
             case SUB -> subtract(ins.parameter);
-//                    ALB,
+            case ALB -> allocateBoolean(ins.parameter);
 //                    ALI,
 //                    ALR,
 //                    ALS,
@@ -103,6 +103,16 @@ public class VirtualMachine {
 
     private void subtract(InstructionParameter parameter) {
         //TODO
+    }
+
+    private void allocateBoolean(InstructionParameter parameter) {
+        System.out.println("ALB");
+        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        }
+        for (int i = 0; i < (Integer) parameter.content; i++) {
+            stack.push(new StackElement(false, DataType.LOGIC));
+        }
     }
 
     private void loadBoolean(InstructionParameter parameter) {
