@@ -102,7 +102,21 @@ public class VirtualMachine {
     }
 
     private void subtract(InstructionParameter parameter) {
-        //TODO
+        System.out.println("SUB");
+        StackElement x = stack.pop();
+        StackElement y = stack.pop();
+        var type = checkType(x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            x_val = y_val - x_val;
+            stack.push(new StackElement(x_val, type));
+        } else {
+            var x_val = (Float) x.content;
+            var y_val = (Float) y.content;
+            x_val = y_val - x_val;
+            stack.push(new StackElement(x_val, type));
+        }
     }
 
     private void allocateBoolean(InstructionParameter parameter) {
@@ -190,20 +204,17 @@ public class VirtualMachine {
     }
 
     private static DataType checkType(StackElement x, StackElement y) {
-        boolean sameType = x.dataType == y.dataType;
         DataType effectiveOutputDataType = null;
-        if (sameType) {
-            return x.dataType;
-        }
         switch (x.dataType) {
             case FLOAT -> {
-                if (y.dataType == DataType.INTEGER) {
-                    effectiveOutputDataType = DataType.FLOAT;
+                switch (y.dataType) {
+                    case FLOAT, INTEGER -> effectiveOutputDataType = DataType.FLOAT;
                 }
             }
             case INTEGER -> {
-                if (y.dataType == DataType.FLOAT) {
-                    effectiveOutputDataType = DataType.FLOAT;
+                switch (y.dataType) {
+                    case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
+                    case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
                 }
             }
         }
