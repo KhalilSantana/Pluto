@@ -37,6 +37,9 @@ public class VirtualMachine {
     public void executeStep() {
         // TODO
         Instruction ins = instructions.get(instructionPointer);
+        System.out.printf("Instruction Pointer: %d\n", instructionPointer);
+        System.out.println(ins);
+        System.out.println(this.printStack());
         switch (ins.mnemonic) {
             case ADD -> add(ins);
             case DIV -> divide(ins);
@@ -69,14 +72,11 @@ public class VirtualMachine {
 //                    WRT,
 //                    STC
         }
-        System.out.println(this.printStack());
-        System.out.println(instructionPointer);
         instructionPointer++;
     }
 
     // VM Instructions
     private void add(Instruction ins) {
-        System.out.println("ADD");
         StackElement x = stack.pop();
         StackElement y = stack.pop();
         var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
@@ -102,7 +102,6 @@ public class VirtualMachine {
     }
 
     private void subtract(Instruction ins) {
-        System.out.println("SUB");
         StackElement x = stack.pop();
         StackElement y = stack.pop();
         var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
@@ -120,7 +119,6 @@ public class VirtualMachine {
     }
 
     private void allocateBoolean(Instruction ins) {
-        System.out.println("ALB");
         if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
             invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
@@ -130,7 +128,6 @@ public class VirtualMachine {
     }
 
     private void allocateInteger(Instruction ins) {
-        System.out.println("ALI");
         if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
             invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
@@ -140,7 +137,6 @@ public class VirtualMachine {
     }
 
     private void allocateFloat(Instruction ins) {
-        System.out.println("ALR");
         if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
             invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
@@ -150,7 +146,6 @@ public class VirtualMachine {
     }
 
     private void allocateLiteralValue(Instruction ins) {
-        System.out.println("ALS");
         if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
             invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
@@ -160,7 +155,6 @@ public class VirtualMachine {
     }
 
     private void loadBoolean(Instruction ins) {
-        System.out.println("LDB");
         if (ins.parameter.type != ParameterType.BOOLEAN_CONSTANT) {
             invalidInstructionParameter(ParameterType.BOOLEAN_CONSTANT, ins.parameter.type);
         }
@@ -168,7 +162,6 @@ public class VirtualMachine {
         stack.push(new StackElement(content, DataType.LOGIC));
     }
     private void loadInteger(Instruction ins) {
-        System.out.println("LOAD");
         if (ins.parameter.type != ParameterType.INTEGER_CONSTANT) {
             invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, ins.parameter.type);
         }
@@ -177,7 +170,6 @@ public class VirtualMachine {
     }
 
     private void loadFloat(Instruction ins) {
-        System.out.println("LDR");
         if (ins.parameter.type != ParameterType.FLOAT_CONSTANT) {
             invalidInstructionParameter(ParameterType.FLOAT_CONSTANT, ins.parameter.type);
         }
@@ -186,7 +178,6 @@ public class VirtualMachine {
     }
 
     private void loadLiteral(Instruction ins) {
-        System.out.println("LDS");
         if (ins.parameter.type != ParameterType.LITERAL_CONSTANT) {
             invalidInstructionParameter(ParameterType.LITERAL_CONSTANT, ins.parameter.type);
         }
@@ -195,7 +186,6 @@ public class VirtualMachine {
     }
 
     private void loadValueAt(Instruction ins) {
-        System.out.println("LDV");
         if (ins.parameter.type != ParameterType.ADDRESS) {
             invalidInstructionParameter(ParameterType.ADDRESS, ins.parameter.type);
         }

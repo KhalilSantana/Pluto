@@ -8,4 +8,9 @@ public class Instruction {
         this.mnemonic = mnemonic;
         this.parameter = parameter;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Instruction %s - %s", mnemonic, parameter);
+    }
 }
