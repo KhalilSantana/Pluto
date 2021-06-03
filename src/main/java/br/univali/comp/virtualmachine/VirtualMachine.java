@@ -66,7 +66,7 @@ public class VirtualMachine {
 //                    SME,
 //                    SMR,
 //                    JMF,
-//                    JMP,
+            case JMP -> jumpToAddress(ins);
 //                    JMT,
 //                    STP,
 //                    REA,
@@ -235,25 +235,39 @@ public class VirtualMachine {
         stack.push(new DataFrame(type, x_val));
     }
 
+    private void jumpToAddress(Instruction ins) {
+        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        instructionPointer = (Integer) ins.parameter.content;
+    }
+
     private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
         DataType effectiveOutputDataType = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
         if (!compatibleTypesFlag) {
             switch (x.type) {
+                // ADD, MUL, SUB, DIV
                 case FLOAT -> {
                     switch (y.type) {
                         case FLOAT, INTEGER -> effectiveOutputDataType = DataType.FLOAT;
                     }
                 }
+                // ADD, MUL, SUB, DIV
                 case INTEGER -> {
                     switch (y.type) {
                         case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
                         case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
                     }
                 }
+                // LDB
                 case BOOLEAN -> {
-                    switch (y.type) {
-                        case BOOLEAN -> effectiveOutputDataType = DataType.BOOLEAN;
+                    if (y.type == DataType.BOOLEAN) {
+                        effectiveOutputDataType = DataType.BOOLEAN;
+                    }
+                }
+                // JMP
+                case ADDRESS -> {
+                    if (y.type == DataType.ADDRESS) {
+                        effectiveOutputDataType = DataType.ADDRESS;
                     }
                 }
             }
