@@ -22,7 +22,6 @@ public class DataFrame {
             case BOOLEAN -> {
                 contentStr = ((Boolean) content).toString();
             }
-
             case LITERAL -> {
                 contentStr = (String) content;
             }

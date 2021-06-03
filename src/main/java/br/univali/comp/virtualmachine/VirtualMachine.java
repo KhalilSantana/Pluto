@@ -161,6 +161,7 @@ public class VirtualMachine {
         var content = (Boolean) ins.parameter.content;
         stack.push(new DataFrame(DataType.BOOLEAN, content));
     }
+
     private void loadInteger(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
             invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
@@ -210,8 +211,7 @@ public class VirtualMachine {
                     }
                 }
             }
-        }
-        else {
+        } else {
             throw new RuntimeException(String.format("Incompatible stack data types for instruction %s! Parameter x: %s, Parameter y: %s", mnemonic, x.type, y.type));
         }
         if (effectiveOutputDataType == null) {
