@@ -38,10 +38,10 @@ public class VirtualMachine {
         // TODO
         Instruction ins = instructions.get(instructionPointer);
         switch (ins.mnemonic) {
-            case ADD -> add(ins.parameter);
+            case ADD -> add(ins);
             case DIV -> divide(ins.parameter);
             case MUL -> multply(ins.parameter);
-            case SUB -> subtract(ins.parameter);
+            case SUB -> subtract(ins);
             case ALB -> allocateBoolean(ins.parameter);
             case ALI -> allocateInteger(ins.parameter);
             case ALR -> allocateFloat(ins.parameter);
@@ -75,11 +75,11 @@ public class VirtualMachine {
     }
 
     // VM Instructions
-    private void add(InstructionParameter parameter) {
+    private void add(Instruction ins) {
         System.out.println("ADD");
         StackElement x = stack.pop();
         StackElement y = stack.pop();
-        var type = checkType(x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -101,11 +101,11 @@ public class VirtualMachine {
         //TODO
     }
 
-    private void subtract(InstructionParameter parameter) {
+    private void subtract(Instruction ins) {
         System.out.println("SUB");
         StackElement x = stack.pop();
         StackElement y = stack.pop();
-        var type = checkType(x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -203,20 +203,26 @@ public class VirtualMachine {
         stack.push(new StackElement(stackElement.content, stackElement.dataType));
     }
 
-    private static DataType checkType(StackElement x, StackElement y) {
+    private static DataType checkType(List<DataType> compatibleTypes, InstructionMnemonic mnemonic, StackElement x, StackElement y) {
         DataType effectiveOutputDataType = null;
-        switch (x.dataType) {
-            case FLOAT -> {
-                switch (y.dataType) {
-                    case FLOAT, INTEGER -> effectiveOutputDataType = DataType.FLOAT;
+        boolean compatibleTypesFlag = !(compatibleTypes.contains(x.dataType)) && !(compatibleTypes.contains(y.dataType));
+        if (!compatibleTypesFlag) {
+            switch (x.dataType) {
+                case FLOAT -> {
+                    switch (y.dataType) {
+                        case FLOAT, INTEGER -> effectiveOutputDataType = DataType.FLOAT;
+                    }
+                }
+                case INTEGER -> {
+                    switch (y.dataType) {
+                        case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
+                        case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
+                    }
                 }
             }
-            case INTEGER -> {
-                switch (y.dataType) {
-                    case FLOAT -> effectiveOutputDataType = DataType.FLOAT;
-                    case INTEGER -> effectiveOutputDataType = DataType.INTEGER;
-                }
-            }
+        }
+        else {
+            throw new RuntimeException(String.format("Incompatible stack data types for instruction %s! Parameter x: %s, Parameter y: %s", mnemonic, x.dataType, y.dataType));
         }
         if (effectiveOutputDataType == null) {
             throw new RuntimeException(String.format("Incompatible stack data types! Parameter x: %s, Parameter y: %s", x.dataType, y.dataType));
