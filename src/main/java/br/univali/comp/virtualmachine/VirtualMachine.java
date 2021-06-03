@@ -21,7 +21,7 @@ public class VirtualMachine {
         int stackPos = 0;
         StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
         for (StackElement se : stack) {
-            sb.append(stackPos+" - ").append(se).append("\n");
+            sb.append(stackPos).append(" - ").append(se).append("\n");
             stackPos++;
         }
         sb.append("-- STACK TOP --");
