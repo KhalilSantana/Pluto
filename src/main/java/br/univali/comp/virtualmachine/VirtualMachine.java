@@ -237,7 +237,7 @@ public class VirtualMachine {
 
     private void jumpFalseToAddress(Instruction ins) {
         checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
-        var top = stack.peek();
+        var top = stack.pop();
         checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, top, top);
         if (!(Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
