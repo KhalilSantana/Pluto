@@ -35,7 +35,7 @@ public class AppCLI {
         var ins20 = new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, true));
         var ins21 = new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, false));
         var ins22 = new Instruction(Instruction.Mnemonic.OR, new DataFrame(DataType.NONE, null));
-        var ins23 = new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.ADDRESS, 0));
+        var ins23 = new Instruction(Instruction.Mnemonic.JMF, new DataFrame(DataType.ADDRESS, 22));
         var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
 
         var instructionList = Arrays.asList(ins0, ins1, ins2, ins3, ins4, ins5, ins6, ins7, ins8,

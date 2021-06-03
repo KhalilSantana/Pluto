@@ -58,14 +58,14 @@ public class VirtualMachine {
 //                    STR,
             case AND -> logicalAnd(ins);
             case NOT -> logicalNOT(ins);
-            case OR  -> logicalOr(ins);
+            case OR -> logicalOr(ins);
 //                    BGE,
 //                    BGR,
 //                    DIF,
 //                    EQL,
 //                    SME,
 //                    SMR,
-//                    JMF,
+            case JMF -> jumpFalseToAddress(ins);
             case JMP -> jumpToAddress(ins);
 //                    JMT,
 //                    STP,
@@ -233,6 +233,15 @@ public class VirtualMachine {
         var y_val = (Boolean) y.content;
         x_val = x_val || y_val;
         stack.push(new DataFrame(type, x_val));
+    }
+
+    private void jumpFalseToAddress(Instruction ins) {
+        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        var top = stack.peek();
+        checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        if (!(Boolean) top.content) {
+            instructionPointer = (Integer) ins.parameter.content;
+        }
     }
 
     private void jumpToAddress(Instruction ins) {
