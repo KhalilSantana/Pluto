@@ -45,7 +45,7 @@ public class VirtualMachine {
             case ALB -> allocateBoolean(ins.parameter);
             case ALI -> allocateInteger(ins.parameter);
             case ALR -> allocateFloat(ins.parameter);
-//                    ALS,
+            case ALS -> allocateLiteralValue(ins.parameter);
             case LDB -> loadBoolean(ins.parameter);
             case LDI -> loadInteger(ins.parameter);
             case LDR -> loadFloat(ins.parameter);
@@ -132,6 +132,16 @@ public class VirtualMachine {
         }
         for (int i = 0; i < (Integer) parameter.content; i++) {
             stack.push(new StackElement(0f, DataType.FLOAT));
+        }
+    }
+
+    private void allocateLiteralValue(InstructionParameter parameter) {
+        System.out.println("ALS");
+        if (parameter.type != ParameterType.INTEGER_CONSTANT) {
+            invalidInstructionParameter(ParameterType.INTEGER_CONSTANT, parameter.type);
+        }
+        for (int i = 0; i < (Integer) parameter.content; i++) {
+            stack.push(new StackElement("", DataType.LITERAL));
         }
     }
 
