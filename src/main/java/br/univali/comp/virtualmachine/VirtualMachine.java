@@ -224,7 +224,7 @@ public class VirtualMachine {
         return effectiveOutputDataType;
     }
 
-    private static RuntimeException invalidInstructionParameter(ParameterType expected, ParameterType got) {
+    private static void invalidInstructionParameter(ParameterType expected, ParameterType got) {
         throw new RuntimeException(String.format("Invalid instruction, expected %s parameter, got: %s", expected, got));
     }
 }
