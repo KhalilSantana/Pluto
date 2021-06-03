@@ -1,28 +1,29 @@
 package br.univali.comp.virtualmachine;
 
-public class InstructionParameter {
-    public final ParameterType type;
+public class DataFrame {
     public final Object content;
+    public final DataType type;
 
-    public InstructionParameter(ParameterType type, Object parameter) {
+    public DataFrame(DataType type, Object content) {
+        this.content = content;
         this.type = type;
-        this.content = parameter;
     }
 
     @Override
     public String toString() {
         String contentStr = null;
         switch (type) {
-            case FLOAT_CONSTANT -> {
+            case FLOAT -> {
                 contentStr = ((Float) content).toString();
             }
-            case INTEGER_CONSTANT -> {
+            case INTEGER -> {
                 contentStr = ((Integer) content).toString();
             }
-            case BOOLEAN_CONSTANT -> {
+            case BOOLEAN -> {
                 contentStr = ((Boolean) content).toString();
             }
-            case LITERAL_CONSTANT -> {
+
+            case LITERAL -> {
                 contentStr = (String) content;
             }
         }

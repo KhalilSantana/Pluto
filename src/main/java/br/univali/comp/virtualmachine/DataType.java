@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum DataType {
-    LOGIC,
+    BOOLEAN,
     INTEGER,
     FLOAT,
-    LITERAL;
+    LITERAL,
+    ADDRESS,
+    NONE;
 
     public static List<DataType> getNumericDataTypes() {
         return new ArrayList<>(Arrays.asList(DataType.FLOAT, DataType.INTEGER));
