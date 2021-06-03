@@ -16,7 +16,7 @@ public class DataFrame {
             case FLOAT -> {
                 contentStr = ((Float) content).toString();
             }
-            case INTEGER -> {
+            case INTEGER, ADDRESS -> {
                 contentStr = ((Integer) content).toString();
             }
             case BOOLEAN -> {

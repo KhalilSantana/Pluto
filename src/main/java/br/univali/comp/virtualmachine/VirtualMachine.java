@@ -67,7 +67,7 @@ public class VirtualMachine {
 //                    SMR,
             case JMF -> jumpFalseToAddress(ins);
             case JMP -> jumpToAddress(ins);
-//                    JMT,
+            case JMT -> jumpTrueToAddress(ins);
 //                    STP,
 //                    REA,
 //                    WRT,
@@ -247,6 +247,15 @@ public class VirtualMachine {
     private void jumpToAddress(Instruction ins) {
         checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
         instructionPointer = (Integer) ins.parameter.content;
+    }
+
+    private void jumpTrueToAddress(Instruction ins) {
+        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        var top = stack.pop();
+        checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        if ((Boolean) top.content) {
+            instructionPointer = (Integer) ins.parameter.content;
+        }
     }
 
     private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
