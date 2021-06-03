@@ -29,7 +29,7 @@ public class VirtualMachine {
     }
 
     public void executeAll() {
-        while (instructions.get(instructionPointer).mnemonic != InstructionMnemonic.STP) {
+        while (instructions.get(instructionPointer).mnemonic != Instruction.Mnemonic.STP) {
             executeStep();
         }
     }
@@ -194,7 +194,7 @@ public class VirtualMachine {
         stack.push(new DataFrame(stackElement.type, stackElement.content));
     }
 
-    private static DataType checkType(List<DataType> compatibleTypes, InstructionMnemonic mnemonic, DataFrame x, DataFrame y) {
+    private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
         DataType effectiveOutputDataType = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
         if (!compatibleTypesFlag) {
