@@ -363,7 +363,7 @@ class VirtualMachineTest {
         assertEquals(1, stack.size());
         var stackElement = stack.peek();
         assertEquals(DataType.BOOLEAN, stackElement.type);
-        assertEquals(expectedResult, (Boolean) stackElement.content);
+        assertEquals(expectedResult, stackElement.content);
     }
     @ParameterizedTest(name = "{0} AND {1} = {2}")
     @CsvSource({
@@ -386,7 +386,7 @@ class VirtualMachineTest {
         assertEquals(1, stack.size());
         var stackElement = stack.peek();
         assertEquals(DataType.BOOLEAN, stackElement.type);
-        assertEquals(expectedResult, (Boolean) stackElement.content);
+        assertEquals(expectedResult, stackElement.content);
     }
     @ParameterizedTest(name = "NOT {0} = {1}")
     @CsvSource({
@@ -406,6 +406,6 @@ class VirtualMachineTest {
         assertEquals(1, stack.size());
         var stackElement = stack.peek();
         assertEquals(DataType.BOOLEAN, stackElement.type);
-        assertEquals(expectedResult, (Boolean) stackElement.content);
+        assertEquals(expectedResult, stackElement.content);
     }
 }
