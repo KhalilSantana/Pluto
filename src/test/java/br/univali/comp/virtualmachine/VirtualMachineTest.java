@@ -260,7 +260,7 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
-    @ParameterizedTest(name = "{0} AND {1} = {2}")
+    @ParameterizedTest(name = "{0} OR {1} = {2}")
     @CsvSource({
 //           X      Y      ExpectedResult
             "true,  true,  true",
