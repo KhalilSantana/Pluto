@@ -125,10 +125,10 @@ public class VirtualMachine {
             x_val = y_val - x_val;
             stack.push(new DataFrame(type, x_val));
         } else {
-            var x_val = (Float) x.content;
-            var y_val = (Float) y.content;
-            x_val = y_val - x_val;
-            stack.push(new DataFrame(type, x_val));
+            var x_val = ((Number) x.content).floatValue();
+            var y_val = ((Number) y.content).floatValue();
+            float result = y_val - x_val;
+            stack.push(new DataFrame(type, result));
         }
     }
 

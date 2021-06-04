@@ -93,4 +93,88 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
+
+    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @CsvSource({
+//            X  Y  ExpectedResult
+            " 1, 2, -1",
+            "-1, 1, -2"
+    })
+    @Name("SUB-Integers")
+    void subIntegers(Integer x, Integer y, Integer expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.INTEGER, stackElement.type);
+        assertEquals(expectedResult, (Integer) stackElement.content);
+    }
+
+    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @CsvSource({
+//            X    Y    ExpectedResult
+            " 1.0, 2.0, -1.0",
+            "-1.0, 1.0, -2.0"
+    })
+    @Name("SUB-Floats")
+    void subFloats(Float x, Float y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @CsvSource({
+//           X    Y    ExpectedResult
+            "1,   2.0, -1.0",
+    })
+    @Name("SUB-IntegerFloat")
+    void subIntegerFloat(Integer x, Float y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @CsvSource({
+//           X    Y  ExpectedResult
+            "1.0, 2, -1.0",
+    })
+    @Name("SUB-FloatInteger")
+    void subFloatInteger(Float x, Integer y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
 }
