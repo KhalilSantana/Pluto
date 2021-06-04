@@ -1,6 +1,6 @@
 package br.univali.comp.virtualmachine;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -211,7 +211,7 @@ public class VirtualMachine {
     private void logicalAnd(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, y);
         var x_val = (Boolean) x.content;
         var y_val = (Boolean) y.content;
         x_val = x_val & y_val;
@@ -220,7 +220,7 @@ public class VirtualMachine {
 
     private void logicalNOT(Instruction ins) {
         DataFrame x = stack.pop();
-        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, x);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, x);
         var x_val = !(Boolean) x.content;
         stack.push(new DataFrame(type, x_val));
     }
@@ -228,7 +228,7 @@ public class VirtualMachine {
     private void logicalOr(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, y);
         var x_val = (Boolean) x.content;
         var y_val = (Boolean) y.content;
         x_val = x_val || y_val;
@@ -253,23 +253,23 @@ public class VirtualMachine {
     }
 
     private void jumpFalseToAddress(Instruction ins) {
-        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
         var top = stack.pop();
-        checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
         if (!(Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
         }
     }
 
     private void jumpToAddress(Instruction ins) {
-        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
         instructionPointer = (Integer) ins.parameter.content;
     }
 
     private void jumpTrueToAddress(Instruction ins) {
-        checkType(Arrays.asList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
         var top = stack.pop();
-        checkType(Arrays.asList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
         if ((Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
         }
