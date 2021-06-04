@@ -268,8 +268,8 @@ class VirtualMachineTest {
             "false, true,  true",
             "false, false, false"
     })
-    @Name("OR-Logical")
-    void orIntegers(Boolean x, Boolean y, Boolean expectedResult) {
+    @Name("Logical-OR")
+    void logicalOr(Boolean x, Boolean y, Boolean expectedResult) {
         var insList = new ArrayList<Instruction>();
         insList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, x)));
         insList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, y)));
