@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VirtualMachineTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{0} + {1} = {2}")
     @CsvSource({
 //            X  Y  ExpectedResult
             " 1, 2, 3",
