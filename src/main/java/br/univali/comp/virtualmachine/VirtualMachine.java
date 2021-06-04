@@ -44,7 +44,7 @@ public class VirtualMachine {
         switch (ins.mnemonic) {
             case ADD -> add(ins);
             case DIV -> divide(ins);
-            case MUL -> multply(ins);
+            case MUL -> multiply(ins);
             case SUB -> subtract(ins);
             case ALB -> allocateBoolean(ins);
             case ALI -> allocateInteger(ins);
@@ -98,7 +98,7 @@ public class VirtualMachine {
         //TODO
     }
 
-    private void multply(Instruction ins) {
+    private void multiply(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
         var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
