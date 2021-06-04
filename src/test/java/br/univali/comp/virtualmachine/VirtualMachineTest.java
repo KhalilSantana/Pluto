@@ -259,7 +259,7 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
-    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @ParameterizedTest(name = "{0} * {1} = {2}")
     @CsvSource({
 //            X  Y  ExpectedResult
             " 1, 2, 2",
@@ -281,7 +281,7 @@ class VirtualMachineTest {
         assertEquals(expectedResult, (Integer) stackElement.content);
     }
 
-    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @ParameterizedTest(name = "{0} * {1} = {2}")
     @CsvSource({
 //            X    Y     ExpectedResult
             " 1.0, 2.0,  2.0",
@@ -302,7 +302,7 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
-    @ParameterizedTest(name = "{0} - {1} = {2}")
+    @ParameterizedTest(name = "{0} * {1} = {2}")
     @CsvSource({
 //           X    Y    ExpectedResult
             "1,   2.0, 2.0",
