@@ -177,6 +177,88 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
+    @ParameterizedTest(name = "{0} / {1} = {2}")
+    @CsvSource({
+//            X  Y  ExpectedResult
+            " 3, 5, 0",
+            " 5, 3, 1"
+    })
+    @Name("DIV-Integers")
+    void divIntegers(Integer x, Integer y, Integer expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.DIV, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.INTEGER, stackElement.type);
+        assertEquals(expectedResult, (Integer) stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} / {1} = {2}")
+    @CsvSource({
+//            X    Y     ExpectedResult
+            " 3.0, 5.0,  0.6",
+            " 5.0, 3.0,  1.6666666"
+    })
+    @Name("DIV-Floats")
+    void divFloats(Float x, Float y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.DIV, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} / {1} = {2}")
+    @CsvSource({
+//           X    Y    ExpectedResult
+            "3,   5.0, 0.6",
+    })
+    @Name("DIV-IntegerFloat")
+    void divIntegerFloat(Integer x, Float y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.DIV, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} / {1} = {2}")
+    @CsvSource({
+//           X    Y  ExpectedResult
+            "3.0, 5, 0.6",
+    })
+    @Name("DIV-FloatInteger")
+    void divFloatInteger(Float x, Integer y, Float expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.DIV, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.FLOAT, stackElement.type);
+        assertEquals(expectedResult, (Float) stackElement.content);
+    }
     @ParameterizedTest(name = "{0} - {1} = {2}")
     @CsvSource({
 //            X  Y  ExpectedResult
