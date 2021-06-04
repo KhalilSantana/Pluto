@@ -306,4 +306,24 @@ class VirtualMachineTest {
         assertEquals(DataType.BOOLEAN, stackElement.type);
         assertEquals(expectedResult, (Boolean) stackElement.content);
     }
+    @ParameterizedTest(name = "NOT {0} = {1}")
+    @CsvSource({
+//           X      ExpectedResult
+            "true,  false",
+            "false, true",
+    })
+    @Name("Logical-NOT")
+    void logicalNot(Boolean x, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.NOT, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, (Boolean) stackElement.content);
+    }
 }
