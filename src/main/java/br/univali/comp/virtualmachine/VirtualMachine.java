@@ -59,7 +59,7 @@ public class VirtualMachine {
             case AND -> logicalAnd(ins);
             case NOT -> logicalNOT(ins);
             case OR -> logicalOr(ins);
-//                    BGE,
+            case BGE -> relationalGreaterOrEquals(ins);
 //                    BGR,
 //                    DIF,
 //                    EQL,
@@ -233,6 +233,23 @@ public class VirtualMachine {
         var y_val = (Boolean) y.content;
         x_val = x_val || y_val;
         stack.push(new DataFrame(type, x_val));
+    }
+
+    private void relationalGreaterOrEquals(Instruction ins) {
+        DataFrame x = stack.pop();
+        DataFrame y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            var flag = y_val >= x_val;
+            stack.push(new DataFrame(DataType.BOOLEAN, flag));
+        } else {
+            var x_val = (Float) x.content;
+            var y_val = (Float) y.content;
+            var flag = y_val >= x_val;
+            stack.push(new DataFrame(DataType.BOOLEAN, flag));
+        }
     }
 
     private void jumpFalseToAddress(Instruction ins) {
