@@ -283,4 +283,27 @@ class VirtualMachineTest {
         assertEquals(DataType.BOOLEAN, stackElement.type);
         assertEquals(expectedResult, (Boolean) stackElement.content);
     }
+    @ParameterizedTest(name = "{0} AND {1} = {2}")
+    @CsvSource({
+//           X      Y      ExpectedResult
+            "true,  true,  true",
+            "true,  false, false",
+            "false, true,  false",
+            "false, false, false"
+    })
+    @Name("Logical-AND")
+    void logicalAnd(Boolean x, Boolean y, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.AND, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, (Boolean) stackElement.content);
+    }
 }
