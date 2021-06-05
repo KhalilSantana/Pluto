@@ -408,4 +408,95 @@ class VirtualMachineTest {
         assertEquals(DataType.BOOLEAN, stackElement.type);
         assertEquals(expectedResult, stackElement.content);
     }
+    @ParameterizedTest(name = "{0} > {1} = {2}")
+    @CsvSource({
+//            S   T  ExpectedResult
+            " 1,  2, false",
+            " 2,  1, true",
+            "-1,  1, false",
+            " 1, -1, true"
+    })
+    @Name("Relational-BGR-Integers")
+    void relationalBgrIntegers(Integer subTop, Integer top, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, subTop)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, top)));
+        insList.add(new Instruction(Instruction.Mnemonic.BGR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} > {1} = {2}")
+    @CsvSource({
+//            S     T    ExpectedResult
+            " 1.0,  2.0, false",
+            " 2.0,  1.0, true",
+            "-1.0,  1.0, false",
+            " 1.0, -1.0, true"
+    })
+    @Name("Relational-BGR-Floats")
+    void relationalBgrFloats(Float subTop, Float top, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, subTop)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, top)));
+        insList.add(new Instruction(Instruction.Mnemonic.BGR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, stackElement.content);
+    }
+    @ParameterizedTest(name = "{0} > {1} = {2}")
+    @CsvSource({
+//            S     T    ExpectedResult
+            " 1.0,  2,   false",
+            " 2.0,  1,   true",
+            "-1.0,  1,   false",
+            " 1.0, -1,   true"
+    })
+    @Name("Relational-BGR-Floats")
+    void relationalBgrFloatsIntegers(Float subTop, Integer top, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, subTop)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, top)));
+        insList.add(new Instruction(Instruction.Mnemonic.BGR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, stackElement.content);
+    }    @ParameterizedTest(name = "{0} > {1} = {2}")
+    @CsvSource({
+//            S   T    ExpectedResult
+            " 1,  2.0, false",
+            " 2,  1.0, true",
+            "-1,  1.0, false",
+            " 1, -1.0, true"
+    })
+    @Name("Relational-BGR-FloatsIntegers")
+    void relationalBgrIntegersFloats(Integer subTop, Float top, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, subTop)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, top)));
+        insList.add(new Instruction(Instruction.Mnemonic.BGR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, stackElement.content);
+    }
 }
