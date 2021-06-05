@@ -60,7 +60,7 @@ public class VirtualMachine {
             case NOT -> logicalNOT(ins);
             case OR -> logicalOr(ins);
             case BGE -> relationalGreaterOrEquals(ins);
-//                    BGR,
+            case BGR -> relationalGreater(ins);
 //                    DIF,
 //                    EQL,
 //                    SME,
@@ -262,6 +262,23 @@ public class VirtualMachine {
             var y_val = (Float) y.content;
             var flag = y_val >= x_val;
             stack.push(new DataFrame(DataType.BOOLEAN, flag));
+        }
+    }
+
+    private void relationalGreater(Instruction ins) {
+        DataFrame x = stack.pop();
+        DataFrame y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            var flag = y_val > x_val;
+            stack.push(new DataFrame(DataType.BOOLEAN, flag));
+        } else {
+            var x_val = ((Number) x.content).floatValue();
+            var y_val = ((Number) y.content).floatValue();
+            Boolean result = y_val > x_val;
+            stack.push(new DataFrame(DataType.BOOLEAN, result));
         }
     }
 
