@@ -63,7 +63,7 @@ public class VirtualMachine {
             case BGR -> relationalGreater(ins);
             case DIF -> relationalDifferent(ins);
             case EQL -> relationalEquals(ins);
-//                    SME,
+            case SME -> relationalLessOrEquals(ins);
 //                    SMR,
             case JMF -> jumpFalseToAddress(ins);
             case JMP -> jumpToAddress(ins);
@@ -312,6 +312,23 @@ public class VirtualMachine {
             var x_val = ((Number) x.content).floatValue();
             var y_val = ((Number) y.content).floatValue();
             result = y_val == x_val;
+        }
+        stack.push(new DataFrame(DataType.BOOLEAN, result));
+    }
+
+    private void relationalLessOrEquals(Instruction ins) {
+        DataFrame top = stack.pop();
+        DataFrame sub = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, top, sub);
+        var result = false;
+        if (type == DataType.INTEGER) {
+            var top_val = (Integer) top.content;
+            var sub_val = (Integer) sub.content;
+            result = sub_val <= top_val;
+        } else {
+            var top_val = (Float) top.content;
+            var sub_val = (Float) sub.content;
+            result = sub_val <= top_val;
         }
         stack.push(new DataFrame(DataType.BOOLEAN, result));
     }
