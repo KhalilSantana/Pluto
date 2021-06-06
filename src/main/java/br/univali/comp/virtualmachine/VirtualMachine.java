@@ -55,7 +55,7 @@ public class VirtualMachine {
             case LDR -> loadFloat(ins);
             case LDS -> loadLiteral(ins);
             case LDV -> loadValueAt(ins);
-//                    STR,
+            case STR -> storeValueAt(ins);
             case AND -> logicalAnd(ins);
             case NOT -> logicalNOT(ins);
             case OR -> logicalOr(ins);
@@ -211,6 +211,16 @@ public class VirtualMachine {
         }
         var content = (String) ins.parameter.content;
         stack.push(new DataFrame(DataType.LITERAL, content));
+    }
+
+    private void storeValueAt(Instruction ins) {
+        if (ins.parameter.type != DataType.ADDRESS) {
+            invalidInstructionParameter(DataType.ADDRESS, ins.parameter.type);
+        }
+        var stackElement = stack.pop();
+        stack.set( (Integer)ins.parameter.content,
+                new DataFrame(stackElement.type, stackElement.content)
+        );
     }
 
     private void loadValueAt(Instruction ins) {

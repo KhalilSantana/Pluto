@@ -342,6 +342,32 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
+    @ParameterizedTest(name = "SPos0:{0} SPos1:{1} SPos2:{2} ADDR:{3} => SPos0:{4} SPos1:{5}")
+    @CsvSource({
+            "a, b, c, 0, c, b",
+            "a, b, c, 1, a, c",
+    })
+    @Name("Mem-Store-Literal")
+    void storeValueAtLiteral(String sPos0, String sPos1, String sPos2, Integer addr,
+                             String expectedSPos0, String expectedSPos1) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, sPos0)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, sPos1)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, sPos2)));
+        insList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, addr)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(2, stack.size());
+        // we start at 1 here because it's a stack, so LIFO ordering
+        var stackElement1 = stack.get(1);
+        assertEquals(DataType.LITERAL, stackElement1.type);
+        assertEquals(expectedSPos1, stackElement1.content);
+        var stackElement0 = stack.get(0);
+        assertEquals(DataType.LITERAL, stackElement0.type);
+        assertEquals(expectedSPos0, stackElement0.content);
+    }
     @ParameterizedTest(name = "{0} OR {1} = {2}")
     @CsvSource({
 //           X      Y      ExpectedResult
