@@ -64,7 +64,7 @@ public class VirtualMachine {
             case DIF -> relationalDifferent(ins);
             case EQL -> relationalEquals(ins);
             case SME -> relationalLessOrEquals(ins);
-//                    SMR,
+            case SMR -> relationalLess(ins);
             case JMF -> jumpFalseToAddress(ins);
             case JMP -> jumpToAddress(ins);
             case JMT -> jumpTrueToAddress(ins);
@@ -332,6 +332,24 @@ public class VirtualMachine {
         }
         stack.push(new DataFrame(DataType.BOOLEAN, result));
     }
+
+    private void relationalLess(Instruction ins) {
+        DataFrame top = stack.pop();
+        DataFrame sub = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, top, sub);
+        var result = false;
+        if (type == DataType.INTEGER) {
+            var top_val = (Integer) top.content;
+            var sub_val = (Integer) sub.content;
+            result = sub_val < top_val;
+        } else {
+            var top_val = (Float) top.content;
+            var sub_val = (Float) sub.content;
+            result = sub_val < top_val;
+        }
+        stack.push(new DataFrame(DataType.BOOLEAN, result));
+    }
+
 
     private void jumpFalseToAddress(Instruction ins) {
         checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);

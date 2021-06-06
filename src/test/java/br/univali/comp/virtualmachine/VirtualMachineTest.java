@@ -571,4 +571,29 @@ class VirtualMachineTest {
         assertEquals(DataType.BOOLEAN, stackElement.type);
         assertEquals(expectedResult, stackElement.content);
     }
+    @ParameterizedTest(name = "{0} < {1} = {2}")
+    @CsvSource({
+//            S   T  ExpectedResult
+            " 1,  2, true",
+            " 2,  1, false",
+            "-1,  1, true",
+            " 1, -1, false",
+            " 1,  1, false",
+            "-1, -1, false"
+    })
+    @Name("Relational-SME-Integers")
+    void relationalLess(Integer subTop, Integer top, Boolean expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, subTop)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, top)));
+        insList.add(new Instruction(Instruction.Mnemonic.SMR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.BOOLEAN, stackElement.type);
+        assertEquals(expectedResult, stackElement.content);
+    }
 }
