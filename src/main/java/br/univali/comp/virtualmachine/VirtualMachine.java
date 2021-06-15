@@ -77,7 +77,6 @@ public class VirtualMachine {
         Instruction ins = instructions.get(instructionPointer);
         System.out.printf("Instruction Pointer: %d\n", instructionPointer+1);
         System.out.println(ins);
-        System.out.println(this.printStack());
         switch (ins.mnemonic) {
             case ADD -> add(ins);
             case DIV -> divide(ins);
@@ -113,6 +112,7 @@ public class VirtualMachine {
             case WRT -> write(ins);
 //                    STC
         }
+        System.out.println(this.printStack());
         instructionPointer++;
     }
 
