@@ -75,7 +75,7 @@ public class VirtualMachine {
         // TODO
         status = VMStatus.RUNNING;
         Instruction ins = instructions.get(instructionPointer);
-        System.out.printf("Instruction Pointer: %d\n", instructionPointer);
+        System.out.printf("Instruction Pointer: %d\n", instructionPointer+1);
         System.out.println(ins);
         System.out.println(this.printStack());
         switch (ins.mnemonic) {
@@ -407,12 +407,14 @@ public class VirtualMachine {
         checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
         if (!(Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
+            instructionPointer--; // We always add +1 after each instruction, this will revert that
         }
     }
 
     private void jumpToAddress(Instruction ins) {
         checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
         instructionPointer = (Integer) ins.parameter.content;
+        instructionPointer--; // We always add +1 after each instruction, this will revert that
     }
 
     private void jumpTrueToAddress(Instruction ins) {
@@ -421,6 +423,7 @@ public class VirtualMachine {
         checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
         if ((Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
+            instructionPointer--; // We always add +1 after each instruction, this will revert that
         }
     }
 
