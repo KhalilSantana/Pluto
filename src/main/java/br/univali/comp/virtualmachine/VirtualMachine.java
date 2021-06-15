@@ -1,14 +1,14 @@
 package br.univali.comp.virtualmachine;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class VirtualMachine {
     private final List<Instruction> instructions;
     private final Stack<DataFrame> stack = new Stack<>();
     private int instructionPointer = 0;
-
+    private VMStatus status = VMStatus.NOT_STARTED;
+    private DataType syscallDataType = null;
+    private Object syscallData = null;
 
     public VirtualMachine(List<Instruction> instructions) {
         this.instructions = instructions;
@@ -16,6 +16,10 @@ public class VirtualMachine {
 
     public Stack<DataFrame> getStack() {
         return stack;
+    }
+
+    public VMStatus getStatus() {
+        return status;
     }
 
     public String printStack() {
@@ -29,14 +33,47 @@ public class VirtualMachine {
         return sb.toString();
     }
 
+    public void resumeExecution() {
+        if (status == VMStatus.SYSCALL_IO_READ) {
+            stack.push(new DataFrame(syscallDataType, syscallData));
+        }
+        this.syscallData = null;
+        this.syscallDataType = null;
+    }
+
+    public DataType getSyscallDataType() {
+        return syscallDataType;
+    }
+
+    public void setSyscallDataType(DataType syscallDataType) {
+        this.syscallDataType = syscallDataType;
+    }
+
+    public Object getSyscallData() {
+        return syscallData;
+    }
+
+    public void setSyscallData(Object syscallData) {
+        this.syscallData = syscallData;
+    }
+
     public void executeAll() {
-        while (instructions.get(instructionPointer).mnemonic != Instruction.Mnemonic.STP) {
+        while (this.status != VMStatus.HALTED) {
+            // IF we returned from a syscall/IO operation
+            if (status == VMStatus.SYSCALL_IO_READ || status == VMStatus.SYSCALL_IO_WRITE) {
+                resumeExecution();
+            }
             executeStep();
+            // If the last instruction was a syscall, pause execution until it completes
+            if (status == VMStatus.SYSCALL_IO_READ || status == VMStatus.SYSCALL_IO_WRITE) {
+                break;
+            }
         }
     }
 
     public void executeStep() {
         // TODO
+        status = VMStatus.RUNNING;
         Instruction ins = instructions.get(instructionPointer);
         System.out.printf("Instruction Pointer: %d\n", instructionPointer);
         System.out.println(ins);
@@ -68,9 +105,12 @@ public class VirtualMachine {
             case JMF -> jumpFalseToAddress(ins);
             case JMP -> jumpToAddress(ins);
             case JMT -> jumpTrueToAddress(ins);
-//                    STP,
-//                    REA,
-//                    WRT,
+            case STP -> {
+                this.status = VMStatus.HALTED;
+                return;
+            }
+            case REA -> read(ins);
+            case WRT -> write(ins);
 //                    STC
         }
         instructionPointer++;
@@ -147,7 +187,7 @@ public class VirtualMachine {
 
     private void allocateBoolean(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
         }
         for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new DataFrame(DataType.BOOLEAN, false));
@@ -156,7 +196,7 @@ public class VirtualMachine {
 
     private void allocateInteger(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
         }
         for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new DataFrame(DataType.INTEGER, 0));
@@ -165,7 +205,7 @@ public class VirtualMachine {
 
     private void allocateFloat(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
         }
         for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new DataFrame(DataType.FLOAT, 0f));
@@ -174,7 +214,7 @@ public class VirtualMachine {
 
     private void allocateLiteralValue(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
         }
         for (int i = 0; i < (Integer) ins.parameter.content; i++) {
             stack.push(new DataFrame(DataType.LITERAL, ""));
@@ -183,7 +223,7 @@ public class VirtualMachine {
 
     private void loadBoolean(Instruction ins) {
         if (ins.parameter.type != DataType.BOOLEAN) {
-            invalidInstructionParameter(DataType.BOOLEAN, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.BOOLEAN), ins.parameter.type);
         }
         var content = (Boolean) ins.parameter.content;
         stack.push(new DataFrame(DataType.BOOLEAN, content));
@@ -191,7 +231,7 @@ public class VirtualMachine {
 
     private void loadInteger(Instruction ins) {
         if (ins.parameter.type != DataType.INTEGER) {
-            invalidInstructionParameter(DataType.INTEGER, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
         }
         var content = (Integer) ins.parameter.content;
         stack.push(new DataFrame(DataType.INTEGER, content));
@@ -199,7 +239,7 @@ public class VirtualMachine {
 
     private void loadFloat(Instruction ins) {
         if (ins.parameter.type != DataType.FLOAT) {
-            invalidInstructionParameter(DataType.FLOAT, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.FLOAT), ins.parameter.type);
         }
         var content = (Float) ins.parameter.content;
         stack.push(new DataFrame(DataType.FLOAT, content));
@@ -207,7 +247,7 @@ public class VirtualMachine {
 
     private void loadLiteral(Instruction ins) {
         if (ins.parameter.type != DataType.LITERAL) {
-            invalidInstructionParameter(DataType.LITERAL, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.LITERAL), ins.parameter.type);
         }
         var content = (String) ins.parameter.content;
         stack.push(new DataFrame(DataType.LITERAL, content));
@@ -215,7 +255,7 @@ public class VirtualMachine {
 
     private void storeValueAt(Instruction ins) {
         if (ins.parameter.type != DataType.ADDRESS) {
-            invalidInstructionParameter(DataType.ADDRESS, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
         }
         var stackElement = stack.pop();
         stack.set( (Integer)ins.parameter.content,
@@ -225,7 +265,7 @@ public class VirtualMachine {
 
     private void loadValueAt(Instruction ins) {
         if (ins.parameter.type != DataType.ADDRESS) {
-            invalidInstructionParameter(DataType.ADDRESS, ins.parameter.type);
+            invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
         }
         var stackElement = stack.get((Integer) ins.parameter.content);
         stack.push(new DataFrame(stackElement.type, stackElement.content));
@@ -384,6 +424,25 @@ public class VirtualMachine {
         }
     }
 
+    private void read(Instruction ins) {
+        var acceptedTypes = DataType.getNumericDataTypes();
+        acceptedTypes.add(DataType.LITERAL);
+        if (!acceptedTypes.contains(ins.parameter.type)) {
+            invalidInstructionParameter(acceptedTypes, ins.parameter.type);
+        }
+        this.status = VMStatus.SYSCALL_IO_READ;
+        this.syscallDataType = ins.parameter.type;
+    }
+
+    private void write(Instruction ins) {
+        var stackElement = stack.pop();
+        checkType(Arrays.asList(DataType.INTEGER, DataType.FLOAT, DataType.LITERAL),
+                ins.mnemonic, stackElement, stackElement);
+        this.status = VMStatus.SYSCALL_IO_WRITE;
+        this.syscallDataType = stackElement.type;
+        this.syscallData = stackElement.content;
+    }
+
     private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
         DataType effectiveOutputDataType = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
@@ -414,6 +473,11 @@ public class VirtualMachine {
                         effectiveOutputDataType = DataType.ADDRESS;
                     }
                 }
+                case LITERAL -> {
+                    if (y.type == DataType.LITERAL) {
+                        effectiveOutputDataType = DataType.LITERAL;
+                    }
+                }
             }
         } else {
             throw new RuntimeException(String.format("Incompatible stack data types for instruction %s! Parameter x: %s, Parameter y: %s", mnemonic, x.type, y.type));
@@ -424,7 +488,7 @@ public class VirtualMachine {
         return effectiveOutputDataType;
     }
 
-    private static void invalidInstructionParameter(DataType expected, DataType got) {
+    private static void invalidInstructionParameter(List<DataType> expected, DataType got) {
         throw new RuntimeException(String.format("Invalid instruction, expected %s parameter, got: %s", expected, got));
     }
 }
