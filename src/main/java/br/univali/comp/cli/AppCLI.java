@@ -14,10 +14,19 @@ public class AppCLI {
     public static void main(String[] args) throws IOException, ParseException, ParseEOFException {
         var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
         var instructionList = Arrays.asList(
-                new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, "Hello World!")),
-                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
+                new Instruction(Instruction.Mnemonic.ALI, new DataFrame(DataType.INTEGER, 5)),
                 new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.INTEGER, 1)),
-                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
+                new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, 3)),
+                new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 1)),
+                new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, 1)),
+                new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, 1)),
+                new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, 3)),
+                new Instruction(Instruction.Mnemonic.SME, new DataFrame(DataType.NONE, null)),
+                new Instruction(Instruction.Mnemonic.JMF, new DataFrame(DataType.ADDRESS, 36)),
+                new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.INTEGER, 1)),
+                new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, 4)),
+                new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, 0)),
+                new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, 5)),
                 insStop
         );
 
