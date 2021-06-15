@@ -257,8 +257,9 @@ public class VirtualMachine {
         if (ins.parameter.type != DataType.ADDRESS) {
             invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
         }
+        // stack starts at 1 on the grammar level, so we must offset that with a -1.
         var stackElement = stack.pop();
-        stack.set( (Integer)ins.parameter.content,
+        stack.set( (Integer)ins.parameter.content - 1,
                 new DataFrame(stackElement.type, stackElement.content)
         );
     }
@@ -267,7 +268,8 @@ public class VirtualMachine {
         if (ins.parameter.type != DataType.ADDRESS) {
             invalidInstructionParameter(Collections.singletonList(DataType.ADDRESS), ins.parameter.type);
         }
-        var stackElement = stack.get((Integer) ins.parameter.content);
+        // stack starts at 1 on the grammar level, so we must offset that with a -1.
+        var stackElement = stack.get((Integer) ins.parameter.content - 1);
         stack.push(new DataFrame(stackElement.type, stackElement.content));
     }
 
