@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.fxmisc.flowless.VirtualizedScrollPane?>
 <?import org.fxmisc.richtext.CodeArea?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/14"
+<AnchorPane xmlns="http://javafx.com/javafx/14" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="br.univali.comp.gui.Controller">
     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
@@ -15,21 +15,21 @@
                 <Menu text="File">
                     <MenuItem onAction="#openFileDialog" text="Open"/>
                     <MenuItem onAction="#newFileDialog" text="New"/>
-                    <MenuItem fx:id="saveMenuItem" onAction="#saveAction" text="Save" accelerator="Shortcut+S"/>
+                    <MenuItem fx:id="saveMenuItem" accelerator="Shortcut+S" onAction="#saveAction" text="Save"/>
                     <MenuItem fx:id="saveAsMenuItem" onAction="#saveAsDialog" text="Save as..."/>
                 </Menu>
                 <Menu text="Edit">
-                    <MenuItem fx:id="cutMenuItem" text="Cut" onAction="#cutSelection"/>
-                    <MenuItem fx:id="copyMenuItem" text="Copy" onAction="#copySelection"/>
-                    <MenuItem fx:id="pasteMenuItem" text="Paste" onAction="#pasteFromClipboard"/>
+                    <MenuItem fx:id="cutMenuItem" onAction="#cutSelection" text="Cut"/>
+                    <MenuItem fx:id="copyMenuItem" onAction="#copySelection" text="Copy"/>
+                    <MenuItem fx:id="pasteMenuItem" onAction="#pasteFromClipboard" text="Paste"/>
                 </Menu>
                 <Menu text="Compile">
-                    <MenuItem text="Compile" onAction="#compileProgram"/>
+                    <MenuItem onAction="#compileProgram" text="Compile"/>
                     <MenuItem disable="true" text="Run"/>
                 </Menu>
                 <Menu text="Help">
                     <MenuItem text="Help"/>
-                    <MenuItem text="About" onAction="#showAboutDialog"/>
+                    <MenuItem onAction="#showAboutDialog" text="About"/>
                 </Menu>
             </MenuBar>
         </HBox>
@@ -103,29 +103,51 @@
                 </Button>
             </ToolBar>
         </HBox>
-        <VBox VBox.vgrow="ALWAYS">
-            <Label>Program</Label>
-            <HBox VBox.vgrow="ALWAYS" onKeyReleased="#fileContentChanged">
-                <VirtualizedScrollPane HBox.hgrow="ALWAYS">
-                    <content>
-                        <CodeArea fx:id="inputTextArea"/>
-                    </content>
-                </VirtualizedScrollPane>
-            </HBox>
-            <HBox>
-                <Label fx:id="lineColLabel">Line/Column:</Label>
-            </HBox>
-            <Label>Message Area</Label>
-            <HBox>
-                <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
-            </HBox>
-            <HBox>
-                <Label fx:id="statusBar">Status ...</Label>
-            </HBox>
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-            </padding>
-        </VBox>
+        <HBox VBox.vgrow="ALWAYS">
+            <VBox HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <Label>Program</Label>
+                <HBox onKeyReleased="#fileContentChanged" VBox.vgrow="ALWAYS">
+                    <VirtualizedScrollPane HBox.hgrow="ALWAYS">
+                        <content>
+                            <CodeArea fx:id="inputTextArea" HBox.hgrow="ALWAYS"/>
+                        </content>
+                    </VirtualizedScrollPane>
+                </HBox>
+                <HBox>
+                    <Label fx:id="lineColLabel">Line/Column:</Label>
+                </HBox>
+                <Label>Message Area</Label>
+                <HBox>
+                    <TextArea fx:id="messageTextArea" editable="false" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <Label text="Console Input"/>
+                <HBox>
+                    <children>
+                        <TextArea fx:id="messageTextArea1" editable="false" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
+                    </children>
+                </HBox>
+            </VBox>
+            <VBox VBox.vgrow="ALWAYS">
+                <HBox VBox.vgrow="ALWAYS">
+                    <TableView HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn text="Number"/>
+                            <TableColumn text="Mnemonic"/>
+                            <TableColumn text="Argument"/>
+                        </columns>
+                        <HBox.margin>
+                            <Insets left="10.0" top="15.0"/>
+                        </HBox.margin>
+                    </TableView>
+                </HBox>
+            </VBox>
+        </HBox>
+        <HBox>
+            <Label fx:id="statusBar">Status ...</Label>
+        </HBox>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
     </VBox>
 
 
