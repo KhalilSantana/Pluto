@@ -110,7 +110,7 @@ public class VirtualMachine {
             }
             case REA -> read(ins);
             case WRT -> write(ins);
-//                    STC
+            case STC -> stackCopyToPositions(ins);
         }
         System.out.println(this.printStack());
         instructionPointer++;
@@ -446,6 +446,17 @@ public class VirtualMachine {
         this.status = VMStatus.SYSCALL_IO_WRITE;
         this.syscallDataType = stackElement.type;
         this.syscallData = stackElement.content;
+    }
+
+    private void stackCopyToPositions(Instruction ins) {
+        if (ins.parameter.type != DataType.INTEGER) {
+            invalidInstructionParameter(Collections.singletonList(DataType.INTEGER), ins.parameter.type);
+        }
+        var numberPositions = (Integer) ins.parameter.content;
+        var stackElement = stack.pop();
+        for (int i=stack.size()-numberPositions; i<=stack.size()-1; i++) {
+            stack.set(i, stackElement);
+        }
     }
 
     private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
