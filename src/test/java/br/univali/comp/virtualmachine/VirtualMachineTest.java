@@ -344,8 +344,8 @@ class VirtualMachineTest {
     }
     @ParameterizedTest(name = "SPos0:{0} SPos1:{1} SPos2:{2} ADDR:{3} => SPos0:{4} SPos1:{5}")
     @CsvSource({
-            "a, b, c, 0, c, b",
-            "a, b, c, 1, a, c",
+            "a, b, c, 1, c, b",
+            "a, b, c, 2, a, c",
     })
     @Name("Mem-Store-Literal")
     void storeValueAtLiteral(String sPos0, String sPos1, String sPos2, Integer addr,
