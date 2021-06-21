@@ -422,287 +422,249 @@ TOKEN : {
     |   <ERROR_FLOAT_CONSTANT_FORMAT: (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"] (["0"-"9"])+ "." (["0"-"9"])*) | ((["0"-"9"])+ "." ["0"-"9"] ["0"-"9"] (["0"-"9"])+) >
 }
 
-void program() throws ParseEOFException :
+//SINTATICO NOVO
+
+void programa() : {}
 {
- RecoverySet g = First.program;
-}
-{
-try{
-    linguagem2021_1(g) <EOF>
-}catch (ParseException e){
-    consumeUntil(g, e, "Missing incorrect XXXX", "program");
-}
-}
-void linguagem2021_1(RecoverySet g) throws ParseEOFException: {}
-{
-    header(g) <R_PROGRAM> <SS_CURLYBRACE_OPEN> define(g) execute(g) <SS_CURLYBRACE_CLOSE> ident_final(g)
-}
-void header(RecoverySet g) throws ParseEOFException: {
-    RecoverySet f = First.header.union(g);
-}
-{
-    try {
-        [ <SS_HEADER> <LITERAL_CONSTANT> ]
-    } catch(ParseException e) {
-        consumeUntil(f, e, "Invalid header expression, missing literal constant before program", "program");
-    }
-}
-void ident_final(RecoverySet g) : {}
-{
-    [ <IDENTIFIER> ]
-}
-void todos_os_comandos(RecoverySet g) throws ParseEOFException : {}
-{
-        loops_repeticao(g)
-    |   verify(g)
-    |   get(g)
-    |   set(g)
-    |   put(g)
-}
-void lista_de_comandos(RecoverySet g) throws ParseEOFException : {}
-{
-    todos_os_comandos(g) <SS_DOT> lista_de_comandos_opt(g)
-}
-void lista_de_comandos_opt(RecoverySet g) throws ParseEOFException : {}
-{
-    (todos_os_comandos(g) <SS_DOT>)*
-}
-void lista_de_identificadores(RecoverySet g) throws ParseEOFException : {}
-{
-    <IDENTIFIER> lista_opt_de_identificadores(g)
-}
-void lista_opt_de_identificadores(RecoverySet g) throws ParseEOFException : {}
-{
-    [ <SS_COMMA> lista_de_identificadores(g) ]
-}
-// BEGIN define
-// TODO: see notes on the BNF google doc, this is a temporary implentation
-// <valor> seems equal to <constante>
-void define(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.define.union(g);
- }
-{
-    try {
-        [ <R_DEFINE> <SS_CURLYBRACE_OPEN> def_const_e_ou_var(g) <SS_CURLYBRACE_CLOSE> ]
-    } catch(ParseException e) {
-        consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
-    }
-}
-void def_const_e_ou_var(RecoverySet g) throws ParseEOFException : {}
-{
-    define_const_var_opt(g) | define_var_opt_const(g)
-}
-void define_const_var_opt(RecoverySet g) throws ParseEOFException: {}
-{
-    <R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)
-}
-void define_var_opt(RecoverySet g) throws ParseEOFException : {}
-{
-    [<R_VARIABLE> lista_de_atribuicao_sem_valor(g)]
-}
-void lista_de_atribuicao_com_valor(RecoverySet g) throws ParseEOFException : {}
-{
-    tipo(g) <R_IS> lista_de_identificadores(g) constante(g) <SS_DOT> [ lista_de_atribuicao_com_valor(g) ]
+    comentario()
+    <R_PROGRAM> <SS_CURLYBRACE_OPEN>
+    declaracaoDeConstantesEVariaveis()
+    corpoDoPrograma()
+    <SS_CURLYBRACE_CLOSE>
+    identificadorDoPrograma()
 }
 
-void lista_de_atribuicao_sem_valor(RecoverySet g) throws ParseEOFException: {}
+void comentario() : {}
 {
-    tipo(g) <R_IS> lista_de_identificadores(g) <SS_DOT> [ lista_de_atribuicao_sem_valor(g) ]
+    [<SS_HEADER> <LITERAL_CONSTANT>]
 }
-void define_var_opt_const(RecoverySet g) throws ParseEOFException : {}
-{
-    <R_VARIABLE> lista_de_atribuicao_sem_valor(g) define_const_opt(g)
-}
-void define_const_opt(RecoverySet g) throws ParseEOFException : {}
-{
-    [<R_NOT> <R_VARIABLE> lista_de_atribuicao_com_valor(g) define_var_opt(g)]
-}
-void tipo(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.tipo.union(g);
-}
-{
-  try {
-    <R_NATURAL> | <R_REAL> |  <R_CHAR> | <R_BOOLEAN>
-  } catch(ParseException e) {
-    consumeUntil(f, e, "Invalid data type, must be one of: natural, real, char or boolean", "is");
-  }
-}
-// BEGIN loops
-void loops_repeticao(RecoverySet g) throws ParseEOFException : {}
-{
-    while_expr(g) | do_loop(g)
-}
-void while_expr(RecoverySet g) throws ParseEOFException : {}
-{
-    <R_WHILE> expressao(g) <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
-}
-void do_loop(RecoverySet g) throws ParseEOFException : {}
-{
-    <R_LOOP> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) <R_IS> <R_TRUE>
-}
-// BEGIN execute
-void execute(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.execute.union(g);
-}
-{
-    try {
-        <R_EXECUTE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
-    } catch (ParseException e) {
-        consumeUntil(g, e, "Missing or invalid execute expression", "}");
-    }
-}
-// BEGIN get
-void get(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
- }
-{
-    try {
-        <R_GET>  <SS_CURLYBRACE_OPEN> lista_de_identificadores(g) <SS_CURLYBRACE_CLOSE>
-    } catch(ParseException e) {
-        consumeUntil(f, e, "Missing or invalid get expression", "<SS_DOT>");
-    }
-}
-// BEGIN set
-void set(RecoverySet g) throws ParseEOFException : {
-     RecoverySet f = First.todos_os_comandos.union(g);
- }
-{
-    try {
-        <R_SET> expressao(g) <R_TO> lista_de_identificadores(g)
-    } catch(ParseException e) {
-        consumeUntil(f, e, "Missing or invalid set expression", "<SS_DOT>");
-    }
-}
-// BEGIN put
-void put(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
-}
-{
-    try {
-        <R_PUT> <SS_CURLYBRACE_OPEN> lista_de_identificadores_e_ou_constantes(g) <SS_CURLYBRACE_CLOSE>
-    } catch(ParseException e) {
-        consumeUntil(f, e, "Missing or invalid put expression", "<SS_DOT>");
-    }
-}
-void identificador_ou_constante(RecoverySet g) : {}
-{
-// TODO: double check this, see note on the BNF google doc
-    <IDENTIFIER> | constante(g)
-}
-void lista_de_identificadores_e_ou_constantes(RecoverySet g) : {}
-{
-    identificador_ou_constante(g) [ <SS_COMMA> lista_de_identificadores_e_ou_constantes(g) ]
-}
-void constante(RecoverySet g) : {}
-{
-    <FLOAT_CONSTANT> | <INTEGER_CONSTANT> | <LITERAL_CONSTANT>
-}
-// BEGIN verify
-void verify(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.todos_os_comandos.union(g);
- }
-{
-    try {
-        <R_VERIFY> expressao(g) <R_IS> verify_truefalse(g)
-    } catch (ParseException e) {
-        consumeUntil(f, e, "Missing or invalid verify expression", "<SS_DOT>");
-    }
 
-}
-void verify_truefalse(RecoverySet g) throws ParseEOFException : {}
+void identificadorDoPrograma() : {}
 {
-    verify_true(g) | verify_false(g)
+    [<IDENTIFIER>]
 }
-void verify_true(RecoverySet g) throws ParseEOFException : {}
+
+void declaracaoDeConstantesEVariaveis() : {}
 {
-    <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_false(g)
+    [<R_DEFINE> <SS_CURLYBRACE_OPEN> constantesEVariaveis() <SS_CURLYBRACE_CLOSE>]
 }
-void verify_opt_false(RecoverySet g) throws ParseEOFException : {}
+
+void constantesEVariaveis() : {}
 {
-  [
-    <R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
-  ]
+    declaracaoDeConstantes() variaveis2() | declaracaoDeVariaveis() constantes2()
 }
-void verify_false(RecoverySet g) throws ParseEOFException : {}
+
+void declaracaoDeConstantes() : {}
 {
-    <R_FALSE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE> verify_opt_true(g)
+    <R_NOT> <R_VARIABLE> constantes()
 }
-void verify_opt_true(RecoverySet g) throws ParseEOFException : {}
+
+void constantes() : {}
 {
-  [
-    <R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> lista_de_comandos(g) <SS_CURLYBRACE_CLOSE>
-  ]
+    tipo() <R_IS> listaDeIdentificadoresDeConstantes() valor() <SS_DOT> constantes1()
 }
-// BEGIN espressao
-void expressao(RecoverySet g) throws ParseEOFException : {
-    RecoverySet f = First.expressao.union(g);
-}
+
+void constantes1() : {}
 {
-    try {
-            expressao_aritmetica_ou_logica(g) expressao_dash(g)
-        } catch(ParseException e) {
-            consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
-        }
+    [constantes()]
 }
-void expressao_dash(RecoverySet g) throws ParseEOFException : {}
+
+void constantes2() : {}
 {
-    [
-          <SS_EQUALS>     expressao_aritmetica_ou_logica(g)
-        | <SS_NOT_EQUALS> expressao_aritmetica_ou_logica(g)
-        | <SS_LESS_THAN>  expressao_aritmetica_ou_logica(g)
-        | <SS_MORE_THAN>  expressao_aritmetica_ou_logica(g)
-        | <SS_LESS_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
-        | <SS_MORE_OR_EQUAL_THAN> expressao_aritmetica_ou_logica(g)
-    ]
+    [declaracaoDeConstantes()]
 }
-void expressao_aritmetica_ou_logica(RecoverySet g) throws ParseEOFException : {}
+
+void declaracaoDeVariaveis() : {}
 {
-    termo2(g) menor_prioridade(g)
+    <R_VARIABLE> variaveis()
 }
-void menor_prioridade(RecoverySet g) throws ParseEOFException : {}
+
+void variaveis() : {}
 {
-    [
-         <SS_PLUS> termo2(g) menor_prioridade(g)
-       | <SS_MINUS> termo2(g) menor_prioridade(g)
-       | <SS_OR> termo2(g) menor_prioridade(g)
-    ]
+    tipo() <R_IS> listaDeIdentificadoresDeVariaveis() <SS_DOT> variaveis1()
 }
-void termo2(RecoverySet g) throws ParseEOFException : {}
+
+void variaveis1() : {}
 {
-    termo1(g) media_prioridade(g)
+    [variaveis()]
 }
-void media_prioridade(RecoverySet g) throws ParseEOFException : {}
+
+void variaveis2() : {}
 {
-    [
-        <SS_TIMES>   termo1(g) media_prioridade(g)
-      | <SS_DIVIDE>  termo1(g) media_prioridade(g)
-      | <SS_PERCENT> termo1(g) media_prioridade(g)
-      | <SS_MODULO>  termo1(g) media_prioridade(g)
-      | <SS_AND>     termo1(g) media_prioridade(g)
-    ]
+    [declaracaoDeVariaveis()]
 }
-void termo1(RecoverySet g) throws ParseEOFException : {}
+
+void tipo() : {}
 {
-    elemento(g) maior_prioridade(g)
+    <R_NATURAL> | <R_REAL> | <R_CHAR> | <R_BOOLEAN>
 }
-void maior_prioridade(RecoverySet g) throws ParseEOFException : {}
+
+void listaDeIdentificadoresDeConstantes() : {}
 {
-    [
-        <SS_EXPODENTIAL> elemento(g) maior_prioridade(g)
-    ]
+    <IDENTIFIER> listaDeIdentificadoresDeConstantes1()
 }
-void elemento(RecoverySet g) throws ParseEOFException : {}
+
+void listaDeIdentificadoresDeConstantes1() : {}
 {
-        <IDENTIFIER> indice(g)
-     |  <INTEGER_CONSTANT>
-     |  <FLOAT_CONSTANT>
-     |  <LITERAL_CONSTANT>
-     |  <R_TRUE>
-     |  <R_FALSE>
-     |  <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
-     |  <SS_NOT> <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE>
+    [<SS_COMMA> listaDeIdentificadoresDeConstantes()]
 }
-void indice(RecoverySet g) throws ParseEOFException : {}
+
+void listaDeIdentificadoresDeVariaveis() : {}
 {
-    [ <SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_PARENTESES_CLOSE> ]
+    <IDENTIFIER> indice() listaDeIdentificadoresDeVariaveis1()
+}
+
+void listaDeIdentificadoresDeVariaveis1() : {}
+{
+    [<SS_COMMA> listaDeIdentificadoresDeVariaveis()]
+}
+
+void indice() : {}
+{
+    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_SQUAREBRACE_CLOSE>]
+}
+
+void valor() : {}
+{
+    <INTEGER_CONSTANT> | <FLOAT_CONSTANT> | <LITERAL_CONSTANT>
+}
+
+void corpoDoPrograma() : {}
+{
+    <R_EXECUTE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>
+}
+
+void listaDeComandos() : {}
+{
+    comando() <SS_DOT> listaDeComandos1()
+}
+
+void listaDeComandos1() : {}
+{
+    [listaDeComandos()]
+}
+
+void comando() : {}
+{
+    atribuicao() | entrada() | saida() | selecao() | repeticao()
+}
+
+void atribuicao() : {}
+{
+    <R_SET> expressao() <R_TO> listaDeIdentificadoresDeVariaveis()
+}
+
+void entrada() : {}
+{
+    <R_GET> <SS_CURLYBRACE_OPEN> listaDeIdentificadoresDeVariaveis() <SS_CURLYBRACE_CLOSE>
+}
+
+void saida() : {}
+{
+    <R_PUT> <SS_CURLYBRACE_OPEN> listaDeIdentificadoresEOuConstantes() <SS_CURLYBRACE_CLOSE>
+}
+
+void listaDeIdentificadoresEOuConstantes() : {}
+{
+    item() listaDeIdentificadoresEOuConstantes1()
+}
+
+void listaDeIdentificadoresEOuConstantes1() : {}
+{
+    [<SS_COMMA> listaDeIdentificadoresEOuConstantes()]
+}
+
+void item() : {}
+{
+    <IDENTIFIER> indice() | <INTEGER_CONSTANT> | <FLOAT_CONSTANT> | <LITERAL_CONSTANT>
+}
+
+void selecao() : {}
+{
+    <R_VERIFY> expressao() <R_IS> clausulas()
+}
+
+void clausulas() : {}
+{
+    <R_TRUE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> falsa() |
+    <R_FALSE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> verdadeira()
+}
+
+void verdadeira() : {}
+{
+    [<R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+}
+
+void falsa() : {}
+{
+    [<R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+}
+
+void repeticao() : {}
+{
+    <R_LOOP> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() <R_IS> <R_TRUE> |
+    <R_WHILE> expressao() <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>
+}
+
+void expressao() : {}
+{
+    expressaoAritmeticaOuLogica() expressao1()
+}
+
+void expressao1() : {}
+{
+    [<SS_EQUALS> expressaoAritmeticaOuLogica() |
+    <SS_NOT_EQUALS> expressaoAritmeticaOuLogica() |
+    <SS_LESS_THAN> expressaoAritmeticaOuLogica() |
+    <SS_MORE_THAN> expressaoAritmeticaOuLogica() |
+    <SS_LESS_OR_EQUAL_THAN> expressaoAritmeticaOuLogica() |
+    <SS_MORE_OR_EQUAL_THAN> expressaoAritmeticaOuLogica()]
+}
+
+void expressaoAritmeticaOuLogica() : {}
+{
+    termo2() menorPrioridade()
+}
+
+void menorPrioridade() : {}
+{
+    [<SS_PLUS> termo2() menorPrioridade() |
+    <SS_MINUS> termo2() menorPrioridade() |
+    <SS_OR> termo2() menorPrioridade()]
+}
+
+void termo2() : {}
+{
+    termo1() mediaPrioridade()
+}
+
+void mediaPrioridade() : {}
+{
+    [<SS_TIMES> termo1() mediaPrioridade() |
+    <SS_DIVIDE> termo1() mediaPrioridade() |
+    <SS_PERCENT> termo1() mediaPrioridade() |
+    <SS_MODULO> termo1() mediaPrioridade() |
+    <SS_AND> termo1() mediaPrioridade() ]
+}
+
+void termo1() : {}
+{
+    elemento() maiorPrioridade()
+}
+
+void maiorPrioridade() : {}
+{
+    [<SS_EXPODENTIAL> elemento() maiorPrioridade()]
+}
+
+void elemento() : {}
+{
+    <IDENTIFIER> indice() |
+    <INTEGER_CONSTANT> |
+    <FLOAT_CONSTANT> |
+    <LITERAL_CONSTANT> |
+    <R_TRUE> |
+    <R_FALSE> |
+    <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE> |
+    <SS_NOT> <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE>
 }
