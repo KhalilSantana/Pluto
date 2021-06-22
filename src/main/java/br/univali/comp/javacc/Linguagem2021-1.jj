@@ -41,20 +41,10 @@ public class Sintatico {
                         tokens.append("Token: '"+t.image+"' - Type: LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         break;
                     }
-                    // Removido de acordo com correção prof.
-//                    case ARITHMETIC:{
-//                        tokens.append("Token: '"+t.image+"' - Type: ARITHMETIC-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
                     case IDENTIFIER:{
                         tokens.append("Token: '"+t.image+"' - Type: IDENTIFIER-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-                    // Removido de acordo com correção prof.
-//                    case LOGICAL:{
-//                        tokens.append("Token: '"+t.image+"' - Type: LOGICAL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
 //                  Simbolos especiais
                     // Pontuação
                     case SS_DOT:
@@ -108,17 +98,10 @@ public class Sintatico {
                     case  R_REAL     :
                     case  R_CHAR     :
                     case  R_BOOLEAN  :
-//                    case  R_IF       :
-//                    case  R_ELSE     :
                     {
                         tokens.append("Token: '"+t.image+"' - Type: RESERVED_WORDS-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         break;
                     }
-//                    TO generic errors
-//                    case ERROR:{
-//                        tokens.append("ERROR: '"+t.image+"' - Type: Invalid Token-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-//                        break;
-//                    }
                     case ERROR_INVALID_SYMBOL:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
@@ -305,9 +288,6 @@ TOKEN_MGR_DECLS :
 	static int commentLevel = 0 ;
 }
 
-
-
-
 //Skip the following elements
 SKIP : {
     <SPACE : " "> |
@@ -337,10 +317,6 @@ TOKEN : {
     <LITERAL_CONSTANT: ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
 }
 
-// Removido de acordo com correção prof.
-//TOKEN: {
-//    <ARITHMETIC: ["+", "-", "*", "/", "%"] | "**" | "%%" >
-//}
 TOKEN [IGNORE_CASE]: {
      <R_PROGRAM: "program">
   |  <R_DEFINE: "define">
@@ -362,26 +338,10 @@ TOKEN [IGNORE_CASE]: {
   |  <R_REAL: "real">
   |  <R_CHAR: "char">
   |  <R_BOOLEAN: "boolean">
-//  |  <R_IF: "if">
-//  |  <R_ELSE: "else">
 }
 TOKEN : {
     <IDENTIFIER: ( ( ( (["a" - "z", "A" - "Z"] ("_")?) | ("_" (["a" - "z", "A" - "Z"])?) ) ["0"-"9"] ) | ("_" ["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"]) )* ( ("_") | (["a" - "z", "A" - "Z"]) | (["a" - "z", "A" - "Z"] "_") | ("_" ["a" - "z", "A" - "Z"]) )>
 }
-
-// Removido de acordo com correção prof.
-//TOKEN : {
-//    <LOGICAL: ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">=">
-
-
-//TOKEN : {
-//    <SPECIAL_SYMBOL: [".", ",", "{", "}", "[", "]", "(", ")"] | ":-" |
-//                     // Simbolos aritimético
-//                     ["+", "-", "*", "/", "%"] | "**" | "%%" |
-//                     // Simbolos lógicos
-//                     ["<", ">", "&", "|", "!"] | "==" | "!=" | "<=" | ">="
-//    >
-//}
 
 //Special symbols
 TOKEN : {
