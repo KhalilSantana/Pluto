@@ -424,7 +424,7 @@ TOKEN : {
 
 //SINTATICO NOVO
 
-void programa() : {}
+void program() : {}
 {
     comentario()
     <R_PROGRAM> <SS_CURLYBRACE_OPEN>
