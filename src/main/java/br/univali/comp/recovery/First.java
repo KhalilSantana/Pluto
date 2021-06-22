@@ -1,31 +1,30 @@
 package br.univali.comp.recovery;
 
-import br.univali.comp.javacc.gen.*;
+import br.univali.comp.javacc.gen.SintaticoConstants;
 
-
-public class First { //implementa os conjuntos first p/ alguns n.terminais
+// Describes the First set of a few terminals
+public class First {
 
     static public final RecoverySet program = new RecoverySet();
     public static RecoverySet define = new RecoverySet();
     public static RecoverySet execute = new RecoverySet();
-    public static RecoverySet expressao = new RecoverySet();
+    public static RecoverySet expression = new RecoverySet();
     public static RecoverySet header = new RecoverySet();
-    public static RecoverySet todos_os_comandos = new RecoverySet();
-    public static RecoverySet tipo = new RecoverySet();
+    public static RecoverySet allCommands = new RecoverySet();
+    public static RecoverySet type = new RecoverySet();
+
     static {
-        //DEPOIS da configuração ajustar o próximo token
-        //program.add(new Integer(SintaticoConstants.R_PROGRAM));
-        program.add(new Integer(SintaticoConstants.EOF));
+        program.add(SintaticoConstants.EOF);
         define.add(SintaticoConstants.R_EXECUTE);
         execute.add(SintaticoConstants.SS_CURLYBRACE_CLOSE);
-        // expressao
-        expressao.add(SintaticoConstants.R_IS);
-        expressao.add(SintaticoConstants.R_TO);
+        // expression
+        expression.add(SintaticoConstants.R_IS);
+        expression.add(SintaticoConstants.R_TO);
         // header
         header.add(SintaticoConstants.R_PROGRAM);
-        // todos_os_comandos
-        todos_os_comandos.add(SintaticoConstants.SS_DOT);
-        // tipo
-        tipo.add(SintaticoConstants.R_IS);
+        // allCommands
+        allCommands.add(SintaticoConstants.SS_DOT);
+        // type
+        type.add(SintaticoConstants.R_IS);
     }
 }

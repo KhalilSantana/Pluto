@@ -1,64 +1,56 @@
 package br.univali.comp.recovery;
 
-import java.util.*;  // hashset
-import br.univali.comp.javacc.gen.*;
+import br.univali.comp.javacc.gen.Sintatico;
 
+import java.util.HashSet;
+import java.util.Iterator;
 
-public class RecoverySet extends HashSet {
-    public RecoverySet()
-    // cria conjunto vazio
-    {
+public class RecoverySet extends HashSet<Integer> {
+
+    // Create new empty RecoverySet instance
+    public RecoverySet() {
         super();
     }
 
-    public RecoverySet(int t)
-    // cria conjunto com 1 tipo de token
-    {
-        this.add(new Integer(t));
+    // Create new RecoverySet instance with one token
+    public RecoverySet(int t) {
+        this.add(t);
     }
 
-    public boolean contains(int t)
-    // verifica se token pertence ao conjunto
-    {
-        return super.contains(new Integer(t));
+    // Testes whether the token belongs is found within this set
+    public boolean contains(int t) {
+        return super.contains(t);
     }
 
-    public RecoverySet union(RecoverySet s)
-    // faz a uni?o de dois conjuntos
-    {
+    // Union of two RecoverySet instances, without modifying either
+    // The return is a third, separate, RecoverySet with the resulting data
+    // if RecoverySet "s" is null, returns null
+    public RecoverySet union(RecoverySet s) {
         RecoverySet t = null;
-
-        if (s != null) // se s == null retorna null
-        {
+        if (s != null) {
             t = (RecoverySet) this.clone();
             t.addAll(s);
         }
-
         return t;
-
-        // retorna um terceiro conjunto, sem destruir nenhum
     }
 
-    public RecoverySet remove(int n) // retira 1 elemento do conjunto
-    {
+    // Returns another RecoverySet instance, without the specified token.
+    public RecoverySet remove(int n) {
         RecoverySet t = (RecoverySet) this.clone();
-        t.remove(new Integer(n));
-
-        return t; // retorna um novo conjunto, sem 1 dos elementos
+        t.remove(n);
+        return t;
     }
 
-    // cria string descrevendo os tokens que pertencem ao conjunto
     public String toString() {
-        Iterator it = this.iterator();
-        String s = "";
+        Iterator<Integer> it = this.iterator();
+        StringBuilder s = new StringBuilder();
         int k;
 
         while (it.hasNext()) {
-            k = ((Integer) it.next()).intValue();
-            s += (Sintatico.im(k) + " ");
+            k = it.next();
+            s.append(Sintatico.im(k)).append(" ");
         }
-
-        return s;
+        return s.toString();
     }
 
 }
