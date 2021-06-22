@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import br.univali.comp.recovery.*;
+import br.univali.comp.AcoesSemanticas;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
@@ -19,6 +20,7 @@ public class Sintatico {
     public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
     private Boolean hasLexicalErrors = false;
     public int contParseError = 0;
+    public AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
 
     boolean debug_recovery = true;
     Token lastError = null;
@@ -431,7 +433,7 @@ void program() : {}
     declaracaoDeConstantesEVariaveis()
     corpoDoPrograma()
     <SS_CURLYBRACE_CLOSE>
-    identificadorDoPrograma()
+    identificadorDoPrograma() {acoesSemanticas.acao1();}
 }
 
 void comentario() : {}
@@ -668,3 +670,4 @@ void elemento() : {}
     <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE> |
     <SS_NOT> <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE>
 }
+
