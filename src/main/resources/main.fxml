@@ -123,13 +123,13 @@
                 <Label text="Console Input"/>
                 <HBox>
                     <children>
-                        <TextArea fx:id="messageTextArea1" editable="false" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
+                        <TextArea fx:id="consoleInput" editable="false" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </VBox>
             <VBox VBox.vgrow="ALWAYS">
                 <HBox VBox.vgrow="ALWAYS">
-                    <TableView HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="instructionTable" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn text="Number"/>
                             <TableColumn text="Mnemonic"/>
