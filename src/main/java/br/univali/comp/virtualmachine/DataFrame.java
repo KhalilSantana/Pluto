@@ -26,7 +26,13 @@ public class DataFrame {
                 contentStr = (String) content;
             }
         }
+        if (contentStr == null) {
+            return "0";
+        }
+        return String.format("%s", contentStr);
+    }
 
-        return String.format("C: %s; T: %s", contentStr, type);
+    public String toDebugString() {
+        return String.format("%s T: %s", this.toString(), type);
     }
 }

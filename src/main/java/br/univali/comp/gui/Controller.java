@@ -7,10 +7,13 @@ import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
 import br.univali.comp.virtualmachine.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -21,6 +24,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class Controller {
@@ -29,6 +33,14 @@ public class Controller {
     private static boolean hasEditedFile = false;
     private static boolean hasOpenFile = false;
     private boolean isReadingConsole = false;
+    @FXML
+    private TableView<Instruction> instructionTable;
+    @FXML
+    private TableColumn<Instruction, Integer> instructionNumberCol;
+    @FXML
+    private TableColumn<Instruction, String> instructionMnemonicCol;
+    @FXML
+    private TableColumn<Instruction, String> instructionParameterCol;
     @FXML
     private Stage stage;
     public CodeArea inputTextArea;
@@ -43,6 +55,9 @@ public class Controller {
     public Button copyBtn, cutBtn, pasteBtn;
     public Button buildBtn, runBtn;
     public Button helpBtn;
+
+    public Controller() {
+    }
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -217,7 +232,8 @@ public class Controller {
                 new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
                 insStop
         );
-
+        Instruction.enumerateInstructions(instructionList);
+        displayInstructions(instructionList);
         vm = new VirtualMachine(instructionList);
     }
 
@@ -341,6 +357,13 @@ public class Controller {
         });
     }
 
+    private void displayInstructions(List<Instruction> instructions) {
+        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
+        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
+        instructionTable.setItems(getObservableListOf(instructions));
+    }
+
     public String copySelection() {
         return inputTextArea.getSelectedText();
     }
@@ -353,5 +376,9 @@ public class Controller {
 
     public void pasteFromClipboard() {
         inputTextArea.paste();
+    }
+
+    private ObservableList<Instruction> getObservableListOf(List<Instruction> instructionList) {
+        return FXCollections.observableArrayList(instructionList);
     }
 }
