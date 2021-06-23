@@ -331,7 +331,8 @@ public class Controller {
         statusBar.setText("Waiting for input of " + o.toString());
         consoleInput.setOnKeyReleased(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
-                vm.setSyscallData("--> " + consoleInput.getText());
+                vm.setSyscallData(consoleInput.getText().trim());
+                messageTextArea.appendText("\n--> " + consoleInput.getText().trim());
                 consoleInput.setDisable(true);
                 consoleInput.clear();
                 isReadingConsole = false;
