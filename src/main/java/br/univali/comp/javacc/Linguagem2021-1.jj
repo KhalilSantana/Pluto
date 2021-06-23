@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import br.univali.comp.recovery.*;
-import br.univali.comp.AcoesSemanticas;
+import br.univali.comp.semantica.AcoesSemanticas;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
