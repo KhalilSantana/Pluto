@@ -1,7 +1,9 @@
 package br.univali.comp.virtualmachine;
 
+import java.util.List;
+
 public class Instruction implements Comparable<Instruction> {
-    public final Integer number;
+    public Integer number;
     public final Mnemonic mnemonic;
     public final DataFrame parameter;
 
@@ -31,6 +33,11 @@ public class Instruction implements Comparable<Instruction> {
     }
 
 
+    public static void enumerateInstructions(List<Instruction> insList) {
+        for (int i = 0; i < insList.size(); i++) {
+            insList.get(i).number = i + 1;
+        }
+    }
 
     @Override
     public String toString() {

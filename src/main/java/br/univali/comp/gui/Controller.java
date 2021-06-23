@@ -232,6 +232,7 @@ public class Controller {
                 new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
                 insStop
         );
+        Instruction.enumerateInstructions(instructionList);
         displayInstructions(instructionList);
         vm = new VirtualMachine(instructionList);
     }

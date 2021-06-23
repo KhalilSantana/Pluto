@@ -26,7 +26,7 @@ public class VirtualMachine {
         int stackPos = 0;
         StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
         for (DataFrame se : stack) {
-            sb.append(stackPos).append(" - ").append(se).append("\n");
+            sb.append(stackPos).append(" - ").append(se.toDebugString()).append("\n");
             stackPos++;
         }
         sb.append("-- STACK TOP --");
