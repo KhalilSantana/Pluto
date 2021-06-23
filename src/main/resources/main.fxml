@@ -131,9 +131,9 @@
                 <HBox VBox.vgrow="ALWAYS">
                     <TableView fx:id="instructionTable" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn text="Number"/>
-                            <TableColumn text="Mnemonic"/>
-                            <TableColumn text="Argument"/>
+                            <TableColumn fx:id="instructionNumberCol" text="Number"/>
+                            <TableColumn fx:id="instructionMnemonicCol" text="Mnemonic"/>
+                            <TableColumn fx:id="instructionParameterCol" text="Parameter"/>
                         </columns>
                         <HBox.margin>
                             <Insets left="10.0" top="15.0"/>
