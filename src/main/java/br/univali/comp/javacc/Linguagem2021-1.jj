@@ -403,7 +403,7 @@ void comentario() : {}
 
 void identificadorDoPrograma() : {}
 {
-    [<IDENTIFIER> {acoesSemanticas.acao2("ajustar2");}]
+    [<IDENTIFIER> {acoesSemanticas.acao2(getToken(0).image);}]
 }
 
 void declaracaoDeConstantesEVariaveis() : {}
@@ -423,7 +423,7 @@ void declaracaoDeConstantes() : {}
 
 void constantes() : {}
 {
-    tipo() <R_IS> listaDeIdentificadoresDeConstantes() {acoesSemanticas.acao4();} valor() {acoesSemanticas.acao5("ajustar5");} <SS_DOT> constantes1()
+    tipo() <R_IS> listaDeIdentificadoresDeConstantes() {acoesSemanticas.acao4();} valor() {acoesSemanticas.acao5(getToken(0).image);} <SS_DOT> constantes1()
 }
 
 void constantes1() : {}
@@ -463,7 +463,7 @@ void tipo() : {}
 
 void listaDeIdentificadoresDeConstantes() : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao11("ajustar11");} listaDeIdentificadoresDeConstantes1()
+    <IDENTIFIER> {acoesSemanticas.acao11(getToken(0).image);} listaDeIdentificadoresDeConstantes1()
 }
 
 void listaDeIdentificadoresDeConstantes1() : {}
@@ -473,7 +473,7 @@ void listaDeIdentificadoresDeConstantes1() : {}
 
 void listaDeIdentificadoresDeVariaveis() : {}
 {
-    <IDENTIFIER>{acoesSemanticas.acao12("ajustar12");} indice() {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1()
+    <IDENTIFIER>{acoesSemanticas.acao12(getToken(0).image);} indice() {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1()
 }
 
 void listaDeIdentificadoresDeVariaveis1() : {}
@@ -538,10 +538,10 @@ void listaDeIdentificadoresEOuConstantes1() : {}
 
 void item() : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19("ajustar2");} indice() {acoesSemanticas.acao20();}
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();}
     | <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}
     | <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}
-    | <LITERAL_CONSTANT> {acoesSemanticas.acao23("ajustar23");}
+    | <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}
 }
 
 void selecao() : {}
@@ -624,10 +624,10 @@ void maiorPrioridade() : {}
 
 void elemento() : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19("ajustar2");} indice() {acoesSemanticas.acao20();} |
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();} |
     <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}|
     <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}|
-    <LITERAL_CONSTANT> {acoesSemanticas.acao23("ajustar23");}|
+    <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}|
     <R_TRUE> {acoesSemanticas.acao48();}|
     <R_FALSE> {acoesSemanticas.acao49();}|
     <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE> |
