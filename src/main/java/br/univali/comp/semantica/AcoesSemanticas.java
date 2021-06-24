@@ -262,50 +262,235 @@ public class AcoesSemanticas {
         this.contexto = "atribuição";
         System.out.println("reconhecimento do início do comando de atribuição");
     }
-    
-    //NEXT
-    public void acao16(){
 
-        //TODO for in this.listaAtributos - Add instrução com ponteiro, STR, atributo
-        //instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.LITERAL, exist.getCategoria())));
+    //OK
+    public void acao16(){
+        for(int i=0; i< this.listaAtributos.size(); i++){
+            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.NONE, this.listaAtributos.get(i))));
+            this.ponteiro = this.ponteiro + 1;
+        }
         System.out.println(": reconhecimento do fim do comando de atribuição");
     }
 
+    //OK
     public void acao17(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        this.contexto = "entrada dados";
+        System.out.println("reconhecimento do comando de entrada de dados");
     }
 
+    //OK
     public void acao18(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de mensagem em comando de saída de dados");
     }
 
-    public void acao19(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+    //OK
+    public void acao19(String identificador){
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
+        if(!exist.equals(null)){
+            this.variavelIndexada = false;
+            this.identificadorReconhecido = identificador;
+        }else{
+            throw new Error("identificador não declarado");
+        }
+        System.out.println("reconhecimento de identificador em comando de saída ou em expressão");
     }
 
+    //OK
     public void acao20(){
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
+        if(!this.variavelIndexada){
+            if(exist.getAtributo2() == 0){
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.NONE, exist.getAtributo1())));
+                this.ponteiro = this.ponteiro + 1;
+            }else{
+                throw new Error("identificador de variável indexada exige índice");
+            }
+        }else{
+            if(exist.getAtributo2() != 0){
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.INTEGER, exist.getAtributo1() + this.constanteInteira -1)));
+                this.ponteiro = this.ponteiro + 1;
+            }else{
+                throw new Error("identificador de constante ou de variável não indexada");
+            }
+        }
+        System.out.println(" reconhecimento de índice de variável indexada em comando de saída");
+    }
+
+    //OK
+    public void acao21(Integer constInt){
+        instructionList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, constInt)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de constante inteira em comando de saída ou em expressão");
+    }
+
+    //OK
+    public void acao22(Float constReal){
+        instructionList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, constReal)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de constante real em comando de saída ou em expressão");
+    }
+
+    //OK
+    public void acao23(String constLiteral){
+        instructionList.add(new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, constLiteral)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de constante literal em comando de saída ou em expressão");
+    }
+
+    //OK
+    public void acao24(){
+        //ACHO que é isso
+        this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro);
+        System.out.println("reconhecimento de fim de comando de seleção");
+    }
+
+    //OK
+    public void acao25(){
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMF, new DataFrame(DataType.NONE, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro -1);
+        System.out.println(" reconhecimento da palavra reservada true");
+    }
+
+    //OK
+    public void acao26(){
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.NONE, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro -1);
+        System.out.println(" reconhecimento da palavra reservada false");
+    }
+
+    //OK
+    public void acao27(){
+        this.pilhaDeDesvios.set(this.pilhaDeDesvios.size()-1, ponteiro+1);
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.NONE, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro -1);
+        System.out.println("reconhecimento da palavra reservada false (ou true)");
+    }
+
+    //OK
+    public void acao28(){
+        this.pilhaDeDesvios.add(this.ponteiro);
+        System.out.println("reconhecimento do comando de repetição");
+    }
+
+    //OK
+    public void acao29(){
+        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
+        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.INTEGER, p)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento do fim do comando de repetição");
+    }
+
+    //OK
+    public void acao30(){
+        this.pilhaDeDesvios.add(this.ponteiro);
+        System.out.println("reconhecimento do início de expressão em comando de repetição");
+    }
+
+    public void acao31(){
 
         System.out.println("reconhecimento da palavra reservada not variable");
     }
 
-    public void acao21(){
+    public void acao32(){
 
         System.out.println("reconhecimento da palavra reservada not variable");
     }
 
-    public void acao22(){
+    public void acao33(){
 
         System.out.println("reconhecimento da palavra reservada not variable");
     }
 
-    public void acao23(){
+    public void acao34(){
 
         System.out.println("reconhecimento da palavra reservada not variable");
     }
 
+    public void acao35(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao36(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao37(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao38(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao39(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao40(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao41(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao42(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao43(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao44(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao45(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao46(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao47(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao48(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao49(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
+
+    public void acao50(){
+
+        System.out.println("reconhecimento da palavra reservada not variable");
+    }
 };
 
 
