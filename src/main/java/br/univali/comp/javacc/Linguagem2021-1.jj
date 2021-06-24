@@ -403,7 +403,7 @@ void comentario() : {}
 
 void identificadorDoPrograma() : {}
 {
-    [<IDENTIFIER>]
+    [<IDENTIFIER> {acoesSemanticas.acao2("ajustar2");}]
 }
 
 void declaracaoDeConstantesEVariaveis() : {}
@@ -418,12 +418,12 @@ void constantesEVariaveis() : {}
 
 void declaracaoDeConstantes() : {}
 {
-    <R_NOT> <R_VARIABLE> constantes()
+    <R_NOT> <R_VARIABLE> {acoesSemanticas.acao3();} constantes()
 }
 
 void constantes() : {}
 {
-    tipo() <R_IS> listaDeIdentificadoresDeConstantes() valor() <SS_DOT> constantes1()
+    tipo() <R_IS> listaDeIdentificadoresDeConstantes() {acoesSemanticas.acao4();} valor() {acoesSemanticas.acao5("ajustar5");} <SS_DOT> constantes1()
 }
 
 void constantes1() : {}
@@ -438,12 +438,12 @@ void constantes2() : {}
 
 void declaracaoDeVariaveis() : {}
 {
-    <R_VARIABLE> variaveis()
+    <R_VARIABLE> {acoesSemanticas.acao6();} variaveis()
 }
 
 void variaveis() : {}
 {
-    tipo() <R_IS> listaDeIdentificadoresDeVariaveis() <SS_DOT> variaveis1()
+    tipo() <R_IS> listaDeIdentificadoresDeVariaveis() {acoesSemanticas.acao4();} <SS_DOT> variaveis1()
 }
 
 void variaveis1() : {}
@@ -458,12 +458,12 @@ void variaveis2() : {}
 
 void tipo() : {}
 {
-    <R_NATURAL> | <R_REAL> | <R_CHAR> | <R_BOOLEAN>
+    <R_NATURAL> {acoesSemanticas.acao7();} | <R_REAL> {acoesSemanticas.acao8();} | <R_CHAR> {acoesSemanticas.acao9();}| <R_BOOLEAN>{acoesSemanticas.acao10();}
 }
 
 void listaDeIdentificadoresDeConstantes() : {}
 {
-    <IDENTIFIER> listaDeIdentificadoresDeConstantes1()
+    <IDENTIFIER> {acoesSemanticas.acao11("ajustar11");} listaDeIdentificadoresDeConstantes1()
 }
 
 void listaDeIdentificadoresDeConstantes1() : {}
@@ -473,7 +473,7 @@ void listaDeIdentificadoresDeConstantes1() : {}
 
 void listaDeIdentificadoresDeVariaveis() : {}
 {
-    <IDENTIFIER> indice() listaDeIdentificadoresDeVariaveis1()
+    <IDENTIFIER>{acoesSemanticas.acao12("ajustar12");} indice() {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1()
 }
 
 void listaDeIdentificadoresDeVariaveis1() : {}
@@ -483,7 +483,7 @@ void listaDeIdentificadoresDeVariaveis1() : {}
 
 void indice() : {}
 {
-    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> <SS_SQUAREBRACE_CLOSE>]
+    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(7);}<SS_SQUAREBRACE_CLOSE>]
 }
 
 void valor() : {}
@@ -513,12 +513,12 @@ void comando() : {}
 
 void atribuicao() : {}
 {
-    <R_SET> expressao() <R_TO> listaDeIdentificadoresDeVariaveis()
+    <R_SET> {acoesSemanticas.acao15();} expressao() <R_TO> listaDeIdentificadoresDeVariaveis() {acoesSemanticas.acao16();}
 }
 
 void entrada() : {}
 {
-    <R_GET> <SS_CURLYBRACE_OPEN> listaDeIdentificadoresDeVariaveis() <SS_CURLYBRACE_CLOSE>
+    <R_GET> {acoesSemanticas.acao17();} <SS_CURLYBRACE_OPEN> listaDeIdentificadoresDeVariaveis() <SS_CURLYBRACE_CLOSE>
 }
 
 void saida() : {}
@@ -528,7 +528,7 @@ void saida() : {}
 
 void listaDeIdentificadoresEOuConstantes() : {}
 {
-    item() listaDeIdentificadoresEOuConstantes1()
+    item() {acoesSemanticas.acao18();} listaDeIdentificadoresEOuConstantes1()
 }
 
 void listaDeIdentificadoresEOuConstantes1() : {}
@@ -538,34 +538,37 @@ void listaDeIdentificadoresEOuConstantes1() : {}
 
 void item() : {}
 {
-    <IDENTIFIER> indice() | <INTEGER_CONSTANT> | <FLOAT_CONSTANT> | <LITERAL_CONSTANT>
+    <IDENTIFIER> {acoesSemanticas.acao19("ajustar2");} indice() {acoesSemanticas.acao20();}
+    | <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}
+    | <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}
+    | <LITERAL_CONSTANT> {acoesSemanticas.acao23("ajustar23");}
 }
 
 void selecao() : {}
 {
-    <R_VERIFY> expressao() <R_IS> clausulas()
+    <R_VERIFY> expressao() <R_IS> clausulas() {acoesSemanticas.acao24();}
 }
 
 void clausulas() : {}
 {
-    <R_TRUE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> falsa() |
-    <R_FALSE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> verdadeira()
+    <R_TRUE> {acoesSemanticas.acao25();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> falsa() |
+    <R_FALSE> {acoesSemanticas.acao26();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> verdadeira()
 }
 
 void verdadeira() : {}
 {
-    [<R_IS> <R_TRUE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+    [<R_IS> <R_TRUE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
 }
 
 void falsa() : {}
 {
-    [<R_IS> <R_FALSE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+    [<R_IS> <R_FALSE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
 }
 
 void repeticao() : {}
 {
-    <R_LOOP> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() <R_IS> <R_TRUE> |
-    <R_WHILE> expressao() <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>
+    <R_LOOP> {acoesSemanticas.acao28();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() {acoesSemanticas.acao29();} <R_IS> <R_TRUE> |
+    <R_WHILE> {acoesSemanticas.acao30();} expressao() {acoesSemanticas.acao31();} <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> {acoesSemanticas.acao32();}
 }
 
 void expressao() : {}
@@ -575,12 +578,12 @@ void expressao() : {}
 
 void expressao1() : {}
 {
-    [<SS_EQUALS> expressaoAritmeticaOuLogica() |
-    <SS_NOT_EQUALS> expressaoAritmeticaOuLogica() |
-    <SS_LESS_THAN> expressaoAritmeticaOuLogica() |
-    <SS_MORE_THAN> expressaoAritmeticaOuLogica() |
-    <SS_LESS_OR_EQUAL_THAN> expressaoAritmeticaOuLogica() |
-    <SS_MORE_OR_EQUAL_THAN> expressaoAritmeticaOuLogica()]
+    [<SS_EQUALS> expressaoAritmeticaOuLogica() {acoesSemanticas.acao33();} |
+    <SS_NOT_EQUALS> expressaoAritmeticaOuLogica() {acoesSemanticas.acao34();}|
+    <SS_LESS_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao35();}|
+    <SS_MORE_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao36();}|
+    <SS_LESS_OR_EQUAL_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao37();}|
+    <SS_MORE_OR_EQUAL_THAN> expressaoAritmeticaOuLogica(){acoesSemanticas.acao38();}]
 }
 
 void expressaoAritmeticaOuLogica() : {}
@@ -590,9 +593,9 @@ void expressaoAritmeticaOuLogica() : {}
 
 void menorPrioridade() : {}
 {
-    [<SS_PLUS> termo2() menorPrioridade() |
-    <SS_MINUS> termo2() menorPrioridade() |
-    <SS_OR> termo2() menorPrioridade()]
+    [<SS_PLUS> termo2() menorPrioridade() {acoesSemanticas.acao39();} |
+    <SS_MINUS> termo2() menorPrioridade() {acoesSemanticas.acao40();}|
+    <SS_OR> termo2() menorPrioridade(){acoesSemanticas.acao41();}]
 }
 
 void termo2() : {}
@@ -602,16 +605,16 @@ void termo2() : {}
 
 void mediaPrioridade() : {}
 {
-    [<SS_TIMES> termo1() mediaPrioridade() |
-    <SS_DIVIDE> termo1() mediaPrioridade() |
-    <SS_PERCENT> termo1() mediaPrioridade() |
-    <SS_MODULO> termo1() mediaPrioridade() |
-    <SS_AND> termo1() mediaPrioridade() ]
+    [<SS_TIMES> termo1() mediaPrioridade() {acoesSemanticas.acao42();}|
+    <SS_DIVIDE> termo1() mediaPrioridade() {acoesSemanticas.acao43();}|
+    <SS_PERCENT> termo1() mediaPrioridade() {acoesSemanticas.acao44();}|
+    <SS_MODULO> termo1() mediaPrioridade() {acoesSemanticas.acao45();}|
+    <SS_AND> termo1() mediaPrioridade() {acoesSemanticas.acao46();}]
 }
 
 void termo1() : {}
 {
-    elemento() maiorPrioridade()
+    elemento() maiorPrioridade() {acoesSemanticas.acao47();}
 }
 
 void maiorPrioridade() : {}
@@ -621,13 +624,13 @@ void maiorPrioridade() : {}
 
 void elemento() : {}
 {
-    <IDENTIFIER> indice() |
-    <INTEGER_CONSTANT> |
-    <FLOAT_CONSTANT> |
-    <LITERAL_CONSTANT> |
-    <R_TRUE> |
-    <R_FALSE> |
-    <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE> |
-    <SS_NOT> <SS_CURLYBRACE_OPEN> expressao() <SS_CURLYBRACE_CLOSE>
+    <IDENTIFIER> {acoesSemanticas.acao19("ajustar2");} indice() {acoesSemanticas.acao20();} |
+    <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}|
+    <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}|
+    <LITERAL_CONSTANT> {acoesSemanticas.acao23("ajustar23");}|
+    <R_TRUE> {acoesSemanticas.acao48();}|
+    <R_FALSE> {acoesSemanticas.acao49();}|
+    <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE> |
+    <SS_NOT> <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE> {acoesSemanticas.acao50();}
 }
 
