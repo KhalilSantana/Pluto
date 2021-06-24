@@ -392,105 +392,139 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento do início de expressão em comando de repetição");
     }
 
-    //NEXT
+    //OK
     public void acao31(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMF, new DataFrame(DataType.INTEGER, '?')));
+        this.ponteiro = this.ponteiro + 1;
+        this.pilhaDeDesvios.add(this.ponteiro-1);
+        System.out.println("reconhecimento de expressão em comando de repetição");
     }
 
+    //rever - Não entendi bem o que é para fazer nessa função;
     public void acao32(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
+        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        p = ponteiro + 1;
+        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.INTEGER, p)));
+        System.out.println("reconhecimento do fim do comando de repetição");
     }
 
+    //OK
     public void acao33(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.EQL, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional igual");
     }
 
+    //OK
     public void acao34(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.DIF, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional diferente");
     }
 
+    //OK
     public void acao35(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.SMR, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional menor");
     }
 
+    //OK
     public void acao36(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.BGR, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional maior");
     }
 
+    //OK
     public void acao37(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.SME, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional menor igual");
     }
 
+    //OK
     public void acao38(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.BGE, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação relacional maior igual");
     }
 
+    //OK
     public void acao39(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.ADD, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação aritmética adição");
     }
 
+    //OK
     public void acao40(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.SUB, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação aritmética subtração");
     }
 
+    //OK
     public void acao41(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.OR, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação lógica OU ( | )");
     }
 
+    //OK
     public void acao42(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.MUL, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação aritmética multiplicação");
     }
 
+    //OK
     public void acao43(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.DIV, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação aritmética divisão real");
     }
 
     public void acao44(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        System.out.println("reconhecimento de operação aritmética divisão inteira-especificar");
     }
 
     public void acao45(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        System.out.println("reconhecimento de operação aritmética resto da divisão inteira-especificar");
     }
 
+    //OK
     public void acao46(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.AND, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação lógica E (&)\n");
     }
 
     public void acao47(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        System.out.println(" reconhecimento de operação aritmética potenciação-especificar");
     }
 
+    //OK
     public void acao48(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, true)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de constante lógica true");
     }
 
+    //OK
     public void acao49(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.LDB, new DataFrame(DataType.BOOLEAN, false)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de constante lógica false");
     }
 
+    //OK
     public void acao50(){
-
-        System.out.println("reconhecimento da palavra reservada not variable");
+        instructionList.add(new Instruction(Instruction.Mnemonic.NOT, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
+        System.out.println("reconhecimento de operação lógica NÃO ( ! )");
     }
 };
 
