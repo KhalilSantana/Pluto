@@ -392,6 +392,7 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento do início de expressão em comando de repetição");
     }
 
+    //NEXT
     public void acao31(){
 
         System.out.println("reconhecimento da palavra reservada not variable");
