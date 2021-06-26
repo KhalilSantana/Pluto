@@ -342,6 +342,70 @@ class VirtualMachineTest {
         assertEquals(DataType.FLOAT, stackElement.type);
         assertEquals(expectedResult, (Float) stackElement.content);
     }
+    @ParameterizedTest(name = "{0} ^ {1} = {2}")
+    @CsvSource({
+//           X    Y  ExpectedResult
+            "2,   5, 32",
+    })
+    @Name("PWR-Integers")
+    void potentiation(Integer x, Integer y, Integer expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.PWR, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.INTEGER, stackElement.type);
+        assertEquals(expectedResult, (Integer) stackElement.content);
+    }
+
+    @ParameterizedTest(name = "{0} % {1} = {2}")
+    @CsvSource({
+//           X    Y   ExpectedResult
+            "25,  12, 1",
+            "11,  12, 11",
+            "12,  12, 0"
+    })
+    @Name("MOD-Integers")
+    void modulo(Integer x, Integer y, Integer expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.MOD, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.INTEGER, stackElement.type);
+        assertEquals(expectedResult, (Integer) stackElement.content);
+    }
+
+    @ParameterizedTest(name = "{0} % {1} = {2}")
+    @CsvSource({
+//           X    Y   ExpectedResult
+            "5.0,  3.0, 1",
+    })
+    @Name("DVW-Integers")
+    void divisionWhole(Float x, Float y, Integer expectedResult) {
+        var insList = new ArrayList<Instruction>();
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, x)));
+        insList.add(new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, y)));
+        insList.add(new Instruction(Instruction.Mnemonic.DVW, new DataFrame(DataType.NONE, null)));
+        insList.add(new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null)));
+        var vm = new VirtualMachine(insList);
+        vm.executeAll();
+        var stack = vm.getStack();
+        assertEquals(1, stack.size());
+        var stackElement = stack.peek();
+        assertEquals(DataType.INTEGER, stackElement.type);
+        assertEquals(expectedResult, (Integer) stackElement.content);
+    }
     @ParameterizedTest(name = "SPos0:{0} SPos1:{1} SPos2:{2} ADDR:{3} => SPos0:{4} SPos1:{5}")
     @CsvSource({
             "a, b, c, 1, c, b",

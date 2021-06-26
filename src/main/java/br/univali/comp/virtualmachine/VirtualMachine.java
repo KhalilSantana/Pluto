@@ -100,6 +100,9 @@ public class VirtualMachine {
             case DIV -> divide(ins);
             case MUL -> multiply(ins);
             case SUB -> subtract(ins);
+            case DVW -> divideWhole(ins);
+            case MOD -> modulo(ins);
+            case PWR -> potentiation(ins);
             case ALB -> allocateBoolean(ins);
             case ALI -> allocateInteger(ins);
             case ALR -> allocateFloat(ins);
@@ -201,6 +204,57 @@ public class VirtualMachine {
             var x_val = ((Number) x.content).floatValue();
             var y_val = ((Number) y.content).floatValue();
             float result = y_val - x_val;
+            stack.push(new DataFrame(type, result));
+        }
+    }
+
+    private void divideWhole(Instruction ins) {
+        var x = stack.pop();
+        var y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            x_val = y_val / x_val;
+            stack.push(new DataFrame(type, x_val));
+        } else {
+            var x_val = ((Number) x.content).floatValue();
+            var y_val = ((Number) y.content).floatValue();
+            float result = y_val / x_val;
+            stack.push(new DataFrame(DataType.INTEGER, (int) result));
+        }
+    }
+
+    private void modulo(Instruction ins) {
+        var x = stack.pop();
+        var y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            x_val = y_val % x_val;
+            stack.push(new DataFrame(type, x_val));
+        } else {
+            var x_val = ((Number) x.content).floatValue();
+            var y_val = ((Number) y.content).floatValue();
+            float result = y_val % x_val;
+            stack.push(new DataFrame(type, result));
+        }
+    }
+
+    private void potentiation(Instruction ins) {
+        var x = stack.pop();
+        var y = stack.pop();
+        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        if (type == DataType.INTEGER) {
+            var x_val = (Integer) x.content;
+            var y_val = (Integer) y.content;
+            x_val = (int) Math.pow(y_val, x_val);
+            stack.push(new DataFrame(type, x_val));
+        } else {
+            var x_val = ((Number) x.content).floatValue();
+            var y_val = ((Number) y.content).floatValue();
+            float result = (float) Math.pow(y_val,x_val);
             stack.push(new DataFrame(type, result));
         }
     }
