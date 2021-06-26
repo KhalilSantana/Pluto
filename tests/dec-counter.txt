@@ -1,0 +1,25 @@
+:- "foo"
+:| comment
+:* multi-line comment
+this text should be ignored
+*:
+program {
+    define {
+        not variable
+            natural is const_a 0 .
+            char is const_b "Please insert a number between [1-5] (inclusive):" .
+        variable
+            natural is var_a .
+    }
+    execute {
+        loop {
+            put { const_b }.
+            get { var_a }.
+        } while var_a<=const_a is true .
+	loop {
+            set var_a-1 to var_a .
+            put { var_a } .
+        } while var_a>const_a is true .
+            
+   }
+} bar
