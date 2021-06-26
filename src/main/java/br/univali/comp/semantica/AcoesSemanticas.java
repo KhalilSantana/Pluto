@@ -21,12 +21,15 @@ public class AcoesSemanticas {
     private String identificadorReconhecido;
     private int constanteInteira;
     private List<Object> listaAtributos = new ArrayList<>();
+    private List<String> listaErros = new ArrayList<>();
 
     // OK
     public void acao1(){
         System.out.println("gerar instrução: (ponteiro, STP, 0)");
         Instruction instruction = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.INTEGER, 0));
         instructionList.add(instruction);
+        System.out.println("Lista de Erros: " + instructionList.toString());
+        System.out.println("Lista de Instruções: " + instructionList.toString());
     }
 
     // OK
@@ -146,7 +149,7 @@ public class AcoesSemanticas {
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            throw new Error("Tipo inválido para constante”");
+            this.listaErros.add("10 - Tipo inválido para constante");
         }
     }
 
@@ -155,7 +158,7 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento de identificador de constante");
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
-            throw new Error("“identificador já declarado”");
+            this.listaErros.add("11 - identificador já declarado: '" + identificador + "' ");
         }else{
             this.VT = this.VT + 1;
             this.VP = this.VP + 1;
@@ -170,7 +173,7 @@ public class AcoesSemanticas {
         if(this.contexto.equals("variável")){
             Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
             if(!(exist == null)){
-                throw new Error("“identificador já declarado”");
+                this.listaErros.add("12 - identificador já declarado: '" + identificador + "' ");
             }else{
                 this.variavelIndexada = false;
                 this.identificadorReconhecido = identificador;
@@ -206,17 +209,17 @@ public class AcoesSemanticas {
                         if(!this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1());
                         }else{
-                            throw new Error("identificador de variável não indexada");
+                            this.listaErros.add("13 - identificador de variável não indexada: '" + this.identificadorReconhecido + "' ");
                         }
                     } else{
                         if(this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
                         }else{
-                            throw new Error("identificador de variável indexada exige índice");
+                            this.listaErros.add("13 - identificador de variável indexada exige índice");
                         }
                     }
                 }else{
-                    throw new Error("identificador não declarado ou de constante");
+                    this.listaErros.add("13 - identificador não declarado ou de constante");
                 }
                 break;
             }
@@ -230,7 +233,7 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.INTEGER, exist.getAtributo1())));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            throw new Error("identificador de variável não indexada");
+                            this.listaErros.add("13 - identificador de variável não indexada");
                         }
                     } else{
                         if(this.variavelIndexada){
@@ -239,11 +242,11 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.INTEGER, exist.getAtributo1() + this.constanteInteira -1)));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            throw new Error("identificador de variável indexada exige índice");
+                            this.listaErros.add("13 - identificador de variável indexada exige índice");
                         }
                     }
                 }else{
-                    throw new Error("identificador não declarado ou de constante");
+                    this.listaErros.add("13 - identificador não declarado ou de constante: '"+this.identificadorReconhecido+"' ");
                 }
                 break;
             }
@@ -293,7 +296,7 @@ public class AcoesSemanticas {
             this.variavelIndexada = false;
             this.identificadorReconhecido = identificador;
         }else{
-            throw new Error("identificador não declarado");
+            this.listaErros.add("19 - identificador não declarado: '"+identificador+"' ");
         }
     }
 
@@ -306,14 +309,14 @@ public class AcoesSemanticas {
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.NONE, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                throw new Error("identificador de variável indexada exige índice");
+                this.listaErros.add("20 - identificador de variável indexada exige índice: '"+this.identificadorReconhecido+"' ");
             }
         }else{
             if(exist.getAtributo2() != 0){
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.INTEGER, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                throw new Error("identificador de constante ou de variável não indexada");
+                this.listaErros.add("20 - identificador de constante ou de variável não indexada: '"+this.identificadorReconhecido+"' ");
             }
         }
     }
