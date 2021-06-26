@@ -23,7 +23,7 @@ public class DataFrame {
                 contentStr = ((Boolean) content).toString();
             }
             case LITERAL -> {
-                contentStr = (String) content;
+                contentStr = String.valueOf(content);
             }
         }
         if (contentStr == null) {
