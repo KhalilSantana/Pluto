@@ -25,7 +25,7 @@
                 </Menu>
                 <Menu text="Compile">
                     <MenuItem onAction="#compileProgram" text="Compile"/>
-                    <MenuItem text="Run" onAction="#runVirtualMachine"/>
+                    <MenuItem text="Run" onAction="#handleRunButton"/>
                 </Menu>
                 <Menu text="Help">
                     <MenuItem text="Help"/>
@@ -86,7 +86,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn" onAction="#runVirtualMachine">
+                <Button fx:id="runBtn" onAction="#handleRunButton">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>

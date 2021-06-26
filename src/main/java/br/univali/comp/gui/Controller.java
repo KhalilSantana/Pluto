@@ -1,11 +1,15 @@
 package br.univali.comp.gui;
 
-import br.univali.comp.javacc.gen.*;
-import br.univali.comp.recovery.*;
+import br.univali.comp.javacc.gen.ParseException;
+import br.univali.comp.javacc.gen.Sintatico;
+import br.univali.comp.recovery.ParseEOFException;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
-import br.univali.comp.virtualmachine.*;
+import br.univali.comp.virtualmachine.DataType;
+import br.univali.comp.virtualmachine.Instruction;
+import br.univali.comp.virtualmachine.VMStatus;
+import br.univali.comp.virtualmachine.VirtualMachine;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,11 +27,11 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class Controller {
+    private Sintatico sintatico;
     private VirtualMachine vm;
     private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
@@ -224,17 +228,6 @@ public class Controller {
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
         registerWindowClose();
         registerLineColUpdater();
-        var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
-        var instructionList = Arrays.asList(
-                new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, "Hello World!")),
-                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
-                new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.INTEGER, 1)),
-                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
-                insStop
-        );
-        Instruction.enumerateInstructions(instructionList);
-        displayInstructions(instructionList);
-        vm = new VirtualMachine(instructionList);
     }
 
     @FXML
@@ -303,21 +296,57 @@ public class Controller {
 
     }
 
-    public void compileProgram(ActionEvent actionEvent) throws ParseException, ParseEOFException {
-        actionEvent.consume();
+    public boolean compileProgram() throws ParseException, ParseEOFException {
         if (inputTextArea.getText().length() == 0) {
             Alert alert = AlertFactory.create(Alert.AlertType.ERROR, "Error", "Blank file", "A blank file cannot be compiled");
             alert.show();
-            return;
+            return false;
         }
         String[] args = new String[0];
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
 //        Tokenizer tokenizer = new Tokenizer(targetStream);
 //        String result = tokenizer.getTokens(args, inputTextArea.getText());
-        Sintatico sintatico = new Sintatico(targetStream);
+        sintatico = new Sintatico(targetStream);
         String result = sintatico.analyze(args, inputTextArea.getText());
+        this.vm = new VirtualMachine(Sintatico.acoesSemanticas.getInstructionList());
+        displayInstructions(Sintatico.acoesSemanticas.getInstructionList());
         messageTextArea.setText(result);
         System.out.println(result);
+        return true;
+    }
+
+    public void handleRunButton() throws ParseEOFException, ParseException {
+        if (handleVMmaybeRunning() == Operation.SUCCESS) {
+            if (compileProgram()) {
+                runVirtualMachine();
+            }
+        }
+    }
+
+    public Operation handleVMmaybeRunning() {
+        if (vm == null) {
+            return Operation.SUCCESS;
+        }
+        var confirm = AlertFactory.create(Alert.AlertType.CONFIRMATION, "Confirmation", "", "VM is still running, do you wish to stop the VM and continue this operation?");
+        Optional<ButtonType> optional = Optional.empty();
+        var op = Operation.CANCELED;
+        if (vm.getStatus() != VMStatus.HALTED || vm.getStatus() != VMStatus.NOT_STARTED) {
+            optional = confirm.showAndWait();
+        }
+        if (optional.isEmpty()) {
+            return Operation.CANCELED;
+        }
+        var buttonData = optional.get().getButtonData();
+        if (buttonData.equals(ButtonType.OK.getButtonData())) {
+            vm = null;
+            this.messageTextArea.clear();
+            setStatusMsg("Forcefully closed VM!");
+            return Operation.SUCCESS;
+        }
+        if (buttonData.equals(ButtonType.CANCEL.getButtonData())) {
+            return Operation.CANCELED;
+        }
+        return op;
     }
 
     public void runVirtualMachine() {
