@@ -22,6 +22,18 @@ public class VirtualMachine {
         return status;
     }
 
+    public List<Instruction> getInstructions() {
+        return instructions;
+    }
+
+    public int getInstructionPointer() {
+        return instructionPointer;
+    }
+
+    public void setStatus(VMStatus status) {
+        this.status = status;
+    }
+
     public String printStack() {
         int stackPos = 0;
         StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
