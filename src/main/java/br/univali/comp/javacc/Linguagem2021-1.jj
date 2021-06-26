@@ -483,7 +483,7 @@ void listaDeIdentificadoresDeVariaveis1() : {}
 
 void indice() : {}
 {
-    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(7);}<SS_SQUAREBRACE_CLOSE>]
+    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(getToken(0).image);}<SS_SQUAREBRACE_CLOSE>]
 }
 
 void valor() : {}
@@ -539,8 +539,8 @@ void listaDeIdentificadoresEOuConstantes1() : {}
 void item() : {}
 {
     <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();}
-    | <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}
-    | <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}
+    | <INTEGER_CONSTANT> {acoesSemanticas.acao21(getToken(0).image);}
+    | <FLOAT_CONSTANT> {acoesSemanticas.acao22(getToken(0).image);}
     | <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}
 }
 
@@ -625,8 +625,8 @@ void maiorPrioridade() : {}
 void elemento() : {}
 {
     <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();} |
-    <INTEGER_CONSTANT> {acoesSemanticas.acao21(7);}|
-    <FLOAT_CONSTANT> {acoesSemanticas.acao22(8F);}|
+    <INTEGER_CONSTANT> {acoesSemanticas.acao21(getToken(0).image);}|
+    <FLOAT_CONSTANT> {acoesSemanticas.acao22(getToken(0).image);}|
     <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}|
     <R_TRUE> {acoesSemanticas.acao48();}|
     <R_FALSE> {acoesSemanticas.acao49();}|
