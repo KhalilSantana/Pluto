@@ -28,7 +28,7 @@ public class AcoesSemanticas {
         System.out.println("gerar instrução: (ponteiro, STP, 0)");
         Instruction instruction = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.INTEGER, 0));
         instructionList.add(instruction);
-        System.out.println("Lista de Erros: " + instructionList.toString());
+        System.out.println("Lista de Erros: " + listaErros.toString());
         System.out.println("Lista de Instruções: " + instructionList.toString());
     }
 
@@ -85,12 +85,12 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento de valor na declaração de constante");
         switch (this.tipo){
             case 5: {
-                Instruction instruction = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, valor));
+                Instruction instruction = new Instruction(Instruction.Mnemonic.LDI, new DataFrame(DataType.INTEGER, Integer.parseInt(valor)));
                 instructionList.add(instruction);
                 break;
             }
             case 6: {
-                Instruction instruction = new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, valor));
+                Instruction instruction = new Instruction(Instruction.Mnemonic.LDR, new DataFrame(DataType.FLOAT, Float.parseFloat(valor)));
                 instructionList.add(instruction);
                 break;
             }
