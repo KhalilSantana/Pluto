@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import br.univali.comp.recovery.*;
 import br.univali.comp.semantica.AcoesSemanticas;
+import br.univali.comp.virtualmachine.Instruction;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
@@ -20,7 +21,7 @@ public class Sintatico {
     public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
     private Boolean hasLexicalErrors = false;
     public int contParseError = 0;
-    public AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
+    public static AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
 
     boolean debug_recovery = true;
     Token lastError = null;
@@ -280,6 +281,14 @@ public class Sintatico {
 
     public String getResults(){
             return tokens.toString();
+    }
+
+    public List<Instruction> getInstructions() {
+        return acoesSemanticas.getInstructionList();
+    }
+
+    public List<String> getSemanticErrorList() {
+        return acoesSemanticas.getListaErros();
     }
 
 }

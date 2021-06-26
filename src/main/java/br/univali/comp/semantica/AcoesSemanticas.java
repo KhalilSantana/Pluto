@@ -23,6 +23,14 @@ public class AcoesSemanticas {
     private List<Object> listaAtributos = new ArrayList<>();
     private List<String> listaErros = new ArrayList<>();
 
+    public List<Instruction> getInstructionList() {
+        return instructionList;
+    }
+
+    public List<String> getListaErros() {
+        return listaErros;
+    }
+
     // OK
     public void acao1(){
         System.out.println("gerar instrução: (ponteiro, STP, 0)");
@@ -232,18 +240,18 @@ public class AcoesSemanticas {
                 if(!(exist == null) && (exist.getCategoria() == 1 || exist.getCategoria() == 2 || exist.getCategoria() == 3 || exist.getCategoria() == 4)) {
                     if(exist.getAtributo2() == 0){
                         if(!this.variavelIndexada){
-                            instructionList.add(new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.LITERAL, exist.getCategoria())));
+                            instructionList.add(new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.get(exist.getCategoria()), exist.getCategoria())));
                             this.ponteiro = this.ponteiro + 1;
-                            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.INTEGER, exist.getAtributo1())));
+                            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
                             this.listaErros.add("13 - identificador de variável não indexada");
                         }
                     } else{
                         if(this.variavelIndexada){
-                            instructionList.add(new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.LITERAL, exist.getCategoria())));
+                            instructionList.add(new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.get(exist.getCategoria()), exist.getCategoria())));
                             this.ponteiro = this.ponteiro + 1;
-                            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.INTEGER, exist.getAtributo1() + this.constanteInteira -1)));
+                            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
                             this.listaErros.add("13 - identificador de variável indexada exige índice");
@@ -274,7 +282,7 @@ public class AcoesSemanticas {
     public void acao16(){
         System.out.println(": reconhecimento do fim do comando de atribuição");
         for(int i=0; i< this.listaAtributos.size(); i++){
-            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.NONE, this.listaAtributos.get(i))));
+            instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, this.listaAtributos.get(i))));
             this.ponteiro = this.ponteiro + 1;
         }
     }
@@ -310,14 +318,14 @@ public class AcoesSemanticas {
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!this.variavelIndexada){
             if(exist.getAtributo2() == 0){
-                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.NONE, exist.getAtributo1())));
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
                 this.listaErros.add("20 - identificador de variável indexada exige índice: '"+this.identificadorReconhecido+"' ");
             }
         }else{
             if(exist.getAtributo2() != 0){
-                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.INTEGER, exist.getAtributo1() + this.constanteInteira -1)));
+                instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
                 this.listaErros.add("20 - identificador de constante ou de variável não indexada: '"+this.identificadorReconhecido+"' ");
@@ -364,7 +372,7 @@ public class AcoesSemanticas {
     //OK
     public void acao26(){
         System.out.println(" reconhecimento da palavra reservada false");
-        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.NONE, '?')));
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.ADDRESS, '?')));
         this.ponteiro = this.ponteiro + 1;
         this.pilhaDeDesvios.add(this.ponteiro -1);
     }
@@ -389,7 +397,7 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento do fim do comando de repetição");
         Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
         this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.INTEGER, p)));
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMT, new DataFrame(DataType.ADDRESS, p)));
         this.ponteiro = this.ponteiro + 1;
     }
 
