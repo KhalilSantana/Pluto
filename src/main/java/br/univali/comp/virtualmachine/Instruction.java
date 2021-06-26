@@ -41,7 +41,7 @@ public class Instruction implements Comparable<Instruction> {
 
     @Override
     public String toString() {
-        return String.format("Instruction %s - %s", mnemonic, parameter);
+        return String.format("Instruction %s -  %s - %s", number, mnemonic, parameter);
     }
 
     @Override
