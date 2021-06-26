@@ -18,7 +18,7 @@ program {
             put { var_a }.
         }.
 	loop {
-            set 2 to bar, baz.
+            set 2 to const_a .
         } while 1==1 is true .
             
    }
