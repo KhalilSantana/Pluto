@@ -28,8 +28,12 @@ public class AcoesSemanticas {
         System.out.println("gerar instrução: (ponteiro, STP, 0)");
         Instruction instruction = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.INTEGER, 0));
         instructionList.add(instruction);
+        Instruction.enumerateInstructions(instructionList);
         System.out.println("Lista de Erros: " + listaErros.toString());
-        System.out.println("Lista de Instruções: " + instructionList.toString());
+        System.out.println("Lista de Instruções:");
+        for (Instruction i : instructionList) {
+            System.out.println(i.toString());
+        }
     }
 
     // OK
