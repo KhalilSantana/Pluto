@@ -14,8 +14,8 @@ program {
     }
     execute {
 	verify 1*1==1 is true {
-            get { foo }.
-            put { foo }.
+            get { var_a }.
+            put { var_a }.
         }.
 	loop {
             set 2 to bar, baz.
