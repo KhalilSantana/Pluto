@@ -25,7 +25,7 @@
                 </Menu>
                 <Menu text="Compile">
                     <MenuItem onAction="#compileProgram" text="Compile"/>
-                    <MenuItem disable="true" text="Run"/>
+                    <MenuItem text="Run" onAction="#runVirtualMachine"/>
                 </Menu>
                 <Menu text="Help">
                     <MenuItem text="Help"/>
@@ -86,7 +86,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="runBtn" disable="true">
+                <Button fx:id="runBtn" onAction="#runVirtualMachine">
                     <graphic>
                         <ImageView>
                             <Image url="@icons/play-48.png"/>
@@ -123,17 +123,17 @@
                 <Label text="Console Input"/>
                 <HBox>
                     <children>
-                        <TextArea fx:id="messageTextArea1" editable="false" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
+                        <TextArea fx:id="consoleInput" disable="true" prefHeight="0.0" HBox.hgrow="ALWAYS"/>
                     </children>
                 </HBox>
             </VBox>
             <VBox VBox.vgrow="ALWAYS">
                 <HBox VBox.vgrow="ALWAYS">
-                    <TableView HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="instructionTable" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn text="Number"/>
-                            <TableColumn text="Mnemonic"/>
-                            <TableColumn text="Argument"/>
+                            <TableColumn fx:id="instructionNumberCol" text="Number"/>
+                            <TableColumn fx:id="instructionMnemonicCol" text="Mnemonic"/>
+                            <TableColumn fx:id="instructionParameterCol" text="Parameter"/>
                         </columns>
                         <HBox.margin>
                             <Insets left="10.0" top="15.0"/>

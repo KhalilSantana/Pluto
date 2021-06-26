@@ -26,7 +26,7 @@ public class VirtualMachine {
         int stackPos = 0;
         StringBuilder sb = new StringBuilder("-- BOTTOM --\n");
         for (DataFrame se : stack) {
-            sb.append(stackPos).append(" - ").append(se).append("\n");
+            sb.append(stackPos).append(" - ").append(se.toDebugString()).append("\n");
             stackPos++;
         }
         sb.append("-- STACK TOP --");
@@ -35,7 +35,13 @@ public class VirtualMachine {
 
     public void resumeExecution() {
         if (status == VMStatus.SYSCALL_IO_READ) {
+            syscallData = syscallData.toString().trim();
+            switch (syscallDataType) {
+                case INTEGER -> syscallData = Integer.parseInt((String)syscallData);
+                case FLOAT -> syscallData = Float.parseFloat((String)syscallData);
+            }
             stack.push(new DataFrame(syscallDataType, syscallData));
+            System.out.println(printStack());
         }
         this.syscallData = null;
         this.syscallDataType = null;
@@ -112,7 +118,9 @@ public class VirtualMachine {
             case WRT -> write(ins);
             case STC -> stackCopyToPositions(ins);
         }
-        System.out.println(this.printStack());
+        if (this.status != VMStatus.SYSCALL_IO_READ) {
+            System.out.println(this.printStack());
+        }
         instructionPointer++;
     }
 

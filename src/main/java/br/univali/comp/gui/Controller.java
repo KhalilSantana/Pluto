@@ -5,11 +5,16 @@ import br.univali.comp.recovery.*;
 import br.univali.comp.util.AlertFactory;
 import br.univali.comp.util.AppMetadataHelper;
 import br.univali.comp.util.Operation;
+import br.univali.comp.virtualmachine.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -18,16 +23,29 @@ import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class Controller {
+    private VirtualMachine vm;
     private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
     private static boolean hasOpenFile = false;
+    private boolean isReadingConsole = false;
+    @FXML
+    private TableView<Instruction> instructionTable;
+    @FXML
+    private TableColumn<Instruction, Integer> instructionNumberCol;
+    @FXML
+    private TableColumn<Instruction, String> instructionMnemonicCol;
+    @FXML
+    private TableColumn<Instruction, String> instructionParameterCol;
     @FXML
     private Stage stage;
     public CodeArea inputTextArea;
     public TextArea messageTextArea;
+    public TextArea consoleInput;
     public Label statusBar, lineColLabel;
     // Menu bar items
     public MenuItem saveMenuItem, saveAsMenuItem;
@@ -37,6 +55,9 @@ public class Controller {
     public Button copyBtn, cutBtn, pasteBtn;
     public Button buildBtn, runBtn;
     public Button helpBtn;
+
+    public Controller() {
+    }
 
     @FXML
     public void openFileDialog(ActionEvent actionEvent) {
@@ -203,6 +224,17 @@ public class Controller {
         inputTextArea.setParagraphGraphicFactory(LineNumberFactory.get(inputTextArea));
         registerWindowClose();
         registerLineColUpdater();
+        var insStop = new Instruction(Instruction.Mnemonic.STP, new DataFrame(DataType.NONE, null));
+        var instructionList = Arrays.asList(
+                new Instruction(Instruction.Mnemonic.LDS, new DataFrame(DataType.LITERAL, "Hello World!")),
+                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
+                new Instruction(Instruction.Mnemonic.REA, new DataFrame(DataType.INTEGER, 1)),
+                new Instruction(Instruction.Mnemonic.WRT, new DataFrame(DataType.NONE, null)),
+                insStop
+        );
+        Instruction.enumerateInstructions(instructionList);
+        displayInstructions(instructionList);
+        vm = new VirtualMachine(instructionList);
     }
 
     @FXML
@@ -288,6 +320,50 @@ public class Controller {
         System.out.println(result);
     }
 
+    public void runVirtualMachine() {
+        while (vm.getStatus() != VMStatus.HALTED) {
+            if (isReadingConsole) {
+                return;
+            }
+            statusBar.setText("Running Virtual Machine...");
+            vm.executeAll();
+            switch (vm.getStatus()) {
+                case SYSCALL_IO_READ -> {
+                    handleSyscallRead(vm.getSyscallDataType());
+                }
+                case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
+            }
+        }
+        statusBar.setText("Virtual Machine halted, program terminated!");
+    }
+
+    private void handleSyscallWrite(Object o) {
+        messageTextArea.appendText("\n" + o.toString());
+    }
+
+    private void handleSyscallRead(DataType o) {
+        consoleInput.setDisable(false);
+        isReadingConsole = true;
+        statusBar.setText("Waiting for input of " + o.toString());
+        consoleInput.setOnKeyReleased(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                vm.setSyscallData(consoleInput.getText().trim());
+                messageTextArea.appendText("\n--> " + consoleInput.getText().trim());
+                consoleInput.setDisable(true);
+                consoleInput.clear();
+                isReadingConsole = false;
+                runVirtualMachine();
+            }
+        });
+    }
+
+    private void displayInstructions(List<Instruction> instructions) {
+        instructionNumberCol.setCellValueFactory(new PropertyValueFactory<>("number"));
+        instructionMnemonicCol.setCellValueFactory(new PropertyValueFactory<>("mnemonic"));
+        instructionParameterCol.setCellValueFactory(new PropertyValueFactory<>("parameter"));
+        instructionTable.setItems(getObservableListOf(instructions));
+    }
+
     public String copySelection() {
         return inputTextArea.getSelectedText();
     }
@@ -300,5 +376,9 @@ public class Controller {
 
     public void pasteFromClipboard() {
         inputTextArea.paste();
+    }
+
+    private ObservableList<Instruction> getObservableListOf(List<Instruction> instructionList) {
+        return FXCollections.observableArrayList(instructionList);
     }
 }
