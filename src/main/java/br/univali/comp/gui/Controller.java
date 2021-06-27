@@ -309,7 +309,6 @@ public class Controller {
         Sintatico sintatico = new Sintatico(targetStream);
         String result = sintatico.analyze(args, inputTextArea.getText());
         this.insList = sintatico.getInstructions();
-        this.vm = new VirtualMachine(this.insList);
         displayInstructions(this.insList);
         messageTextArea.setText(result);
         System.out.println(result);
@@ -319,19 +318,21 @@ public class Controller {
     public void handleRunButton() throws ParseEOFException, ParseException {
         if (handleVMmaybeRunning() == Operation.SUCCESS) {
             if (compileProgram()) {
+                this.vm = new VirtualMachine(insList);
+                this.isReadingConsole = false;
                 runVirtualMachine();
             }
         }
     }
 
     public Operation handleVMmaybeRunning() {
-        if (vm == null) {
+        if (vm == null || vm.getStatus() == VMStatus.HALTED) {
             return Operation.SUCCESS;
         }
         var confirm = AlertFactory.create(Alert.AlertType.CONFIRMATION, "Confirmation", "", "VM is still running, do you wish to stop the VM and continue this operation?");
         Optional<ButtonType> optional = Optional.empty();
         var op = Operation.CANCELED;
-        if (vm.getStatus() != VMStatus.HALTED || vm.getStatus() != VMStatus.NOT_STARTED) {
+        if (vm.getStatus() == VMStatus.RUNNING || vm.getStatus() == VMStatus.SYSCALL_IO_READ || vm.getStatus() == VMStatus.SYSCALL_IO_WRITE) {
             optional = confirm.showAndWait();
         }
         if (optional.isEmpty()) {
