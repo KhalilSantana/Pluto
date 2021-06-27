@@ -160,15 +160,22 @@ public class VirtualMachine {
     private void divide(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
+        var divideByZeroEx = new RuntimeException(String.format("Division by Zero on Instruction %s\n ->> top: %s\n --> subTop: %s", ins, x, y));
         var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
+            if (x_val.equals(0)) {
+                throw divideByZeroEx;
+            }
             x_val = y_val / x_val;
             stack.push(new DataFrame(type, x_val));
         } else {
-            var x_val = ((Number) x.content).floatValue();
-            var y_val = ((Number) y.content).floatValue();
+            var x_val = (Float)((Number) x.content).floatValue();
+            var y_val = (Float)((Number) y.content).floatValue();
+            if (x_val.equals(0f)) {
+                throw divideByZeroEx;
+            }
             float result = y_val / x_val;
             stack.push(new DataFrame(type, result));
         }
