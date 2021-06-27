@@ -375,6 +375,7 @@ public class Controller {
         } catch (Exception e) {
             statusBar.setText("Runtime error when executing VM, aborting!!");
             this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
+            e.printStackTrace();
             this.vm.setStatus(VMStatus.HALTED);
             this.isReadingConsole = false;
             this.consoleInput.setDisable(true);
