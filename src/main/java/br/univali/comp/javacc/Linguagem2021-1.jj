@@ -419,251 +419,311 @@ TOKEN : {
 
 //SINTATICO NOVO
 
-void program() : {}
+void program() throws ParseEOFException : {
+    RecoverySet g = First.program;
+}
 {
-    comentario()
-    <R_PROGRAM> <SS_CURLYBRACE_OPEN>
-    declaracaoDeConstantesEVariaveis()
-    corpoDoPrograma()
-    <SS_CURLYBRACE_CLOSE>
-    identificadorDoPrograma() {acoesSemanticas.acao1();}
+    try{
+        comentario(g)
+        <R_PROGRAM> <SS_CURLYBRACE_OPEN>
+        declaracaoDeConstantesEVariaveis(g)
+        corpoDoPrograma(g)
+        <SS_CURLYBRACE_CLOSE>
+        identificadorDoPrograma(g) {acoesSemanticas.acao1();}
+    }catch(ParseException e){
+        consumeUntil(g, e, "Generic error on program formation", "program");
+    }
 }
 
-void comentario() : {}
+void comentario(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.header.union(g);
+ }
 {
-    [<SS_HEADER> <LITERAL_CONSTANT>]
+    try{
+        [<SS_HEADER> <LITERAL_CONSTANT>]
+    }catch(ParseException e){
+        consumeUntil(f, e, "Invalid header expression, missing literal constant before program", "program");
+    }
 }
 
-void identificadorDoPrograma() : {}
+void identificadorDoPrograma(RecoverySet g) throws ParseEOFException : {}
 {
     [<IDENTIFIER> {acoesSemanticas.acao2(getToken(0).image);}]
 }
 
-void declaracaoDeConstantesEVariaveis() : {}
+void declaracaoDeConstantesEVariaveis(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.define.union(g);
+ }
 {
-    [<R_DEFINE> <SS_CURLYBRACE_OPEN> constantesEVariaveis() <SS_CURLYBRACE_CLOSE>]
+    try{
+        [<R_DEFINE> <SS_CURLYBRACE_OPEN> constantesEVariaveis(g) <SS_CURLYBRACE_CLOSE>]
+    }catch(ParseException e){
+        consumeUntil(f, e, "Missing or incorrect define expression:", "execute");
+    }
 }
 
-void constantesEVariaveis() : {}
+void constantesEVariaveis(RecoverySet g) throws ParseEOFException : {}
 {
-    declaracaoDeConstantes() variaveis2() | declaracaoDeVariaveis() constantes2()
+    declaracaoDeConstantes(g) variaveis2(g) | declaracaoDeVariaveis(g) constantes2(g)
 }
 
-void declaracaoDeConstantes() : {}
+void declaracaoDeConstantes(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_NOT> <R_VARIABLE> {acoesSemanticas.acao3();} constantes()
+    <R_NOT> <R_VARIABLE> {acoesSemanticas.acao3();} constantes(g)
 }
 
-void constantes() : {}
+void constantes(RecoverySet g) throws ParseEOFException : {}
 {
-    tipo() <R_IS> listaDeIdentificadoresDeConstantes() {acoesSemanticas.acao4();} valor() {acoesSemanticas.acao5(getToken(0).image);} <SS_DOT> constantes1()
+    tipo(g) <R_IS> listaDeIdentificadoresDeConstantes(g) {acoesSemanticas.acao4();} valor(g) {acoesSemanticas.acao5(getToken(0).image);} <SS_DOT> constantes1(g)
 }
 
-void constantes1() : {}
+void constantes1(RecoverySet g) throws ParseEOFException : {}
 {
-    [constantes()]
+    [constantes(g)]
 }
 
-void constantes2() : {}
+void constantes2(RecoverySet g) throws ParseEOFException : {}
 {
-    [declaracaoDeConstantes()]
+    [declaracaoDeConstantes(g)]
 }
 
-void declaracaoDeVariaveis() : {}
+void declaracaoDeVariaveis(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_VARIABLE> {acoesSemanticas.acao6();} variaveis()
+    <R_VARIABLE> {acoesSemanticas.acao6();} variaveis(g)
 }
 
-void variaveis() : {}
+void variaveis(RecoverySet g) throws ParseEOFException : {}
 {
-    tipo() <R_IS> listaDeIdentificadoresDeVariaveis() {acoesSemanticas.acao4();} <SS_DOT> variaveis1()
+    tipo(g) <R_IS> listaDeIdentificadoresDeVariaveis(g) {acoesSemanticas.acao4();} <SS_DOT> variaveis1(g)
 }
 
-void variaveis1() : {}
+void variaveis1(RecoverySet g) throws ParseEOFException: {}
 {
-    [variaveis()]
+    [variaveis(g)]
 }
 
-void variaveis2() : {}
+void variaveis2(RecoverySet g) throws ParseEOFException : {}
 {
-    [declaracaoDeVariaveis()]
+    [declaracaoDeVariaveis(g)]
 }
 
-void tipo() : {}
+void tipo(RecoverySet g) throws ParseEOFException : {
+  RecoverySet f = First.type.union(g);
+ }
 {
-    <R_NATURAL> {acoesSemanticas.acao7();} | <R_REAL> {acoesSemanticas.acao8();} | <R_CHAR> {acoesSemanticas.acao9();}| <R_BOOLEAN>{acoesSemanticas.acao10();}
+    try{
+        <R_NATURAL> {acoesSemanticas.acao7();} | <R_REAL> {acoesSemanticas.acao8();} | <R_CHAR> {acoesSemanticas.acao9();}| <R_BOOLEAN>{acoesSemanticas.acao10();}
+    }catch(ParseException e){
+        consumeUntil(f, e, "Invalid data type, must be one of: natural, real, char or boolean", "is");
+    }
 }
 
-void listaDeIdentificadoresDeConstantes() : {}
+void listaDeIdentificadoresDeConstantes(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao11(getToken(0).image);} listaDeIdentificadoresDeConstantes1()
+    <IDENTIFIER> {acoesSemanticas.acao11(getToken(0).image);} listaDeIdentificadoresDeConstantes1(g)
 }
 
-void listaDeIdentificadoresDeConstantes1() : {}
+void listaDeIdentificadoresDeConstantes1(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_COMMA> listaDeIdentificadoresDeConstantes()]
+    [<SS_COMMA> listaDeIdentificadoresDeConstantes(g)]
 }
 
-void listaDeIdentificadoresDeVariaveis() : {}
+void listaDeIdentificadoresDeVariaveis(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER>{acoesSemanticas.acao12(getToken(0).image);} indice() {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1()
+    <IDENTIFIER>{acoesSemanticas.acao12(getToken(0).image);} indice(g) {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1(g)
 }
 
-void listaDeIdentificadoresDeVariaveis1() : {}
+void listaDeIdentificadoresDeVariaveis1(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_COMMA> listaDeIdentificadoresDeVariaveis()]
+    [<SS_COMMA> listaDeIdentificadoresDeVariaveis(g)]
 }
 
-void indice() : {}
+void indice(RecoverySet g) throws ParseEOFException : {}
 {
     [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(Integer.parseInt(getToken(0).image));}<SS_SQUAREBRACE_CLOSE>]
 }
 
-void valor() : {}
+void valor(RecoverySet g) throws ParseEOFException : {}
 {
     <INTEGER_CONSTANT> | <FLOAT_CONSTANT> | <LITERAL_CONSTANT>
 }
 
-void corpoDoPrograma() : {}
+void corpoDoPrograma(RecoverySet g) throws ParseEOFException : {
+RecoverySet f = First.execute.union(g);
+ }
 {
-    <R_EXECUTE> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>
+    try{
+        <R_EXECUTE> <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE>
+    }catch(ParseException e){
+        consumeUntil(f, e, "Missing or invalid execute expression", "}");
+    }
 }
 
-void listaDeComandos() : {}
+void listaDeComandos(RecoverySet g) throws ParseEOFException : {}
 {
-    comando() <SS_DOT> listaDeComandos1()
+    comando(g) <SS_DOT> listaDeComandos1(g)
 }
 
-void listaDeComandos1() : {}
+void listaDeComandos1(RecoverySet g) throws ParseEOFException : {}
 {
-    [listaDeComandos()]
+    [listaDeComandos(g)]
 }
 
-void comando() : {}
+void comando(RecoverySet g) throws ParseEOFException : {}
 {
-    atribuicao() | entrada() | saida() | selecao() | repeticao()
+    atribuicao(g) | entrada(g) | saida(g) | selecao(g) | repeticao(g)
 }
 
-void atribuicao() : {}
+void atribuicao(RecoverySet g) throws ParseEOFException : {
+RecoverySet f = First.allCommands.union(g);
+}
 {
-    <R_SET> {acoesSemanticas.acao15();} expressao() <R_TO> listaDeIdentificadoresDeVariaveis() {acoesSemanticas.acao16();}
+    try{
+        <R_SET> {acoesSemanticas.acao15();} expressao(g) <R_TO> listaDeIdentificadoresDeVariaveis(g) {acoesSemanticas.acao16();}
+    }catch(ParseException e){
+        consumeUntil(f, e, "Missing or invalid set expression", "<SS_DOT>");
+    }
 }
 
-void entrada() : {}
+void entrada(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.allCommands.union(g);
+ }
 {
-    <R_GET> {acoesSemanticas.acao17();} <SS_CURLYBRACE_OPEN> listaDeIdentificadoresDeVariaveis() <SS_CURLYBRACE_CLOSE>
+    try{
+        <R_GET> {acoesSemanticas.acao17();} <SS_CURLYBRACE_OPEN> listaDeIdentificadoresDeVariaveis(g) <SS_CURLYBRACE_CLOSE>
+    }catch(ParseException e){
+        consumeUntil(f, e, "Missing or invalid get expression", "<SS_DOT>");
+    }
 }
 
-void saida() : {}
+void saida(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.allCommands.union(g);
+ }
 {
-    <R_PUT> <SS_CURLYBRACE_OPEN> listaDeIdentificadoresEOuConstantes() <SS_CURLYBRACE_CLOSE>
+    try{
+        <R_PUT> <SS_CURLYBRACE_OPEN> listaDeIdentificadoresEOuConstantes(g) <SS_CURLYBRACE_CLOSE>
+    }catch(ParseException e){
+        consumeUntil(f, e, "Missing or invalid put expression", "<SS_DOT>");
+    }
 }
 
-void listaDeIdentificadoresEOuConstantes() : {}
+void listaDeIdentificadoresEOuConstantes(RecoverySet g) throws ParseEOFException : {}
 {
-    item() {acoesSemanticas.acao18();} listaDeIdentificadoresEOuConstantes1()
+    item(g) {acoesSemanticas.acao18();} listaDeIdentificadoresEOuConstantes1(g)
 }
 
-void listaDeIdentificadoresEOuConstantes1() : {}
+void listaDeIdentificadoresEOuConstantes1(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_COMMA> listaDeIdentificadoresEOuConstantes()]
+    [<SS_COMMA> listaDeIdentificadoresEOuConstantes(g)]
 }
 
-void item() : {}
+void item(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();}
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice(g) {acoesSemanticas.acao20();}
     | <INTEGER_CONSTANT> {acoesSemanticas.acao21(Integer.parseInt(getToken(0).image));}
     | <FLOAT_CONSTANT> {acoesSemanticas.acao22(Float.parseFloat(getToken(0).image));}
     | <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}
 }
 
-void selecao() : {}
+void selecao(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.allCommands.union(g);
+ }
 {
-    <R_VERIFY> expressao() <R_IS> clausulas() {acoesSemanticas.acao24();}
+    try{
+    <R_VERIFY> expressao(g) <R_IS> clausulas(g) {acoesSemanticas.acao24();}
+    }catch(ParseException e){
+       consumeUntil(f, e, "Missing or invalid verify expression", "<SS_DOT>");
+    }
 }
 
-void clausulas() : {}
+void clausulas(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_TRUE> {acoesSemanticas.acao25();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> falsa() |
-    <R_FALSE> {acoesSemanticas.acao26();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> verdadeira()
+    <R_TRUE> {acoesSemanticas.acao25();} <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE> falsa(g) |
+    <R_FALSE> {acoesSemanticas.acao26();} <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE> verdadeira(g)
 }
 
-void verdadeira() : {}
+void verdadeira(RecoverySet g) throws ParseEOFException : {}
 {
-    [<R_IS> <R_TRUE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+    [<R_IS> <R_TRUE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE>]
 }
 
-void falsa() : {}
+void falsa(RecoverySet g) throws ParseEOFException : {}
 {
-    [<R_IS> <R_FALSE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE>]
+    [<R_IS> <R_FALSE> {acoesSemanticas.acao27();} <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE>]
 }
 
-void repeticao() : {}
+void repeticao(RecoverySet g) throws ParseEOFException : {}
 {
-    <R_LOOP> {acoesSemanticas.acao28();} <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao() {acoesSemanticas.acao29();} <R_IS> <R_TRUE> |
-    <R_WHILE> {acoesSemanticas.acao30();} expressao() {acoesSemanticas.acao31();} <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> listaDeComandos() <SS_CURLYBRACE_CLOSE> {acoesSemanticas.acao32();}
+    <R_LOOP> {acoesSemanticas.acao28();} <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE> <R_WHILE> expressao(g) {acoesSemanticas.acao29();} <R_IS> <R_TRUE> |
+    <R_WHILE> {acoesSemanticas.acao30();} expressao(g) {acoesSemanticas.acao31();} <R_IS> <R_TRUE> <R_DO> <SS_CURLYBRACE_OPEN> listaDeComandos(g) <SS_CURLYBRACE_CLOSE> {acoesSemanticas.acao32();}
 }
 
-void expressao() : {}
+void expressao(RecoverySet g) throws ParseEOFException : {
+ RecoverySet f = First.expression.union(g);
+ }
 {
-    expressaoAritmeticaOuLogica() expressao1()
+    try{
+        expressaoAritmeticaOuLogica(g) expressao1(g)
+    }catch(ParseException e){
+        consumeUntil(f, e, "Invalid arithmetic or logic expression", "is/to");
+    }
 }
 
-void expressao1() : {}
+void expressao1(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_EQUALS> expressaoAritmeticaOuLogica() {acoesSemanticas.acao33();} |
-    <SS_NOT_EQUALS> expressaoAritmeticaOuLogica() {acoesSemanticas.acao34();}|
-    <SS_LESS_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao35();}|
-    <SS_MORE_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao36();}|
-    <SS_LESS_OR_EQUAL_THAN> expressaoAritmeticaOuLogica() {acoesSemanticas.acao37();}|
-    <SS_MORE_OR_EQUAL_THAN> expressaoAritmeticaOuLogica(){acoesSemanticas.acao38();}]
+    [<SS_EQUALS> expressaoAritmeticaOuLogica(g) {acoesSemanticas.acao33();} |
+    <SS_NOT_EQUALS> expressaoAritmeticaOuLogica(g) {acoesSemanticas.acao34();}|
+    <SS_LESS_THAN> expressaoAritmeticaOuLogica(g) {acoesSemanticas.acao35();}|
+    <SS_MORE_THAN> expressaoAritmeticaOuLogica(g) {acoesSemanticas.acao36();}|
+    <SS_LESS_OR_EQUAL_THAN> expressaoAritmeticaOuLogica(g) {acoesSemanticas.acao37();}|
+    <SS_MORE_OR_EQUAL_THAN> expressaoAritmeticaOuLogica(g){acoesSemanticas.acao38();}]
 }
 
-void expressaoAritmeticaOuLogica() : {}
+void expressaoAritmeticaOuLogica(RecoverySet g) throws ParseEOFException : {}
 {
-    termo2() menorPrioridade()
+    termo2(g) menorPrioridade(g)
 }
 
-void menorPrioridade() : {}
+void menorPrioridade(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_PLUS> termo2() menorPrioridade() {acoesSemanticas.acao39();} |
-    <SS_MINUS> termo2() menorPrioridade() {acoesSemanticas.acao40();}|
-    <SS_OR> termo2() menorPrioridade(){acoesSemanticas.acao41();}]
+    [<SS_PLUS> termo2(g) menorPrioridade(g) {acoesSemanticas.acao39();} |
+    <SS_MINUS> termo2(g) menorPrioridade(g) {acoesSemanticas.acao40();}|
+    <SS_OR> termo2(g) menorPrioridade(g){acoesSemanticas.acao41();}]
 }
 
-void termo2() : {}
+void termo2(RecoverySet g) throws ParseEOFException : {}
 {
-    termo1() mediaPrioridade()
+    termo1(g) mediaPrioridade(g)
 }
 
-void mediaPrioridade() : {}
+void mediaPrioridade(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_TIMES> termo1() mediaPrioridade() {acoesSemanticas.acao42();}|
-    <SS_DIVIDE> termo1() mediaPrioridade() {acoesSemanticas.acao43();}|
-    <SS_PERCENT> termo1() mediaPrioridade() {acoesSemanticas.acao44();}|
-    <SS_MODULO> termo1() mediaPrioridade() {acoesSemanticas.acao45();}|
-    <SS_AND> termo1() mediaPrioridade() {acoesSemanticas.acao46();}]
+    [<SS_TIMES> termo1(g) mediaPrioridade(g) {acoesSemanticas.acao42();}|
+    <SS_DIVIDE> termo1(g) mediaPrioridade(g) {acoesSemanticas.acao43();}|
+    <SS_PERCENT> termo1(g) mediaPrioridade(g) {acoesSemanticas.acao44();}|
+    <SS_MODULO> termo1(g) mediaPrioridade(g) {acoesSemanticas.acao45();}|
+    <SS_AND> termo1(g) mediaPrioridade(g) {acoesSemanticas.acao46();}]
 }
 
-void termo1() : {}
+void termo1(RecoverySet g) throws ParseEOFException : {}
 {
-    elemento() maiorPrioridade()
+    elemento(g) maiorPrioridade(g)
 }
 
-void maiorPrioridade() : {}
+void maiorPrioridade(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_EXPODENTIAL> elemento() maiorPrioridade() {acoesSemanticas.acao47();}]
+    [<SS_EXPODENTIAL> elemento(g) maiorPrioridade(g) {acoesSemanticas.acao47();}]
 }
 
-void elemento() : {}
+void elemento(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice() {acoesSemanticas.acao20();} |
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice(g) {acoesSemanticas.acao20();} |
     <INTEGER_CONSTANT> {acoesSemanticas.acao21(Integer.parseInt(getToken(0).image));}|
     <FLOAT_CONSTANT> {acoesSemanticas.acao22(Float.parseFloat(getToken(0).image));}|
     <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}|
     <R_TRUE> {acoesSemanticas.acao48();}|
     <R_FALSE> {acoesSemanticas.acao49();}|
-    <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE> |
-    <SS_NOT> <SS_PARENTESES_OPEN> expressao() <SS_PARENTESES_CLOSE> {acoesSemanticas.acao50();}
+    <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE> |
+    <SS_NOT> <SS_PARENTESES_OPEN> expressao(g) <SS_PARENTESES_CLOSE> {acoesSemanticas.acao50();}
 }
 

@@ -14,7 +14,7 @@ public class DataFrame {
         String contentStr = null;
         switch (type) {
             case FLOAT -> {
-                contentStr = ((Float) content).toString();
+                contentStr = (content).toString();
             }
             case INTEGER, ADDRESS -> {
                 contentStr = ((Integer) content).toString();
