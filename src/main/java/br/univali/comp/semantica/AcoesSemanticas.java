@@ -503,11 +503,15 @@ public class AcoesSemanticas {
     }
 
     public void acao44(){
-        System.out.println("reconhecimento de operação aritmética divisão inteira-especificar");
+        System.out.println("reconhecimento de operação aritmética divisão inteira");
+        instructionList.add(new Instruction(Instruction.Mnemonic.DVW, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
     }
 
     public void acao45(){
-        System.out.println("reconhecimento de operação aritmética resto da divisão inteira-especificar");
+        System.out.println("reconhecimento de operação aritmética resto da divisão inteira");
+        instructionList.add(new Instruction(Instruction.Mnemonic.MOD, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = this.ponteiro + 1;
     }
 
     //OK
@@ -518,7 +522,9 @@ public class AcoesSemanticas {
     }
 
     public void acao47(){
-        System.out.println(" reconhecimento de operação aritmética potenciação-especificar");
+        System.out.println(" reconhecimento de operação aritmética potenciação");
+        instructionList.add(new Instruction(Instruction.Mnemonic.PWR, new DataFrame(DataType.INTEGER, 0)));
+        this.ponteiro = ponteiro + 1;
     }
 
     //OK
