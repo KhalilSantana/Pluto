@@ -623,12 +623,12 @@ void mediaPrioridade() : {}
 
 void termo1() : {}
 {
-    elemento() maiorPrioridade() {acoesSemanticas.acao47();}
+    elemento() maiorPrioridade()
 }
 
 void maiorPrioridade() : {}
 {
-    [<SS_EXPODENTIAL> elemento() maiorPrioridade()]
+    [<SS_EXPODENTIAL> elemento() maiorPrioridade() {acoesSemanticas.acao47();}]
 }
 
 void elemento() : {}
