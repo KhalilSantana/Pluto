@@ -167,7 +167,7 @@ public class AcoesSemanticas {
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("10 - Tipo inválido para constante");
+            this.listaErros.add("10 - Invalid type for constant");
         }
     }
 
@@ -176,7 +176,7 @@ public class AcoesSemanticas {
         System.out.println("reconhecimento de identificador de constante");
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
-            this.listaErros.add("11 - identificador já declarado: '" + identificador + "' ");
+            this.listaErros.add("11 - Identifier already declared: '" + identificador + "' ");
         }else{
             this.VT = this.VT + 1;
             this.VP = this.VP + 1;
@@ -191,7 +191,7 @@ public class AcoesSemanticas {
         if(this.contexto.equals("variável")){
             Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
             if(!(exist == null)){
-                this.listaErros.add("12 - identificador já declarado: '" + identificador + "' ");
+                this.listaErros.add("12 - Identifier already declared: '" + identificador + "' ");
             }else{
                 this.variavelIndexada = false;
                 this.identificadorReconhecido = identificador;
@@ -227,17 +227,17 @@ public class AcoesSemanticas {
                         if(!this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1());
                         }else{
-                            this.listaErros.add("13 - identificador de variável não indexada: '" + this.identificadorReconhecido + "' ");
+                            this.listaErros.add("13 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' ");
                         }
                     } else{
                         if(this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
                         }else{
-                            this.listaErros.add("13 - identificador de variável indexada exige índice");
+                            this.listaErros.add("13 - Indexed variables require an index");
                         }
                     }
                 }else{
-                    this.listaErros.add("13 - identificador não declarado ou de constante");
+                    this.listaErros.add("13 - Use of undeclared variable or constant");
                 }
                 break;
             }
@@ -251,7 +251,7 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("13 - identificador de variável não indexada");
+                            this.listaErros.add("13 - Identifier of non-indexed variable");
                         }
                     } else{
                         if(this.variavelIndexada){
@@ -260,11 +260,11 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("13 - identificador de variável indexada exige índice");
+                            this.listaErros.add("13 - Indexed variables requires an index");
                         }
                     }
                 }else{
-                    this.listaErros.add("13 - identificador não declarado ou de constante: '"+this.identificadorReconhecido+"' ");
+                    this.listaErros.add("13 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' ");
                 }
                 break;
             }
@@ -314,7 +314,7 @@ public class AcoesSemanticas {
             this.variavelIndexada = false;
             this.identificadorReconhecido = identificador;
         }else{
-            this.listaErros.add("19 - identificador não declarado: '"+identificador+"' ");
+            this.listaErros.add("19 - Use of non-declared identifier: '"+identificador+"' ");
         }
     }
 
@@ -327,14 +327,14 @@ public class AcoesSemanticas {
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - identificador de variável indexada exige índice: '"+this.identificadorReconhecido+"' ");
+                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' ");
             }
         }else{
             if(exist.getAtributo2() != 0){
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - identificador de constante ou de variável não indexada: '"+this.identificadorReconhecido+"' ");
+                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' ");
             }
         }
     }
