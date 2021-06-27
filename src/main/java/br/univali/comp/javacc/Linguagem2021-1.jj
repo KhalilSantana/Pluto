@@ -17,10 +17,10 @@ import br.univali.comp.virtualmachine.Instruction;
 
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
-    private StringBuilder lexicalErrors = new StringBuilder("");
-    public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
+    private List<String> lexicalErrors = new ArrayList<String>();
+    private List<String> syntacticErrors = new ArrayList<String>();
+    private List<String> semanticErrors = new ArrayList<String>();
     private Boolean hasLexicalErrors = false;
-    public int contParseError = 0;
     public AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
     private List<Instruction> instructionList;
 
@@ -108,31 +108,31 @@ public class Sintatico {
                     }
                     case ERROR_INVALID_SYMBOL:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        lexicalErrors.add("ERROR: '"+t.image+"' - Type: ERROR_INVALID_SYMBOL-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_UNFINISHED_LITERAL_CONSTANT:{
                         tokens.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
-                        lexicalErrors.append("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
+                        lexicalErrors.add("ERROR_UNFINISHED_LITERAL_CONSTANT: \n'"+t.image+"' \n Type: ERROR_UNFINISHED_LITERAL_CONSTANT-"+t.kind+" - Line-Column-begin: "+t.beginLine+"-"+t.beginColumn+ " ; Line-Column-end: "+t.endLine+"-"+t.endColumn+"\n");
                         hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_INTEGER_CONSTANT_FORMAT:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        lexicalErrors.add("ERROR: '"+t.image+"' - Type: ERROR_INTEGER_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         hasLexicalErrors = true;
                         break;
                     }
                     case ERROR_FLOAT_CONSTANT_FORMAT:{
                         tokens.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        lexicalErrors.add("ERROR: '"+t.image+"' - Type: ERROR_FLOAT_CONSTANT_FORMAT-"+t.kind+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         hasLexicalErrors = true;
                         break;
                     }
                     default:{
                         tokens.append("<DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
-                        lexicalErrors.append("<ERROR - DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
+                        lexicalErrors.add("<ERROR - DEFAULT UNFOUND: Image:"+t.image+ " | Kind:" +t.kind +">"+" - Line-Column: "+t.beginLine+"-"+t.beginColumn+"\n");
                         hasLexicalErrors = true;
                         break;
                     }
@@ -141,7 +141,7 @@ public class Sintatico {
             }catch(Error error){
                 hasLexicalErrors = true;
                 tokens.append("Error - " + error.getMessage() + "\n");
-                lexicalErrors.append("Error - " + error.getMessage() + "\n");
+                lexicalErrors.add("Error - " + error.getMessage() + "\n");
                 System.out.println(error.toString());
                 handleToken();
             }
@@ -171,15 +171,16 @@ public class Sintatico {
     }
 
     public int getCountErrors() {
-        return this.contParseError;
+        return this.syntacticErrors.size();
     }
 
-    public String getSyntacticErrors() {
-        return this.syntacticErrors.toString();
+    public List<String> getSyntacticErrors() {
+        return this.syntacticErrors;
     }
 
 
     public String analyze(String args[], String textToAnalyze) throws ParseException, ParseEOFException  {
+            StringBuilder sb = new StringBuilder("");
             Sintatico sintatico = this.readInput(args, textToAnalyze);
 
             this.handleToken();
@@ -189,13 +190,32 @@ public class Sintatico {
                 if(!hasLexicalErrors){
                     sintatico.program();
                 } else {
-                    return lexicalErrors.toString();
+                    sb.append(String.format("Lexical errors found! Count %s\n", lexicalErrors.size()));
+                    for (String s : lexicalErrors) {
+                        sb.append(s).append("\n");
+                    }
+                    System.out.println(sb);
+                    return sb.toString();
                 }
             } catch (ParseException ex) {
-                return ex.getMessage().toString();
+                System.out.println(ex);
+                return ex.getMessage();
             }
-            if(sintatico.getCountErrors() > 0){
-             return "This program has + " + sintatico.getCountErrors() + " syntactic errors \n" + sintatico.getSyntacticErrors();
+            if(syntacticErrors.size() > 0){
+                sb.append(String.format("Syntax errors found! Count: %s\n", syntacticErrors.size()));
+                for (String s : syntacticErrors) {
+                    sb.append(s).append("\n");
+                }
+                System.out.println(sb);
+                return sb.toString();
+            }
+            this.semanticErrors = acoesSemanticas.getListaErros();
+            if (semanticErrors.size() > 0) {
+                sb.append(String.format("Semantic errors found! Count: %s\n", semanticErrors.size()));
+                for (String s : semanticErrors ) {
+                    sb.append(s).append("\n");
+                }
+                return sb.toString();
             }
             this.instructionList = acoesSemanticas.getInstructionList();
             return "Syntactically correct!";
@@ -264,9 +284,8 @@ public class Sintatico {
                                              "\nExpected one of: %s"
                 ,errorMsg, tok.beginLine, tok.beginColumn, expectedTokens(e) );
                 System.out.println(output);
-                syntacticErrors.append(output);
+                syntacticErrors.add(output);
                 lastError = tok;
-                contParseError++;  // incrementa número de erros
            }
            if ( eof ) throw new ParseEOFException("EOF found prematurely.");
         }
@@ -290,7 +309,11 @@ public class Sintatico {
     }
 
     public List<String> getSemanticErrorList() {
-        return acoesSemanticas.getListaErros();
+        return this.semanticErrors;
+    }
+
+    public boolean hasAnyErrors() {
+        return lexicalErrors.size()!=0 || syntacticErrors.size()!=0 || semanticErrors.size()!= 0;
     }
 
 }

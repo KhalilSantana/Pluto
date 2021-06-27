@@ -308,10 +308,15 @@ public class Controller {
 //        String result = tokenizer.getTokens(args, inputTextArea.getText());
         Sintatico sintatico = new Sintatico(targetStream);
         String result = sintatico.analyze(args, inputTextArea.getText());
-        this.insList = sintatico.getInstructions();
-        displayInstructions(this.insList);
         messageTextArea.setText(result);
-        System.out.println(result);
+        if (sintatico.hasAnyErrors()) {
+            System.out.println("Has errors, bailing out!");
+            return false;
+        } else {
+            this.insList = sintatico.getInstructions();
+            displayInstructions(this.insList);
+            System.out.println(result);
+        }
         return true;
     }
 
