@@ -5,7 +5,7 @@ import java.util.List;
 public class Instruction implements Comparable<Instruction> {
     public Integer number;
     public final Mnemonic mnemonic;
-    public final DataFrame parameter;
+    public DataFrame parameter;
 
     public Instruction(Mnemonic mnemonic, DataFrame parameter) {
         this.number = 0;
@@ -32,6 +32,9 @@ public class Instruction implements Comparable<Instruction> {
         return parameter;
     }
 
+    public void setParameter(DataFrame parameter) {
+        this.parameter = parameter;
+    }
 
     public static void enumerateInstructions(List<Instruction> insList) {
         for (int i = 0; i < insList.size(); i++) {

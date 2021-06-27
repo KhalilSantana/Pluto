@@ -415,14 +415,24 @@ public class AcoesSemanticas {
         this.pilhaDeDesvios.add(this.ponteiro-1);
     }
 
-    //rever - Não entendi bem o que é para fazer nessa função;
+//    //rever - Não entendi bem o que é para fazer nessa função;
+//    public void acao32(){
+//        System.out.println("reconhecimento do fim do comando de repetição");
+//        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
+//        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+//        p = ponteiro + 1;
+//        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+//        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.INTEGER, p)));
+//    }
+
+    //versao khalil
     public void acao32(){
         System.out.println("reconhecimento do fim do comando de repetição");
-        Integer p = this.pilhaDeDesvios.get(this.pilhaDeDesvios.size()-1);
-        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-        p = ponteiro + 1;
-        this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
-        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.INTEGER, p)));
+        Integer desvioAcao31 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.get(desvioAcao31).setParameter(new DataFrame(DataType.ADDRESS, this.ponteiro + 1));
+        Integer desvioAcao30 = this.pilhaDeDesvios.remove(this.pilhaDeDesvios.size()-1);
+        instructionList.add(new Instruction(Instruction.Mnemonic.JMP, new DataFrame(DataType.ADDRESS, desvioAcao30)));
+        this.ponteiro++;
     }
 
     //OK
