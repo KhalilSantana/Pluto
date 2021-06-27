@@ -21,7 +21,7 @@ public class AcoesSemanticas {
     private String identificadorReconhecido;
     private int constanteInteira;
     private List<Object> listaAtributos = new ArrayList<>();
-    private List<String> listaErros = new ArrayList<>();
+    private static List<String> listaErros = new ArrayList<>();
 
     public List<Instruction> getInstructionList() {
         // Ugly hack: figure out why do is this list blank after the .JJ has run.
@@ -31,7 +31,10 @@ public class AcoesSemanticas {
     }
 
     public List<String> getListaErros() {
-        return listaErros;
+        // Ugly hack: figure out why do is this list blank after the .JJ has run.
+        var tmp = listaErros;
+        listaErros = new ArrayList<>();
+        return tmp;
     }
 
     // OK
