@@ -352,20 +352,28 @@ public class Controller {
     }
 
     public void runVirtualMachine() {
-        while (vm.getStatus() != VMStatus.HALTED) {
-            if (isReadingConsole) {
-                return;
-            }
-            statusBar.setText("Running Virtual Machine...");
-            vm.executeAll();
-            switch (vm.getStatus()) {
-                case SYSCALL_IO_READ -> {
-                    handleSyscallRead(vm.getSyscallDataType());
+        try {
+            while (vm.getStatus() != VMStatus.HALTED) {
+                if (isReadingConsole) {
+                    return;
                 }
-                case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
+                statusBar.setText("Running Virtual Machine...");
+                vm.executeAll();
+                switch (vm.getStatus()) {
+                    case SYSCALL_IO_READ -> {
+                        handleSyscallRead(vm.getSyscallDataType());
+                    }
+                    case SYSCALL_IO_WRITE -> handleSyscallWrite(vm.getSyscallData());
+                }
             }
+            statusBar.setText("Virtual Machine halted, program terminated!");
+        } catch (Exception e) {
+            statusBar.setText("Runtime error when executing VM, aborting!!");
+            this.messageTextArea.appendText(String.format("\n== ERROR - VM ==\n%s", e.getMessage()));
+            this.vm.setStatus(VMStatus.HALTED);
+            this.isReadingConsole = false;
+            this.consoleInput.setDisable(true);
         }
-        statusBar.setText("Virtual Machine halted, program terminated!");
     }
 
     private void handleSyscallWrite(Object o) {

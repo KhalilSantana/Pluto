@@ -143,7 +143,7 @@ public class VirtualMachine {
     private void add(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -160,7 +160,7 @@ public class VirtualMachine {
     private void divide(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -177,7 +177,7 @@ public class VirtualMachine {
     private void multiply(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -194,7 +194,7 @@ public class VirtualMachine {
     private void subtract(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -211,7 +211,7 @@ public class VirtualMachine {
     private void divideWhole(Instruction ins) {
         var x = stack.pop();
         var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -228,7 +228,7 @@ public class VirtualMachine {
     private void modulo(Instruction ins) {
         var x = stack.pop();
         var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -245,7 +245,7 @@ public class VirtualMachine {
     private void potentiation(Instruction ins) {
         var x = stack.pop();
         var y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -350,7 +350,7 @@ public class VirtualMachine {
     private void logicalAnd(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, y);
         var x_val = (Boolean) x.content;
         var y_val = (Boolean) y.content;
         x_val = x_val & y_val;
@@ -359,7 +359,7 @@ public class VirtualMachine {
 
     private void logicalNOT(Instruction ins) {
         DataFrame x = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, x);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, x);
         var x_val = !(Boolean) x.content;
         stack.push(new DataFrame(type, x_val));
     }
@@ -367,7 +367,7 @@ public class VirtualMachine {
     private void logicalOr(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, x, y);
+        var type = checkType(Collections.singletonList(DataType.BOOLEAN), ins, x, y);
         var x_val = (Boolean) x.content;
         var y_val = (Boolean) y.content;
         x_val = x_val || y_val;
@@ -377,7 +377,7 @@ public class VirtualMachine {
     private void relationalGreaterOrEquals(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -394,7 +394,7 @@ public class VirtualMachine {
     private void relationalGreater(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
             var y_val = (Integer) y.content;
@@ -411,7 +411,7 @@ public class VirtualMachine {
     private void relationalDifferent(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         var result = false;
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
@@ -428,7 +428,7 @@ public class VirtualMachine {
     private void relationalEquals(Instruction ins) {
         DataFrame x = stack.pop();
         DataFrame y = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, x, y);
+        var type = checkType(DataType.getNumericDataTypes(), ins, x, y);
         var result = false;
         if (type == DataType.INTEGER) {
             var x_val = (Integer) x.content;
@@ -445,7 +445,7 @@ public class VirtualMachine {
     private void relationalLessOrEquals(Instruction ins) {
         DataFrame top = stack.pop();
         DataFrame sub = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, top, sub);
+        var type = checkType(DataType.getNumericDataTypes(), ins, top, sub);
         var result = false;
         if (type == DataType.INTEGER) {
             var top_val = (Integer) top.content;
@@ -462,7 +462,7 @@ public class VirtualMachine {
     private void relationalLess(Instruction ins) {
         DataFrame top = stack.pop();
         DataFrame sub = stack.pop();
-        var type = checkType(DataType.getNumericDataTypes(), ins.mnemonic, top, sub);
+        var type = checkType(DataType.getNumericDataTypes(), ins, top, sub);
         var result = false;
         if (type == DataType.INTEGER) {
             var top_val = (Integer) top.content;
@@ -478,9 +478,9 @@ public class VirtualMachine {
 
 
     private void jumpFalseToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
         var top = stack.pop();
-        checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        checkType(Collections.singletonList(DataType.BOOLEAN), ins, top, top);
         if (!(Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
             instructionPointer--; // We always add +1 after each instruction, this will revert that
@@ -488,15 +488,15 @@ public class VirtualMachine {
     }
 
     private void jumpToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
         instructionPointer = (Integer) ins.parameter.content;
         instructionPointer--; // We always add +1 after each instruction, this will revert that
     }
 
     private void jumpTrueToAddress(Instruction ins) {
-        checkType(Collections.singletonList(DataType.ADDRESS), ins.mnemonic, ins.parameter, ins.parameter);
+        checkType(Collections.singletonList(DataType.ADDRESS), ins, ins.parameter, ins.parameter);
         var top = stack.pop();
-        checkType(Collections.singletonList(DataType.BOOLEAN), ins.mnemonic, top, top);
+        checkType(Collections.singletonList(DataType.BOOLEAN), ins, top, top);
         if ((Boolean) top.content) {
             instructionPointer = (Integer) ins.parameter.content;
             instructionPointer--; // We always add +1 after each instruction, this will revert that
@@ -516,7 +516,7 @@ public class VirtualMachine {
     private void write(Instruction ins) {
         var stackElement = stack.pop();
         checkType(Arrays.asList(DataType.INTEGER, DataType.FLOAT, DataType.LITERAL),
-                ins.mnemonic, stackElement, stackElement);
+                ins, stackElement, stackElement);
         this.status = VMStatus.SYSCALL_IO_WRITE;
         this.syscallDataType = stackElement.type;
         this.syscallData = stackElement.content;
@@ -533,7 +533,8 @@ public class VirtualMachine {
         }
     }
 
-    private static DataType checkType(List<DataType> compatibleTypes, Instruction.Mnemonic mnemonic, DataFrame x, DataFrame y) {
+    private static DataType checkType(List<DataType> compatibleTypes, Instruction ins, DataFrame x, DataFrame y) {
+        var runtimeException = new RuntimeException(String.format("Incompatible stack data types for instruction %s!\n --> top: %s\n --> subTop: %s", ins, x.toDebugString(), y.toDebugString()));
         DataType effectiveOutputDataType = null;
         boolean compatibleTypesFlag = !(compatibleTypes.contains(x.type)) && !(compatibleTypes.contains(y.type));
         if (!compatibleTypesFlag) {
@@ -570,10 +571,10 @@ public class VirtualMachine {
                 }
             }
         } else {
-            throw new RuntimeException(String.format("Incompatible stack data types for instruction %s! Parameter x: %s, Parameter y: %s", mnemonic, x.type, y.type));
+            throw runtimeException;
         }
         if (effectiveOutputDataType == null) {
-            throw new RuntimeException(String.format("Incompatible stack data types! Parameter x: %s, Parameter y: %s", x.type, y.type));
+            throw runtimeException;
         }
         return effectiveOutputDataType;
     }
