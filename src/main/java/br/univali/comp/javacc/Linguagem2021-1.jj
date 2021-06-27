@@ -448,7 +448,7 @@ void comentario(RecoverySet g) throws ParseEOFException : {
 
 void identificadorDoPrograma(RecoverySet g) throws ParseEOFException : {}
 {
-    [<IDENTIFIER> {acoesSemanticas.acao2(getToken(0).image);}]
+    [<IDENTIFIER> {acoesSemanticas.acao2(getToken(0));}]
 }
 
 void declaracaoDeConstantesEVariaveis(RecoverySet g) throws ParseEOFException : {
@@ -512,7 +512,7 @@ void tipo(RecoverySet g) throws ParseEOFException : {
  }
 {
     try{
-        <R_NATURAL> {acoesSemanticas.acao7();} | <R_REAL> {acoesSemanticas.acao8();} | <R_CHAR> {acoesSemanticas.acao9();}| <R_BOOLEAN>{acoesSemanticas.acao10();}
+        <R_NATURAL> {acoesSemanticas.acao7();} | <R_REAL> {acoesSemanticas.acao8();} | <R_CHAR> {acoesSemanticas.acao9();}| <R_BOOLEAN>{acoesSemanticas.acao10(getToken(0));}
     }catch(ParseException e){
         consumeUntil(f, e, "Invalid data type, must be one of: natural, real, char or boolean", "is");
     }
@@ -520,7 +520,7 @@ void tipo(RecoverySet g) throws ParseEOFException : {
 
 void listaDeIdentificadoresDeConstantes(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao11(getToken(0).image);} listaDeIdentificadoresDeConstantes1(g)
+    <IDENTIFIER> {acoesSemanticas.acao11(getToken(0));} listaDeIdentificadoresDeConstantes1(g)
 }
 
 void listaDeIdentificadoresDeConstantes1(RecoverySet g) throws ParseEOFException : {}
@@ -530,7 +530,7 @@ void listaDeIdentificadoresDeConstantes1(RecoverySet g) throws ParseEOFException
 
 void listaDeIdentificadoresDeVariaveis(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER>{acoesSemanticas.acao12(getToken(0).image);} indice(g) {acoesSemanticas.acao13();} listaDeIdentificadoresDeVariaveis1(g)
+    <IDENTIFIER>{acoesSemanticas.acao12(getToken(0));} indice(g) {acoesSemanticas.acao13(getToken(0));} listaDeIdentificadoresDeVariaveis1(g)
 }
 
 void listaDeIdentificadoresDeVariaveis1(RecoverySet g) throws ParseEOFException : {}
@@ -540,7 +540,7 @@ void listaDeIdentificadoresDeVariaveis1(RecoverySet g) throws ParseEOFException 
 
 void indice(RecoverySet g) throws ParseEOFException : {}
 {
-    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(Integer.parseInt(getToken(0).image));}<SS_SQUAREBRACE_CLOSE>]
+    [<SS_SQUACEBRACE_OPEN> <INTEGER_CONSTANT> {acoesSemanticas.acao14(getToken(0));}<SS_SQUAREBRACE_CLOSE>]
 }
 
 void valor(RecoverySet g) throws ParseEOFException : {}
@@ -619,7 +619,7 @@ void listaDeIdentificadoresEOuConstantes1(RecoverySet g) throws ParseEOFExceptio
 
 void item(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice(g) {acoesSemanticas.acao20();}
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0));} indice(g) {acoesSemanticas.acao20(getToken(0));}
     | <INTEGER_CONSTANT> {acoesSemanticas.acao21(Integer.parseInt(getToken(0).image));}
     | <FLOAT_CONSTANT> {acoesSemanticas.acao22(Float.parseFloat(getToken(0).image));}
     | <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}
@@ -717,7 +717,7 @@ void maiorPrioridade(RecoverySet g) throws ParseEOFException : {}
 
 void elemento(RecoverySet g) throws ParseEOFException : {}
 {
-    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0).image);} indice(g) {acoesSemanticas.acao20();} |
+    <IDENTIFIER> {acoesSemanticas.acao19(getToken(0));} indice(g) {acoesSemanticas.acao20(getToken(0));} |
     <INTEGER_CONSTANT> {acoesSemanticas.acao21(Integer.parseInt(getToken(0).image));}|
     <FLOAT_CONSTANT> {acoesSemanticas.acao22(Float.parseFloat(getToken(0).image));}|
     <LITERAL_CONSTANT> {acoesSemanticas.acao23(getToken(0).image);}|

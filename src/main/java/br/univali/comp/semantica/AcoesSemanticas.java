@@ -1,5 +1,6 @@
 package br.univali.comp.semantica;
 
+import br.univali.comp.javacc.gen.Token;
 import br.univali.comp.virtualmachine.DataFrame;
 import br.univali.comp.virtualmachine.DataType;
 import br.univali.comp.virtualmachine.Instruction;
@@ -51,9 +52,9 @@ public class AcoesSemanticas {
     }
 
     // OK
-    public void acao2(String identificador){
+    public void acao2(Token token){
         System.out.println("inserir na tabela de símbolos a tupla (identificador, 0, -, -)");
-        Simbolo simbolo = new Simbolo(identificador, 0);
+        Simbolo simbolo = new Simbolo(token.image, 0);
         tabelaDeSimbolos.add(simbolo);
     }
 
@@ -161,49 +162,49 @@ public class AcoesSemanticas {
     }
 
     //OK
-    public void acao10(){
-        System.out.println(" reconhecimento da palavra reservada boolean");
+    public void acao10(Token token){
+        System.out.println(" reconhecimento da palavra reservada boolean"+ token.image);
         if(this.contexto.equals("variável")){
             this.tipo = 4;
         }else{
             //Verificar posteriormente se precisa adicionar em um array de erros para prosseguir ou não;
-            this.listaErros.add("10 - Invalid type for constant");
+            this.listaErros.add("10 - Invalid type for constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
     //OK
-    public void acao11(String identificador){
+    public void acao11(Token token){
         System.out.println("reconhecimento de identificador de constante");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
-            this.listaErros.add("11 - Identifier already declared: '" + identificador + "' ");
+            this.listaErros.add("11 - Identifier already declared: '" + token.image + "'  - Line/Column: "+token.beginLine+"/"+token.beginColumn);
         }else{
             this.VT = this.VT + 1;
             this.VP = this.VP + 1;
-            Simbolo simbolo = new Simbolo(identificador, this.tipo, this.VT);
+            Simbolo simbolo = new Simbolo(token.image, this.tipo, this.VT);
             tabelaDeSimbolos.add(simbolo);
         }
     }
 
     //OK
-    public void acao12(String identificador){
+    public void acao12(Token token){
         System.out.println("reconhecimento de identificador de variável");
         if(this.contexto.equals("variável")){
-            Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
+            Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
             if(!(exist == null)){
-                this.listaErros.add("12 - Identifier already declared: '" + identificador + "' ");
+                this.listaErros.add("12 - Identifier already declared: '" + token.image + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
             }else{
                 this.variavelIndexada = false;
-                this.identificadorReconhecido = identificador;
+                this.identificadorReconhecido = token.image;
             }
         }else{
             this.tipo = 7;
-            this.identificadorReconhecido = identificador;
+            this.identificadorReconhecido = token.image;
         }
     }
 
     //OK
-    public void acao13(){
+    public void acao13(Token token){
         System.out.println("reconhecimento de identificador de variável e tamanho da variável indexada");
         switch (this.contexto){
             case "variável": {
@@ -227,17 +228,17 @@ public class AcoesSemanticas {
                         if(!this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1());
                         }else{
-                            this.listaErros.add("13 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' ");
+                            this.listaErros.add("13 - Identifier of non-indexed variable: '" + this.identificadorReconhecido + "' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                         }
                     } else{
                         if(this.variavelIndexada){
                             this.listaAtributos.add(exist.getAtributo1() + this.constanteInteira -1);
                         }else{
-                            this.listaErros.add("13 - Indexed variables require an index");
+                            this.listaErros.add("13 - Indexed variables require an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                         }
                     }
                 }else{
-                    this.listaErros.add("13 - Use of undeclared variable or constant");
+                    this.listaErros.add("13 - Use of undeclared variable or constant - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                 }
                 break;
             }
@@ -251,7 +252,7 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("13 - Identifier of non-indexed variable");
+                            this.listaErros.add("13 - Identifier of non-indexed variable - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                         }
                     } else{
                         if(this.variavelIndexada){
@@ -260,11 +261,11 @@ public class AcoesSemanticas {
                             instructionList.add(new Instruction(Instruction.Mnemonic.STR, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                             this.ponteiro = this.ponteiro + 1;
                         }else{
-                            this.listaErros.add("13 - Indexed variables requires an index");
+                            this.listaErros.add("13 - Indexed variables requires an index - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                         }
                     }
                 }else{
-                    this.listaErros.add("13 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' ");
+                    this.listaErros.add("13 - Use of undeclared variable or constant: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
                 }
                 break;
             }
@@ -272,9 +273,9 @@ public class AcoesSemanticas {
     }
 
     //OK
-    public void acao14(int valor){
+    public void acao14(Token token){
         System.out.println(" reconhecimento de constante inteira como tamanho da variável indexada ou como índice");
-        this.constanteInteira = valor;
+        this.constanteInteira = Integer.parseInt(token.image);
         this.variavelIndexada = true;
     }
 
@@ -307,19 +308,19 @@ public class AcoesSemanticas {
     }
 
     //OK
-    public void acao19(String identificador){
+    public void acao19(Token token){
         System.out.println("reconhecimento de identificador em comando de saída ou em expressão");
-        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> identificador.equals(simb.getIdentificador())).findAny().orElse(null);
+        Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> token.image.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!(exist == null)){
             this.variavelIndexada = false;
-            this.identificadorReconhecido = identificador;
+            this.identificadorReconhecido = token.image;
         }else{
-            this.listaErros.add("19 - Use of non-declared identifier: '"+identificador+"' ");
+            this.listaErros.add("19 - Use of non-declared identifier: '"+token.image+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
         }
     }
 
     //OK
-    public void acao20(){
+    public void acao20(Token token){
         System.out.println(" reconhecimento de índice de variável indexada em comando de saída");
         Simbolo exist = tabelaDeSimbolos.stream().filter(simb -> this.identificadorReconhecido.equals(simb.getIdentificador())).findAny().orElse(null);
         if(!this.variavelIndexada){
@@ -327,14 +328,14 @@ public class AcoesSemanticas {
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1())));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' ");
+                this.listaErros.add("20 - Indexed variables requires an index: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
             }
         }else{
             if(exist.getAtributo2() != 0){
                 instructionList.add(new Instruction(Instruction.Mnemonic.LDV, new DataFrame(DataType.ADDRESS, exist.getAtributo1() + this.constanteInteira -1)));
                 this.ponteiro = this.ponteiro + 1;
             }else{
-                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' ");
+                this.listaErros.add("20 - Identifier of non-indexed constant or variable: '"+this.identificadorReconhecido+"' - Line/Column: "+token.beginLine+"/"+token.beginColumn);
             }
         }
     }
