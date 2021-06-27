@@ -17,14 +17,17 @@ public class AcoesSemanticas {
     boolean variavelIndexada = false;
     private List<Integer> pilhaDeDesvios = new ArrayList<>(); //Lembrar de controlar para trabalhar como LIFO
     private List<Simbolo> tabelaDeSimbolos = new ArrayList<>();
-    private List<Instruction> instructionList = new ArrayList<>();
+    private static List<Instruction> instructionList = new ArrayList<>();
     private String identificadorReconhecido;
     private int constanteInteira;
     private List<Object> listaAtributos = new ArrayList<>();
     private List<String> listaErros = new ArrayList<>();
 
     public List<Instruction> getInstructionList() {
-        return instructionList;
+        // Ugly hack: figure out why do is this list blank after the .JJ has run.
+        var tmp =  instructionList;
+        instructionList = new ArrayList<>();
+        return tmp;
     }
 
     public List<String> getListaErros() {

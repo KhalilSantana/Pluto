@@ -21,7 +21,8 @@ public class Sintatico {
     public StringBuilder syntacticErrors = new StringBuilder("Syntactic errors:\n");
     private Boolean hasLexicalErrors = false;
     public int contParseError = 0;
-    public static AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
+    public AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
+    private List<Instruction> instructionList;
 
     boolean debug_recovery = true;
     Token lastError = null;
@@ -196,6 +197,7 @@ public class Sintatico {
             if(sintatico.getCountErrors() > 0){
              return "This program has + " + sintatico.getCountErrors() + " syntactic errors \n" + sintatico.getSyntacticErrors();
             }
+            this.instructionList = acoesSemanticas.getInstructionList();
             return "Syntactically correct!";
         }
 
@@ -284,7 +286,7 @@ public class Sintatico {
     }
 
     public List<Instruction> getInstructions() {
-        return acoesSemanticas.getInstructionList();
+        return this.instructionList;
     }
 
     public List<String> getSemanticErrorList() {

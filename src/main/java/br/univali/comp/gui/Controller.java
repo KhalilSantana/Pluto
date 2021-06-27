@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Controller {
-    private Sintatico sintatico;
+    private List<Instruction> insList;
     private VirtualMachine vm;
     private EditorFile editorFile = new EditorFile();
     private static boolean hasEditedFile = false;
@@ -306,10 +306,11 @@ public class Controller {
         java.io.InputStream targetStream = new java.io.ByteArrayInputStream(inputTextArea.getText().getBytes());
 //        Tokenizer tokenizer = new Tokenizer(targetStream);
 //        String result = tokenizer.getTokens(args, inputTextArea.getText());
-        sintatico = new Sintatico(targetStream);
+        Sintatico sintatico = new Sintatico(targetStream);
         String result = sintatico.analyze(args, inputTextArea.getText());
-        this.vm = new VirtualMachine(Sintatico.acoesSemanticas.getInstructionList());
-        displayInstructions(Sintatico.acoesSemanticas.getInstructionList());
+        this.insList = sintatico.getInstructions();
+        this.vm = new VirtualMachine(this.insList);
+        displayInstructions(this.insList);
         messageTextArea.setText(result);
         System.out.println(result);
         return true;
