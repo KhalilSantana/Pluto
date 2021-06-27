@@ -18,7 +18,7 @@ import br.univali.comp.virtualmachine.Instruction;
 public class Sintatico {
     private StringBuilder tokens = new StringBuilder();
     private List<String> lexicalErrors = new ArrayList<String>();
-    private List<String> syntacticErrors = new ArrayList<String>();
+    private static List<String> syntacticErrors = new ArrayList<String>();
     private List<String> semanticErrors = new ArrayList<String>();
     private Boolean hasLexicalErrors = false;
     public AcoesSemanticas acoesSemanticas = new AcoesSemanticas();
