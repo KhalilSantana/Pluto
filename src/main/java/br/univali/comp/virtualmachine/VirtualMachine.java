@@ -48,12 +48,16 @@ public class VirtualMachine {
     public void resumeExecution() {
         if (status == VMStatus.SYSCALL_IO_READ) {
             syscallData = syscallData.toString().trim();
-            switch (syscallDataType) {
-                case INTEGER -> syscallData = Integer.parseInt((String)syscallData);
-                case FLOAT -> syscallData = Float.parseFloat((String)syscallData);
+            try {
+                switch (syscallDataType) {
+                    case INTEGER -> syscallData = Integer.parseInt((String) syscallData);
+                    case FLOAT -> syscallData = Float.parseFloat((String) syscallData);
+                }
+                stack.push(new DataFrame(syscallDataType, syscallData));
+                System.out.println(printStack());
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(String.format("Invalid input read! Reason: cannot interpret %s as %s\n", syscallData.toString(), this.syscallDataType.toString()));
             }
-            stack.push(new DataFrame(syscallDataType, syscallData));
-            System.out.println(printStack());
         }
         this.syscallData = null;
         this.syscallDataType = null;
